@@ -15,21 +15,21 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.PosixParser;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
 
 import edu.pitt.coder.NobleCoder;
-import edu.pitt.dbmi.edda.lens.enlreader.Annotation;
-import edu.pitt.dbmi.edda.lingpipe.SentenceFinder;
-import edu.pitt.dbmi.edda.noblecoder.ConceptFinder;
-import edu.pitt.dbmi.edda.rdbms.DataSourceManager;
-import edu.pitt.dbmi.edda.rdbms.pojo.Document;
-import edu.pitt.dbmi.edda.rdbms.pojo.EndNoteLibraryOutput;
-import edu.pitt.dbmi.edda.rdbms.pojo.NounPhraseMention;
-import edu.pitt.dbmi.edda.rdbms.pojo.Sentence;
-import edu.pitt.dbmi.edda.rdbms.pojo.WordMention;
+import edu.pitt.dbmi.edda.summarization.lens.enlreader.Annotation;
+import edu.pitt.dbmi.edda.summarization.lingpipe.SentenceFinder;
+import edu.pitt.dbmi.edda.summarization.noblecoder.ConceptFinder;
+import edu.pitt.dbmi.edda.summarization.rdbms.DataSourceManager;
+import edu.pitt.dbmi.edda.summarization.rdbms.pojos.Document;
+import edu.pitt.dbmi.edda.summarization.rdbms.pojos.EndNoteLibraryOutput;
+import edu.pitt.dbmi.edda.summarization.rdbms.pojos.NounPhraseMention;
+import edu.pitt.dbmi.edda.summarization.rdbms.pojos.Sentence;
+import edu.pitt.dbmi.edda.summarization.rdbms.pojos.WordMention;
 import edu.pitt.terminology.util.TerminologyException;
 
 public class SummarizedAbstractBuilder {
