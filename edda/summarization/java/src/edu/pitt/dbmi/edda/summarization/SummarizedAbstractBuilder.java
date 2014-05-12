@@ -39,7 +39,7 @@ public class SummarizedAbstractBuilder {
 	private static final String CONST_ITEXT_OUTPUT = "itext";
 	private static final String CONST_PDFBOX_OUTPUT = "pdfbox";
 	
-	private int CONST_MEDIAN_CHARS_PER_ABSTRACT = 1276;
+	private final int CONST_MEDIAN_CHARS_PER_ABSTRACT = 1276;
 
 	private DataSourceManager dataSourceManager;
 
