@@ -14,13 +14,14 @@ import edu.pitt.terminology.lexicon.Concept;
 import edu.pitt.terminology.util.TerminologyException;
 
 public class ConceptFinder {
-	
+
 	private static ConceptFinder singleton = null;
-	
+
+	private String terminologyPath;
 	private NobleCoder coder;
 	private Integer annotationOffset = 0;
 	private boolean debugging;
-	
+
 	public static void main(String[] args) {
 		ConceptFinder conceptFinder = getInstance();
 		String sentenceText = ExampleParagraphs.getExampleTwo();
@@ -34,28 +35,32 @@ public class ConceptFinder {
 		sentenceText = ExampleParagraphs.getExampleSix();
 		conceptFinder.findConcepts(sentenceText);
 	}
-	
+
 	public static ConceptFinder getInstance() {
 		if (singleton == null) {
 			singleton = new ConceptFinder();
 		}
 		return singleton;
 	}
-	
+
 	private ConceptFinder() {
+	}
+
+	public void initialize() {
 		openNobleCoder();
 	}
-	
+
 	public void finalize() {
 		closeNobleCoder();
 	}
-	
+
 	public List<Annotation> findConcepts(String sentenceText) {
 		return findConcepts(sentenceText, 0);
 	}
-		
-	public List<Annotation> findConcepts(String sentenceText, Integer annotationOffset) {
-		this.annotationOffset = annotationOffset;
+
+	public List<Annotation> findConcepts(String sentenceText,
+			Integer annotationOffset) {
+		this.setAnnotationOffset(annotationOffset);
 		final List<Annotation> annotations = new ArrayList<Annotation>();
 		try {
 			final Concept[] concepts = coder.processPhrase(sentenceText);
@@ -63,14 +68,17 @@ public class ConceptFinder {
 				String cui = concept.getCode();
 				Integer sPos = Integer.MAX_VALUE;
 				Integer ePos = Integer.MIN_VALUE;
-				for (edu.pitt.terminology.lexicon.Annotation conceptAnnot : concept.getAnnotations()) {
+				for (edu.pitt.terminology.lexicon.Annotation conceptAnnot : concept
+						.getAnnotations()) {
 					sPos = Math.min(sPos, conceptAnnot.getOffset());
-					ePos = Math.max(ePos, conceptAnnot.getOffset() + conceptAnnot.getText().length());
+					ePos = Math.max(ePos, conceptAnnot.getOffset()
+							+ conceptAnnot.getText().length());
 					sPos += annotationOffset;
 					ePos += annotationOffset;
 					String annotationType = "NounPhraseMention";
 					String underLyingText = cui;
-					Annotation annot = new Annotation(annotationType, sPos, ePos, underLyingText);
+					Annotation annot = new Annotation(annotationType, sPos,
+							ePos, underLyingText);
 					annotations.add(annot);
 				}
 			}
@@ -79,26 +87,13 @@ public class ConceptFinder {
 		}
 		return annotations;
 	}
-	
-	private void displayAnnotations(List<Annotation> annotations) {
-		for (Annotation annotation : annotations) {
-			System.out.println(annotation);
-		}
-	}
 
 	protected void openNobleCoder() {
 		if (coder == null) {
 			try {
-				URL terminologyUrl = new URL(
-						"file:///C:/nobletools/terminologies/TIES_Pathology.term");
-				terminologyUrl = new URL(
-						"file:///C:/nobletools/terminologies/TIES_Pathology");
+				URL terminologyUrl = new URL(getTerminologyPath());
 				File terminologyFileHandle = new File(terminologyUrl.toURI());
 				coder = new NobleCoder(terminologyFileHandle);
-				if (debugging) {
-					System.out
-							.println("Successfully opened NobleCoder data source.");
-				}
 			} catch (IOException e) {
 				e.printStackTrace();
 			} catch (URISyntaxException e) {
@@ -108,7 +103,34 @@ public class ConceptFinder {
 	}
 
 	private void closeNobleCoder() {
-		System.err.println("Closing NobleCoder");
+		if (isDebugging()) {
+			System.out.println("Closing NobleCoder");
+			coder = null;
+		}
+	}
+
+	public String getTerminologyPath() {
+		return terminologyPath;
+	}
+
+	public void setTerminologyPath(String terminologyPath) {
+		this.terminologyPath = terminologyPath;
+	}
+
+	public Integer getAnnotationOffset() {
+		return annotationOffset;
+	}
+
+	public void setAnnotationOffset(Integer annotationOffset) {
+		this.annotationOffset = annotationOffset;
+	}
+
+	public boolean isDebugging() {
+		return debugging;
+	}
+
+	public void setDebugging(boolean debugging) {
+		this.debugging = debugging;
 	}
 
 }
