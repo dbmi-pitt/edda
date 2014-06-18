@@ -1,4 +1,4 @@
-package edu.pitt.dbmi.edda.gate;
+package edu.pitt.dbmi.edda.utilities.pdf;
 
 import java.awt.Font;
 import java.io.IOException;

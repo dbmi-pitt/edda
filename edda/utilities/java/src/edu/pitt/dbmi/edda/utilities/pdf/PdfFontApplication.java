@@ -1,4 +1,4 @@
-package edu.pitt.dbmi.edda.gate;
+package edu.pitt.dbmi.edda.utilities.pdf;
 
 import java.io.File;
 import java.util.List;
