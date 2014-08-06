@@ -48,14 +48,15 @@ public class SentenceScorer {
 		sb = new StringBuffer();
 		sb.append("delete from normalized_word\n");
 		executeUpdateStatement(sb);
-
+		
 		sb = new StringBuffer();
-		sb.append("insert into normalized_word (CLUSTER, CONTENT, FREQ, IS_KEYWORD)\n");
+		sb.append("insert into normalized_word (CLUSTER, CONTENT, IS_KEYWORD, FREQ)\n");
 		sb.append("	select wm.cluster, \n");
 		sb.append("		   wm.stemmed_content,\n");
 		sb.append("		   wm.is_keyword,\n");
 		sb.append("		   count(*)\n");
 		sb.append("		   from word_mention wm \n");
+		sb.append("		   where wm.stemmed_content is not null \n");
 		sb.append("		   group by wm.cluster, wm.stemmed_content");
 		executeUpdateStatement(sb);
 

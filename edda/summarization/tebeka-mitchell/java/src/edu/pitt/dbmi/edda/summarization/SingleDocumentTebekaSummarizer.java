@@ -9,7 +9,6 @@ import org.hibernate.Transaction;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
-import edu.pitt.dbmi.edda.summarization.lingpipe.SentenceFinder;
 import edu.pitt.dbmi.edda.summarization.rdbms.DataSourceManager;
 import edu.pitt.dbmi.edda.summarization.rdbms.pojos.NormalizedWord;
 import edu.pitt.dbmi.edda.summarization.rdbms.pojos.NounPhraseMention;

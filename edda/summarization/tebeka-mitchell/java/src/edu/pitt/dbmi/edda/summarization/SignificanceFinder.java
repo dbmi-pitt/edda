@@ -23,9 +23,9 @@ public class SignificanceFinder {
 	public void execute() {
 		try {
 			openJdbcConnection();
-			System.out.println("Normalizing words...");
+//			System.out.println("Normalizing words...");
 			normalizeWords();
-			System.out.println("Assigning Significance...");
+//			System.out.println("Assigning Significance...");
 			determineSignificance();
 			closeJdbcConnection();
 		} catch (SQLException e) {

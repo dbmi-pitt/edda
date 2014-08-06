@@ -14,6 +14,7 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.PosixParser;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
@@ -21,7 +22,6 @@ import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
 
 import edu.pitt.dbmi.edda.summarization.lens.enlreader.Annotation;
-import edu.pitt.dbmi.edda.summarization.lingpipe.SentenceFinder;
 import edu.pitt.dbmi.edda.summarization.noblecoder.ConceptFinder;
 import edu.pitt.dbmi.edda.summarization.rdbms.DataSourceManager;
 import edu.pitt.dbmi.edda.summarization.rdbms.pojos.Document;
@@ -33,6 +33,7 @@ import edu.pitt.terminology.util.TerminologyException;
 
 public class SummarizedAbstractBuilder {
 
+	private static final String CONST_FS_DIRECTORY_OUTPUT = "fsdirectory";
 	private static final String CONST_HUMAN_OUTPUT = "human";
 	private static final String CONST_ITEXT_OUTPUT = "itext";
 	private static final String CONST_PDFBOX_OUTPUT = "pdfbox";
@@ -43,10 +44,10 @@ public class SummarizedAbstractBuilder {
 
 	private DataSourceManager dataSourceManager;
 
-	private ConceptFinder conceptFinder = ConceptFinder.getInstance();
+	private ConceptFinder conceptFinder;
 
 	private EndNoteLibraryOutput enlParsedEntry;
-	private String pdfText = null;
+	private String documentText = null;
 	private String keywordsText = null;
 
 	private Document dbDoc;
@@ -65,8 +66,9 @@ public class SummarizedAbstractBuilder {
 		try {
 			SummarizedAbstractBuilder eddaStandAlone = new SummarizedAbstractBuilder(
 					args);
-			eddaStandAlone.executePdfs();
+			eddaStandAlone.execute();
 		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -77,32 +79,35 @@ public class SummarizedAbstractBuilder {
 	private void parseCommandLineArguments(String[] args) {
 		final CommandLineParser cmdLinePosixParser = new PosixParser();
 		posixOptions = constructOptions();
-
 		try {
 			commandLine = cmdLinePosixParser.parse(posixOptions, args);
-			conceptFinder.setTerminologyPath(commandLine.getOptionValue("coderResource"));
-			conceptFinder.initialize();
 		} catch (ParseException parseException) // checked exception
 		{
 			parseException.printStackTrace();
 			usage();
 		}
 	}
-	
+
 	private Options constructOptions() {
 		final Options options = new Options();
 		options.addOption(buildStandardOption("pdfSource", "human|pdfBox|iText"));
-		options.addOption(buildStandardOption("summaryOutput", "Location of the summarization output directory"));
-		options.addOption(buildStandardOption("coderResource", "Location of noble coder terminology"));
-		options.addOption(buildStandardOption("dbUrl", "Database url including database"));
+		options.addOption(buildStandardOption("summaryOutput",
+				"Location of the summarization output directory"));
+		options.addOption(buildStandardOption("coderResource",
+				"Location of noble coder terminology"));
+		options.addOption(buildStandardOption("dbUrl",
+				"Database url including database"));
 		options.addOption(buildStandardOption("dbUser", "Database user name"));
 		options.addOption(buildStandardOption("dbPassword", "Database password"));
-		options.addOption(buildStandardOption("hibernateShowSql", "Show hibernate sql"));
-		options.addOption(buildStandardOption("hibernateHbm2ddlAuto", "Show hibernate sql"));
-		options.addOption(buildStandardOption("isDebugging", "Show debugging diagnostics?"));
+		options.addOption(buildStandardOption("hibernateShowSql",
+				"Show hibernate sql"));
+		options.addOption(buildStandardOption("hibernateHbm2ddlAuto",
+				"Show hibernate sql"));
+		options.addOption(buildStandardOption("isDebugging",
+				"Show debugging diagnostics?"));
 		return options;
 	}
-	
+
 	private Option buildStandardOption(String key, String desc) {
 		Option o = new Option(key, desc);
 		o.setOptionalArg(false);
@@ -118,13 +123,17 @@ public class SummarizedAbstractBuilder {
 		formatter.printHelp(getClass().getSimpleName(), posixOptions);
 	}
 
-	private void executePdfs() throws Exception {
+	private void execute() throws Exception {
 
-		executeDatabasePreparation();
 
-		removeTableRows();
+		final String optionValue = commandLine.getOptionValue("pdfSource");
 
-		switch (commandLine.getOptionValue("pdfSource")) {
+		// System.out.println("Using option " + optionValue);
+
+		switch (optionValue) {
+		case CONST_FS_DIRECTORY_OUTPUT:
+			runUsingFsDirectory();
+			break;
 		case CONST_HUMAN_OUTPUT:
 			setOutputFileDirectory(CONST_HUMAN_OUTPUT);
 			runUsingHumanText();
@@ -140,6 +149,36 @@ public class SummarizedAbstractBuilder {
 		}
 	}
 
+	private void runUsingFsDirectory() throws Exception {
+		executeDatabasePreparation();
+		File d = new File("T:\\EDDA\\DATA\\ORGAN_TRANSPLANT\\PDF-Clean");
+		File[] fArray = d.listFiles();
+		int numberFilesProcessed = 0;
+		for (File f : fArray) {
+			String fileName = f.getName();
+			System.out.println("Processing " + fileName);
+			boolean isRunnable = fileName.compareTo("Hariharan-2002-Pancreas after kidne.clean") == 0;
+			isRunnable = isRunnable || fileName.compareTo("Siemionow-2006-Controversies follow.clean") == 0;	
+			isRunnable = isRunnable || fileName.compareTo("Wall-2004-Hepatocellular cance.clean") == 0;	
+			isRunnable = isRunnable || true;
+			if (isRunnable) {
+				fileName = StringUtils.substringBefore(fileName, ".");
+				fileName = "/" + fileName + "/";
+				enlParsedEntry = new EndNoteLibraryOutput();
+				enlParsedEntry.setInternalPdf(fileName);
+				documentText = FileUtils.readFileToString(f);
+				keywordsText = "";
+				removeTableRows();
+				executeDocument();
+				numberFilesProcessed++;
+				if (numberFilesProcessed % 10 == 0) {
+					dataSourceManager = null;
+					executeDatabasePreparation();
+				}
+			}
+		}
+	}
+
 	@SuppressWarnings("unchecked")
 	private void runUsingHumanText() throws Exception {
 		Criteria crit = dataSourceManager
@@ -150,9 +189,9 @@ public class SummarizedAbstractBuilder {
 		List<EndNoteLibraryOutput> enlParsedEntries = crit.list();
 		for (EndNoteLibraryOutput currentEnlParsedEntry : enlParsedEntries) {
 			enlParsedEntry = currentEnlParsedEntry;
-			pdfText = currentEnlParsedEntry.getHumanPdf();
+			documentText = currentEnlParsedEntry.getHumanPdf();
 			keywordsText = currentEnlParsedEntry.getKeywords();
-			execute();
+			executeDocument();
 		}
 	}
 
@@ -167,9 +206,9 @@ public class SummarizedAbstractBuilder {
 		List<EndNoteLibraryOutput> enlParsedEntries = crit.list();
 		for (EndNoteLibraryOutput currentEnlParsedEntry : enlParsedEntries) {
 			enlParsedEntry = currentEnlParsedEntry;
-			pdfText = currentEnlParsedEntry.getPdfText();
+			documentText = currentEnlParsedEntry.getPdfText();
 			keywordsText = currentEnlParsedEntry.getKeywords();
-			execute();
+			executeDocument();
 		}
 	}
 
@@ -184,25 +223,25 @@ public class SummarizedAbstractBuilder {
 		List<EndNoteLibraryOutput> enlParsedEntries = crit.list();
 		for (EndNoteLibraryOutput currentEnlParsedEntry : enlParsedEntries) {
 			enlParsedEntry = currentEnlParsedEntry;
-			pdfText = currentEnlParsedEntry.getPdfText();
+			documentText = currentEnlParsedEntry.getPdfText();
 			keywordsText = currentEnlParsedEntry.getKeywords();
-			execute();
+			executeDocument();
 		}
 	}
 
-	public void execute() throws Exception {
-		try {
-			executeDocumentPreprocessing();
-			activateKeywordConcepts();
-			if (dbDoc.getContent().length() > CONST_MEDIAN_CHARS_PER_ABSTRACT) {
-				executeDocumentSummarization();
-			} else {
-				copyOriginalContent();
-			}
-			executeDocumentCleanUp();
-		} catch (TerminologyException | SummarizationException | IOException x) {
-			System.err.println(x.getMessage());
+	public void executeDocument() throws Exception {
+		conceptFinder = new ConceptFinder();
+		conceptFinder.setTerminologyPath(commandLine
+				.getOptionValue("coderResource"));
+		conceptFinder.initialize();
+		executeDocumentPreprocessing();
+		activateKeywordConcepts();
+		if (dbDoc.getContent().length() > CONST_MEDIAN_CHARS_PER_ABSTRACT) {
+			executeDocumentSummarization();
+		} else {
+			copyOriginalContent();
 		}
+		executeDocumentCleanUp();
 	}
 
 	private void executeDatabasePreparation() {
@@ -215,12 +254,16 @@ public class SummarizedAbstractBuilder {
 	private DataSourceManager createOrUseCachedDataSourceManager() {
 		if (dataSourceManager == null) {
 			dataSourceManager = new DataSourceManager();
-			dataSourceManager
-					.setHibernateConnectionUrl(commandLine.getOptionValue("dbUrl"));
-			dataSourceManager.setHibernateUserName(commandLine.getOptionValue("dbUser"));
-			dataSourceManager.setHibernateUserPassword(commandLine.getOptionValue("dbPassword"));
-			dataSourceManager.setHibernateShowSql(commandLine.getOptionValue("hibernateShowSql"));
-			dataSourceManager.setHibernateHbm2ddlAuto(commandLine.getOptionValue("hibernateHbm2ddlAuto"));
+			dataSourceManager.setHibernateConnectionUrl(commandLine
+					.getOptionValue("dbUrl"));
+			dataSourceManager.setHibernateUserName(commandLine
+					.getOptionValue("dbUser"));
+			dataSourceManager.setHibernateUserPassword(commandLine
+					.getOptionValue("dbPassword"));
+			dataSourceManager.setHibernateShowSql(commandLine
+					.getOptionValue("hibernateShowSql"));
+			dataSourceManager.setHibernateHbm2ddlAuto(commandLine
+					.getOptionValue("hibernateHbm2ddlAuto"));
 		}
 		return dataSourceManager;
 	}
@@ -271,7 +314,9 @@ public class SummarizedAbstractBuilder {
 		if (getDebugging()) {
 			System.out.println("insertDocument");
 		}
-		saveOrUpdatePojos(pojosToSave);
+		if (!pojosToSave.isEmpty()) {
+			saveOrUpdatePojos(pojosToSave);
+		}
 		if (getDebugging()) {
 			System.out.println("saveOrUpdatePojos");
 		}
@@ -316,16 +361,22 @@ public class SummarizedAbstractBuilder {
 		relativePath = StringUtils.substringBefore(relativePath, "/");
 		relativePath += ".txt";
 		dbDoc.setUrl(relativePath);
-		dbDoc.setContent(pdfText);
+		dbDoc.setContent(documentText);
 		dbDoc.setSequence(0);
 		dbDoc.setCluster(0);
 		pojosToSave.add(dbDoc);
-		List<Annotation> sentenceAnnotations = SentenceFinder.getInstance()
-				.annotateSentences(pdfText);
+		List<Annotation> sentenceAnnotations = SentenceFinderFactory
+				.getInstance(
+						SentenceFinderFactory.CONST_SENTENCE_FINDER_LINGPIPE)
+				.annotateSentences(documentText);
 		sSeq = 0;
 		for (Annotation sentenceAnnotation : sentenceAnnotations) {
 			if (isBadSentence(sentenceAnnotation)) {
 				continue;
+			}
+			if (getDebugging()) {
+				System.out.println("SENTENCE: "
+						+ sentenceAnnotation.getUnderLyingText());
 			}
 			insertSentence(sentenceAnnotation);
 			sSeq++;
@@ -347,9 +398,8 @@ public class SummarizedAbstractBuilder {
 		dbSentence.setContent(getAnnotationText(sentenceAnnot));
 		dbDoc.addSentence(dbSentence);
 
-		List<Annotation> nounPhraseMentionAnnots = conceptFinder
-				.findConcepts(getAnnotationText(sentenceAnnot),
-						sentenceAnnot.getsPos());
+		List<Annotation> nounPhraseMentionAnnots = conceptFinder.findConcepts(
+				getAnnotationText(sentenceAnnot), sentenceAnnot.getsPos());
 		for (Annotation nounPhraseMentionAnnot : nounPhraseMentionAnnots) {
 			insertNounPhraseMention(sentenceAnnot, nounPhraseMentionAnnot);
 		}
@@ -507,7 +557,6 @@ public class SummarizedAbstractBuilder {
 		tx.commit();
 	}
 
-	
 	private void closeNobleCoder() {
 		;
 	}

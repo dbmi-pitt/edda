@@ -18,7 +18,7 @@ public class StopwordDetector {
 
 	public static void main(String[] args) {
 		StopwordDetector detector = getInstance();
-		System.out.println(detector);
+//		System.out.println(detector);
 	}
 	
 	public static StopwordDetector getInstance() {
@@ -43,7 +43,7 @@ public class StopwordDetector {
 			File[] files = stopWordsDirectory.listFiles();
 			for (File file : files) {
 				if (file.getName().contains("_english_")) {
-					System.out.println("Reading file " + file);
+//					System.out.println("Reading file " + file);
 					String fileAsString = FileUtils.readFileToString(file);
 					String[] words = fileAsString.split("\n");					
 					for (String word : words) {

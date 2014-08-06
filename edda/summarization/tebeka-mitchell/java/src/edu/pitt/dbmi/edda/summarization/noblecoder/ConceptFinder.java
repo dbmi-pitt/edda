@@ -15,15 +15,15 @@ import edu.pitt.terminology.util.TerminologyException;
 
 public class ConceptFinder {
 
-	private static ConceptFinder singleton = null;
-
 	private String terminologyPath;
 	private NobleCoder coder;
 	private Integer annotationOffset = 0;
 	private boolean debugging;
 
 	public static void main(String[] args) {
-		ConceptFinder conceptFinder = getInstance();
+		ConceptFinder conceptFinder = new ConceptFinder();
+		conceptFinder.setTerminologyPath("file:///C:/ties/nobletools/terminologies/TIES_Pathology");
+		conceptFinder.initialize();
 		String sentenceText = ExampleParagraphs.getExampleTwo();
 		conceptFinder.findConcepts(sentenceText);
 		sentenceText = ExampleParagraphs.getExampleThree();
@@ -36,14 +36,7 @@ public class ConceptFinder {
 		conceptFinder.findConcepts(sentenceText);
 	}
 
-	public static ConceptFinder getInstance() {
-		if (singleton == null) {
-			singleton = new ConceptFinder();
-		}
-		return singleton;
-	}
-
-	private ConceptFinder() {
+	public ConceptFinder() {
 	}
 
 	public void initialize() {
@@ -103,8 +96,8 @@ public class ConceptFinder {
 	}
 
 	private void closeNobleCoder() {
-		if (isDebugging()) {
-			System.out.println("Closing NobleCoder");
+		if (coder != null) {
+			coder.getTerminology().dispose();
 			coder = null;
 		}
 	}
