@@ -18,7 +18,7 @@ public class StopwordDetector {
 
 	public static void main(String[] args) {
 		StopwordDetector detector = getInstance();
-//		System.out.println(detector);
+		System.out.println(detector);
 	}
 	
 	public static StopwordDetector getInstance() {
