@@ -32,6 +32,8 @@ import edu.pitt.dbmi.edda.summarization.rdbms.pojos.WordMention;
 import edu.pitt.terminology.util.TerminologyException;
 
 public class SummarizedAbstractBuilder {
+	
+	protected String outputFileDirectory = "/home/edda/Desktop/galacto/output/human";
 
 	private static final String CONST_FS_DIRECTORY_OUTPUT = "fsdirectory";
 	private static final String CONST_HUMAN_OUTPUT = "human";
@@ -41,6 +43,11 @@ public class SummarizedAbstractBuilder {
 	private final int CONST_MEDIAN_CHARS_PER_ABSTRACT = 1276;
 
 	protected String hibernateDriver = "com.mysql.jdbc.Driver";
+	protected String hibernateDialect = org.hibernate.dialect.MySQLDialect.class
+			.getName();
+	protected Boolean saveStopWords = false;
+	protected Integer maxEolnsPerSentence = new Integer(7);
+	protected Boolean isRelativeScoring = false;
 
 	private DataSourceManager dataSourceManager;
 
@@ -557,12 +564,6 @@ public class SummarizedAbstractBuilder {
 		tx.commit();
 	}
 
-	private void closeNobleCoder() {
-		;
-	}
-
-	protected String outputFileDirectory = "/home/edda/Desktop/galacto/output/human";
-
 	public void setOutputFileDirectory(String outputFileDirectory) {
 		this.outputFileDirectory = outputFileDirectory;
 	}
@@ -570,8 +571,6 @@ public class SummarizedAbstractBuilder {
 	public String getOutputFileDirectory() {
 		return commandLine.getOptionValue("summaryOutput");
 	}
-
-	protected Boolean isRelativeScoring = false;
 
 	public void setRelativeScoring(Boolean isRelativeScoring) {
 		this.isRelativeScoring = isRelativeScoring;
@@ -581,8 +580,6 @@ public class SummarizedAbstractBuilder {
 		return this.isRelativeScoring;
 	}
 
-	protected Integer maxEolnsPerSentence = new Integer(7);
-
 	public void setMaxEolnsPerSentence(Integer maxEolnsPerSentence) {
 		this.maxEolnsPerSentence = maxEolnsPerSentence;
 	}
@@ -591,8 +588,6 @@ public class SummarizedAbstractBuilder {
 		return this.maxEolnsPerSentence;
 	}
 
-	protected Boolean saveStopWords = false;
-
 	public void setSaveStopWords(Boolean saveStopWords) {
 		this.saveStopWords = saveStopWords;
 	}
@@ -600,9 +595,6 @@ public class SummarizedAbstractBuilder {
 	public Boolean getSaveStopWords() {
 		return this.saveStopWords;
 	}
-
-	protected String hibernateDialect = org.hibernate.dialect.MySQLDialect.class
-			.getName();
 
 	public void setHibernateDialect(String hibernateDialect) {
 		this.hibernateDialect = hibernateDialect;
