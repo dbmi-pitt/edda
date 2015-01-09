@@ -11,9 +11,6 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import scala.Array;
-
 public class TokenStreamAligner {
 
 	private static String createFeatureSet(String summary, String gold_text) {

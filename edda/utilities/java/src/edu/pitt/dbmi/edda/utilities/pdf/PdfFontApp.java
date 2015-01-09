@@ -37,7 +37,7 @@ public class PdfFontApp {
 		 */
 		// System.out.println(stringWriter.toString());
 
-		PrintTextLocations printTextLocations = new PrintTextLocations();
+		PrintTextLocation printTextLocations = new PrintTextLocations();
 
 		System.out.println("PAG ---------------BEGIN-----------"
 				+ dPages.size());

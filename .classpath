@@ -5,7 +5,6 @@
 	<classpathentry kind="src" path="edda/lens/java/src"/>
 	<classpathentry kind="src" path="edda/reference-filer/java/src"/>
 	<classpathentry kind="src" path="edda/summarization/tebeka-mitchell/java/src"/>
-	<classpathentry kind="src" path="edda/utilities/java/src"/>
 	<classpathentry kind="src" path="edda/pico/java/src"/>
 	<classpathentry kind="lib" path="edda/summarization/tebeka-mitchell/lib/antlr-2.7.7.jar"/>
 	<classpathentry kind="lib" path="edda/summarization/tebeka-mitchell/lib/axis.jar"/>
@@ -14,8 +13,6 @@
 	<classpathentry kind="lib" path="edda/summarization/tebeka-mitchell/lib/commons-digester3-3.2-with-deps.jar"/>
 	<classpathentry kind="lib" path="edda/summarization/tebeka-mitchell/lib/commons-discovery-0.2.jar"/>
 	<classpathentry kind="lib" path="edda/summarization/tebeka-mitchell/lib/commons-httpclient-3.1.jar"/>
-	<classpathentry kind="lib" path="edda/summarization/tebeka-mitchell/lib/commons-io-2.4.jar"/>
-	<classpathentry kind="lib" path="edda/summarization/tebeka-mitchell/lib/commons-lang3-3.2.1.jar"/>
 	<classpathentry kind="lib" path="edda/summarization/tebeka-mitchell/lib/commons-logging-1.1.1.jar"/>
 	<classpathentry kind="lib" path="edda/summarization/tebeka-mitchell/lib/dom4j.jar"/>
 	<classpathentry kind="lib" path="edda/summarization/tebeka-mitchell/lib/fontbox-1.8.4.jar"/>
@@ -31,14 +28,12 @@
 	<classpathentry kind="lib" path="edda/summarization/tebeka-mitchell/lib/lingpipe-4.1.0.jar"/>
 	<classpathentry kind="lib" path="edda/summarization/tebeka-mitchell/lib/log4j-1.2.15.jar"/>
 	<classpathentry kind="lib" path="edda/summarization/tebeka-mitchell/lib/mysql-connector-java-5.1.26.jar"/>
-	<classpathentry kind="lib" path="edda/summarization/tebeka-mitchell/lib/pdfbox-1.8.4.jar"/>
 	<classpathentry kind="lib" path="edda/summarization/tebeka-mitchell/lib/preflight-1.8.4.jar"/>
 	<classpathentry kind="lib" path="edda/summarization/tebeka-mitchell/lib/resolver.jar"/>
 	<classpathentry kind="lib" path="edda/summarization/tebeka-mitchell/lib/saaj.jar"/>
 	<classpathentry kind="lib" path="edda/summarization/tebeka-mitchell/lib/serializer.jar"/>
 	<classpathentry kind="lib" path="edda/summarization/tebeka-mitchell/lib/slf4j-api-1.6.6.jar"/>
 	<classpathentry kind="lib" path="edda/summarization/tebeka-mitchell/lib/slf4j-simple-1.6.6.jar"/>
-	<classpathentry kind="lib" path="edda/summarization/tebeka-mitchell/lib/TextTools.jar"/>
 	<classpathentry kind="lib" path="edda/summarization/tebeka-mitchell/lib/wsdl4j.jar"/>
 	<classpathentry kind="lib" path="edda/summarization/tebeka-mitchell/lib/xercesImpl.jar"/>
 	<classpathentry kind="lib" path="edda/summarization/tebeka-mitchell/lib/xercesSamples.jar"/>
@@ -48,5 +43,28 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/nobletools"/>
 	<classpathentry kind="lib" path="edda/lens/java/lib/json.jar"/>
 	<classpathentry kind="lib" path="edda/summarization/general/java/lib/opennlp-tools-1.5.3.jar"/>
+	<classpathentry kind="lib" path="edda/common/lib/commons-beanutils-1.8.3.jar"/>
+	<classpathentry kind="lib" path="edda/common/lib/commons-digester3-3.2.jar"/>
+	<classpathentry kind="lib" path="edda/common/lib/commons-io-2.4.jar"/>
+	<classpathentry kind="lib" path="edda/common/lib/jdom-1.0.jar"/>
+	<classpathentry kind="lib" path="edda/common/lib/json.jar"/>
+	<classpathentry kind="lib" path="edda/common/lib/log4j-1.2.15.jar"/>
+	<classpathentry kind="lib" path="edda/reference-tools/java/lib/biolemmatizer-core-1.1-jar-with-dependencies.jar"/>
+	<classpathentry kind="lib" path="edda/reference-tools/java/lib/dtaggerProject.jar"/>
+	<classpathentry kind="lib" path="edda/reference-tools/java/lib/specialistTextTools.jar"/>
+	<classpathentry kind="lib" path="edda/reference-tools/java/lib/TextTools.jar"/>
+	<classpathentry kind="lib" path="edda/summarization/general/java/lib/dragontool.jar"/>
+	<classpathentry kind="lib" path="edda/summarization/general/java/lib/heptag.jar"/>
+	<classpathentry kind="lib" path="edda/summarization/general/java/lib/jwnl.jar"/>
+	<classpathentry kind="lib" path="edda/summarization/general/java/lib/jxl.jar"/>
+	<classpathentry kind="lib" path="edda/summarization/general/java/lib/linkgrammar.jar"/>
+	<classpathentry kind="lib" path="edda/summarization/general/java/lib/medpost.jar"/>
+	<classpathentry kind="lib" path="edda/summarization/general/java/lib/utilities.jar"/>
+	<classpathentry kind="lib" path="edda/utilities/java/lib/pdfbox-app-1.8.5.jar"/>
+	<classpathentry kind="lib" path="edda/utilities/java/lib/pdfbox-app-1.8.4.jar"/>
+	<classpathentry kind="lib" path="edda/classification/rapidminer-operators/java/lib/rapidminer.jar"/>
+	<classpathentry kind="lib" path="edda/classification/rapidminer-operators/java/lib/mallet-deps.jar"/>
+	<classpathentry kind="lib" path="edda/classification/rapidminer-operators/java/lib/mallet.jar"/>
+	<classpathentry kind="lib" path="edda/common/lib/commons-lang3-3.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

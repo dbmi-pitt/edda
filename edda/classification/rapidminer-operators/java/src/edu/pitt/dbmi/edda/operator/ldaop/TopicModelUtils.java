@@ -1,6 +1,6 @@
 package edu.pitt.dbmi.edda.operator.ldaop;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import cc.mallet.topics.TopicInferencer;
 import cc.mallet.types.Instance;

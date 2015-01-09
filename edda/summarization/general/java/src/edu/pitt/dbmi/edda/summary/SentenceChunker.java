@@ -12,8 +12,6 @@ import java.util.List;
 
 import edu.pitt.text.tools.TextTools;
 
-import scala.actors.threadpool.Arrays;
-
 public class SentenceChunker {
 	private static final List<String> exceptionList = new ArrayList<String>();
 	// list of known exceptions where period is allowed 

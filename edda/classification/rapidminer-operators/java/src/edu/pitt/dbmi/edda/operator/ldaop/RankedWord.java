@@ -1,6 +1,6 @@
 package edu.pitt.dbmi.edda.operator.ldaop;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public class RankedWord {
 	private static int maxWordLength = Integer.MIN_VALUE;

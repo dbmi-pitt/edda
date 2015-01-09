@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Formatter;
 import java.util.Locale;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import cc.mallet.topics.TopicInferencer;
 import cc.mallet.types.Instance;
