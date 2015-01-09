@@ -1,0 +1,48 @@
+# OrganTransplantation Ontology Seed
+#
+# [StudyDesigns] -> use a branch from StudyDesigns ontology
+# [MeSH] -> use a branch from Medical Subject Headings terminology
+# [NCI Thesaurus] -> use a branch from NCI Thesaurus
+## Eukaryota [MeSH]
+
+Study Design [StudyDesigns]
+Publication Type [StudyDesigns]
+Population Category
+	Species Category
+		Animal [NCI_Thesaurus]
+	Gender Category
+		Male
+		Female
+	Age Category
+		Age Groups [MeSH]
+			Child [MeSH]
+			Infant [MeSH]
+	Ehnicity Category
+		Population Groups [MeSH]
+			Ethnic Groups [MeSH]
+				Hispanic Americans [MeSH]
+	Population Type Category
+		Organ Transplantation [NCI_Thesaurus]
+		Graft [NCI_Thesaurus]
+		Transplant Recipient
+Intervention / Comparator Category
+	Mycophenolic Acid [NCI_Thesaurus]
+	Blood [NCI_Thesaurus]
+	Serum [NCI_Thesaurus]
+	Physiologic Monitoring [MeSH]
+	Pharmacokinetics [MeSH]
+Language Category
+	English
+	Foreign
+Outcome Category
+	biological markers [MeSH]
+	adverse reaction [NCI_Thesaurus]
+	transplant rejection
+	graft survival
+	patient survival
+	mortality
+	death
+	adverse events
+	cost-effectiveness
+	GFR
+	serum creatinine

@@ -3,10 +3,12 @@ package edu.pitt.dbmi.edda.terms;
 import java.io.*;
 import java.util.*;
 
-import edu.pitt.coder.NobleCoder;
+import edu.pitt.dbmi.nlp.noble.coder.*;
+import edu.pitt.dbmi.nlp.noble.coder.model.Document;
+import edu.pitt.dbmi.nlp.noble.coder.model.Mention;
+import edu.pitt.dbmi.nlp.noble.terminology.Concept;
+import edu.pitt.dbmi.nlp.noble.terminology.impl.NobleCoderTerminology;
 import edu.pitt.terminology.*;
-import edu.pitt.terminology.client.IndexFinderTerminology;
-import edu.pitt.terminology.lexicon.Concept;
 
 
 
@@ -18,7 +20,7 @@ public class ConceptCoder {
 	private NobleCoder coder;
 	
 	public void setCoder(String name) throws Exception {
-		coder = new NobleCoder(new File(IndexFinderTerminology.getPersistenceDirectory(),name));
+		coder = new NobleCoder(new File(NobleCoderTerminology.getPersistenceDirectory(),name));
 	}
 	
 	public void process(String name) throws Exception {
@@ -54,7 +56,10 @@ public class ConceptCoder {
 		r.close();
 		
 		// do a single search
-		for(Concept c :coder.processDocument(text.toString())){
+		Document doc = new Document(text.toString());
+		coder.process(doc);
+		for(Mention m :doc.getMentions()){
+			Concept c = m.getConcept();
 			List<Concept> mark = new ArrayList<Concept>();
 			mark.add(c);
 			if(MARK_ANCESTORS){
@@ -89,7 +94,7 @@ public class ConceptCoder {
 	
 	public void save(File f) throws Exception {
 		List<Concept> keys = new ArrayList<Concept>();
-		for(String cui: ((IndexFinderTerminology)coder.getTerminology()).getAllConcepts()){
+		for(String cui: ((NobleCoderTerminology)coder.getTerminology()).getAllConcepts()){
 			keys.add(coder.getTerminology().lookupConcept(cui));
 		}
 		save(f,keys);

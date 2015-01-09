@@ -36,7 +36,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import edu.pitt.dbmi.edda.reference.filer.model.CochraneReference;
-import edu.pitt.dbmi.edda.reference.filer.model.EndNoteReference;
+import edu.pitt.dbmi.edda.reference.filer.model.MedlineReference;
 import edu.pitt.dbmi.edda.reference.filer.model.Reference;
 import edu.pitt.dbmi.edda.reference.filer.model.Utils;
 
@@ -355,7 +355,7 @@ public class ReferenceFiler {
 				if(line.startsWith("AU  ")){
 					// write out the old buffer
 					if(buffer.length() > 0)
-						list.add(new EndNoteReference(buffer.toString()));
+						list.add(new MedlineReference(buffer.toString()));
 					
 					// start working on new reference
 					buffer = new StringBuffer();
@@ -368,7 +368,7 @@ public class ReferenceFiler {
 					if(mt.find()){
 						// write out the old buffer
 						if(buffer.length() > 0)
-							list.add(new EndNoteReference(buffer.toString()));
+							list.add(new MedlineReference(buffer.toString()));
 						
 						// start working on new reference
 						buffer = new StringBuffer();
@@ -383,7 +383,7 @@ public class ReferenceFiler {
 			
 			// write out the last record
 			if(buffer.length() > 0)
-				list.add(new EndNoteReference(buffer.toString()));
+				list.add(new MedlineReference(buffer.toString()));
 			
 			// close
 			reader.close();

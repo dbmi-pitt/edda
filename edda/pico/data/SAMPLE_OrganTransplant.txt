@@ -1,0 +1,39 @@
+AU  - E. Esmatjes, L. Flores, M. Vidal, L. Rodriguez, A. Cortes, L. Almirall, M. J. Ricart and R. Gomis
+TI  - Hypoglycaemia after pancreas transplantation: Usefulness of a continuous glucose monitoring system
+SO  - Clinical Transplantation 2003;17(6):534-538
+MH  - azathioprine
+cyclosporin
+glucose
+glycosylated hemoglobin
+insulin
+insulin antibody
+mycophenolic acid 2 morpholinoethyl ester
+prednisone
+adult
+antibody titer
+article
+blood glucose monitoring
+clinical article
+concentration (parameters)
+controlled study
+female
+glucose blood level
+graft rejection
+hemoglobin determination
+hormone release
+human
+hypoglycemia
+immunosuppressive treatment
+incidence
+insulin blood level
+kidney transplantation
+male
+meal
+medical record
+pancreas transplantation
+priority journal
+symptomatology
+GlucoDay
+AB  - Background: After pancreas transplantation (PTx) some patients report occasional symptoms of hypoglycaemia and at times, serious hypoglycaemia. Continuous blood glucose monitoring (CBGM) allows determination of the daily glucose profile and detection of unrecognized hypoglycaemia. The aims of our study were to determine the incidence of hypoglycaemia in PTx and evaluate whether the use of CBGM helps to detect unrecognized nocturnal hypoglycaemia. Patients and methods: We studied 12 patients (six males) with normal functioning PTx and kidney transplantation for more than 3 yr, with systemic drainage of endocrine secretion and stable immunosuppression. A 24-h CBGM using a microdialysis technique (GlucoDay, A. Menarini Diagnostics, Florence, Italy) was performed in all the patients. Results: Three patients had asymptomatic recorded glucose levels below 3.3 nmol/L during the nocturnal period (01:00-07:00 hours) with the glucose levels during these episodes being 2.6, 2.5 and 2.5 nmol/L, and the duration of nocturnal hypoglycaemia being 27, 62 and 93 min, respectively, rising spontaneously without intervention. Patients with hypoglycaemia presented lower glycosylated haemoglobin levels when compared with those not presenting hypoglycaemic episodes, although basal glucose and insulin levels and insulin antibody titres were similar. In one of the three patients presenting hypoglycaemia CBGM was re-evaluated after including an extra snack at bedtime, with subsequent normalization of the blood glucose profile being observed. Conclusion: Unrecognized nocturnal hypoglycaemia is relatively frequent in patients with PTx and 24-h CBMG may be useful to detect these episodes.
+
+TI  -  Hypoglycaemia after pancreas transplantation: Usefulness of a continuous glucose monitoring system

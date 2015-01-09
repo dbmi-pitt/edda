@@ -3,13 +3,7 @@ package edu.pitt.dbmi.edda.reference.filer.model;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -25,19 +19,19 @@ public class EndNoteReference implements Reference {
 	}
 	
 	public String getAuthors(){
-		return info.containsKey("AU")?info.get("AU"):"";
+		return info.containsKey("Author")?info.get("Author"):"";
 	}
 	
 	public String getTitle(){
-		return info.containsKey("TI")?info.get("TI"):"";
+		return info.containsKey("Title")?info.get("Title"):"";
 	}
 	
 	public String getAbstract(){
-		return info.containsKey("AB")?info.get("AB"):"";
+		return info.containsKey("Abstract")?info.get("Abstract"):"";
 	}
 	
 	public String getPublication(){
-		return info.containsKey("SO")?info.get("SO"):"";
+		return info.containsKey("Journal")?info.get("Journal"):"";
 	}
 	
 	public List<String> getKeywords(){
@@ -46,6 +40,17 @@ public class EndNoteReference implements Reference {
 		}
 		return keywords;
 	}
+	
+	public String getFileAttachment(){
+		String suf = "internal-pdf://";
+		String f = info.containsKey("'File' Attachments")?info.get("'File' Attachments"):null;
+		
+		if(f != null && f.startsWith(suf)){
+			f = f.substring(suf.length());
+		}
+		return f;
+	}
+	
 	
 	public boolean equals(Object obj){
 		if(obj instanceof Reference)
@@ -70,37 +75,26 @@ public class EndNoteReference implements Reference {
 		info = new LinkedHashMap<String,String>();
 		
 		// setup tags
-		Pattern priPT = Pattern.compile("^([A-Z]{2})\\s+-\\s+(.*)$", Pattern.MULTILINE);
-		//Pattern secPT = Pattern.compile("^([a-z]{2}\\s\\[[\\w\\s]+\\])[\\s\\.\\*]*(.*)$", Pattern.MULTILINE);
+		Pattern priPT = Pattern.compile("^([A-Z'][A-Za-z' ]+):\\s(.*?)$", Pattern.MULTILINE|Pattern.DOTALL);
 		
 		// take care of primary tags
 		Matcher priMatcher = priPT.matcher(content);
+		String multilineField = null;
 		int start = -1;
 		while(priMatcher.find()){
 			String key = priMatcher.group(1).trim();
 			String val = priMatcher.group(2).trim();
 			// special case for MH terms
-			if("MH".equals(key)){
+			if(Arrays.asList("Keywords","Notes").contains(key)){
 				start = priMatcher.start(2);
+				multilineField = key;
 			}else if(start > -1){
 				// we reached the next section after MH
 				int end = priMatcher.start();
-				info.put("MH",content.substring(start,end).trim());
+				info.put(multilineField,content.substring(start,end).trim());
 			}
 			info.put(key,val);
 		}
-		
-		// take care of secondary tags
-		/*
-		Matcher secMatcher = secPT.matcher(content);
-		while(secMatcher.find()){
-			String key = secMatcher.group(1).trim();
-			String val = secMatcher.group(2).trim();
-			if(info.containsKey(key))
-				val = info.get(key)+", "+val;
-			info.put(key,val);
-		}
-		*/
 	}
 	
 	public void write(File file, String format) {

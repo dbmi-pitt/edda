@@ -1,7 +1,7 @@
 package edu.pitt.dbmi.edda.reference.filer.model;
 
 import java.io.File;
-import java.util.List;
+import java.util.*;
 
 public interface Reference {
 	public String getAuthors();
@@ -10,6 +10,8 @@ public interface Reference {
 	public String getPublication();
 	public List<String> getKeywords();
 	public boolean isIncluded();
+	public Map<String,String> getContentMap();
+	
 	public void setIncluded(boolean b);
 	
 	/**

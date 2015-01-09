@@ -327,7 +327,7 @@ public class Utils {
 				if(line.startsWith("AU  ")){
 					// write out the old buffer
 					if(buffer.length() > 0)
-						list.add(new EndNoteReference(buffer.toString()));
+						list.add(new MedlineReference(buffer.toString()));
 					
 					// start working on new reference
 					buffer = new StringBuffer();
@@ -340,7 +340,7 @@ public class Utils {
 					if(mt.find()){
 						// write out the old buffer
 						if(buffer.length() > 0)
-							list.add(new EndNoteReference(buffer.toString()));
+							list.add(new MedlineReference(buffer.toString()));
 						
 						// start working on new reference
 						buffer = new StringBuffer();
@@ -357,7 +357,7 @@ public class Utils {
 			
 			// write out the last record
 			if(buffer.length() > 0)
-				list.add(new EndNoteReference(buffer.toString()));
+				list.add(new MedlineReference(buffer.toString()));
 			
 			// close
 			reader.close();
@@ -369,6 +369,53 @@ public class Utils {
 		return list;
 	}
 	
+	/**
+	 * read input reference in MEDLINE format
+	 * @param file
+	 * @return
+	 */
+	
+	public static List<Reference> readEndNoteReferences(File file) {
+		List<Reference> list = new ArrayList<Reference>();
+		
+		try{
+			BufferedReader reader = new BufferedReader(new FileReader(file));
+			StringBuffer buffer = new StringBuffer();
+			//boolean referenceStart = false;
+			for(String line = reader.readLine();line != null; line = reader.readLine()){
+				line = Utils.stripBOB(line.trim());
+				if(line.length() == 0)
+					continue;
+				
+				// break references apart by finding an author tag
+				if(line.startsWith("Reference Type: ")){
+					// write out the old buffer
+					if(buffer.length() > 0)
+						list.add(new EndNoteReference(buffer.toString()));
+					
+					// start working on new reference
+					buffer = new StringBuffer();
+					//referenceStart = true;
+				}	
+				//if(referenceStart)
+				buffer.append(line+"\n");
+				
+				//System.out.println(line);
+			}
+			
+			// write out the last record
+			if(buffer.length() > 0)
+				list.add(new EndNoteReference(buffer.toString()));
+			
+			// close
+			reader.close();
+			
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
+		
+		return list;
+	}
 	
 	/**
 	 * read an XML reference
@@ -438,7 +485,7 @@ public class Utils {
 	/**
 	 * extract a set of keywords for a given reference
 	 */
-	public static Set<String> getKeywords(EndNoteReference ref){
+	public static Set<String> getKeywords(MedlineReference ref){
 		Set<String> keys = new LinkedHashSet<String>();
 		if(ref.getContentMap().containsKey("MH")){
 			for(String line: ref.getContentMap().get("MH").split("\\n")){
@@ -514,6 +561,89 @@ public class Utils {
 		}
 		return keys;
 	}
+	
+	
+	
+	/**
+	 * extract a set of keywords for a given reference
+	 */
+	public static Set<String> getKeywords(EndNoteReference ref){
+		Set<String> keys = new LinkedHashSet<String>();
+		if(ref.getContentMap().containsKey("Keywords")){
+			for(String line: ref.getContentMap().get("Keywords").split("\\n")){
+				if(extractKeywordsEntireMeSHLine){
+					String term = line.trim();
+					if(extractKeywordsFilterMeSHLine){
+						term = term.toLowerCase().replaceAll("\\*","");
+					}
+					addKeyword(term, keys);
+				}else{
+					// remove semantic types and other junk
+					if(!extractKeywordsUseCategories)
+						line = line.replaceAll("[\\(\\[]\\{(.+)[\\}\\)\\]]","");
+					
+					// remove semantic types abbreviation in the begining
+					line = line.replaceAll("^[a-z]{2}\\b","");
+					// remove *
+					line = line.replaceAll("\\*","");
+					// remove sema* /ac stuff
+					line = line.replaceAll("/[a-z]{2}\\b","");
+					for(String t: line.split("[\\.;\\[\\]\\(\\)/]")){
+						String k = t.toLowerCase().trim();
+						if(k.length() > 3 && k.matches("[^0-9\\-]+")){
+							addKeyword(k, keys);
+						}
+					}
+				}
+			}
+		}
+		
+		// add EMTREE terms embeded inside the abstract
+		if(extractKeywordsFromAbstract){
+			String ab = ref.getAbstract();
+			Pattern pt = Pattern.compile("EMTREE [A-Z\\s]+ INDEX TERMS (\\(MAJOR FOCUS\\))?");
+			Matcher mt = pt.matcher(ab);
+			String header = null;
+			int st = -1;
+			List<String> sec = new ArrayList<String>();
+			while(mt.find()){
+				if(header != null){
+					if(!extractKeywordsUseMajorFocus || header.endsWith("(MAJOR FOCUS)"))
+						sec.add(ab.substring(st,mt.start()));
+				}
+				header = mt.group();
+				st = mt.end();
+			}
+			if(header != null){
+				if(!extractKeywordsUseMajorFocus || header.endsWith("(MAJOR FOCUS)"))
+					sec.add(ab.substring(st));
+			}
+			
+			
+			// lets first see if we can split those by something like paranthesis
+			for(String s: sec){
+				if(extractKeywordsUseCategories){
+					for(String t: s.split("[\\.;\\[\\]\\(\\)/]")){
+						String k = t.toLowerCase().trim();
+						if(k.length() > 3 && k.matches("[^0-9\\-]+")){
+							Utils.addKeyword(k, keys);
+						}
+					}
+				}else{
+					// split using category, if available
+					for(String t: s.split("\\([^\\)\\(]+\\)")){
+						String k = t.toLowerCase().trim();
+						if(k.length() > 3 && k.matches("[^0-9\\-]+")){
+							Utils.addKeyword(k, keys);
+						}
+					}
+				}
+			}
+			
+		}
+		return keys;
+	}
+	
 	
 	public static boolean isExtractKeywordsFromAbstract() {
 		return extractKeywordsFromAbstract;
@@ -653,6 +783,60 @@ public class Utils {
 	}
 	
 	
+	/**
+	 * parse text into sentences
+	 * @param txt
+	 * @return
+	 */
+	public static List<String> getSentences(String txt) {
+		List<String> sentences =new ArrayList<String>();
+		char [] tc = txt.toCharArray();
+		int st = 0;
+		for(int i=0;i<txt.length();i++){
+			if(tc[i] == '.' || tc[i] == '!' || tc[i] == '?'){
+				// get candidate sentence
+				String s = txt.substring(st,i+1);
+				
+				// check if this period is a decimal point
+				if(i+1 < tc.length && Character.isDigit(tc[i+1]))
+					continue;
+				
+				// check if this period is some known abreviation
+				if(s.matches(".* (vs)\\."))
+					continue;
+				
+				// save sentence
+				sentences.add(trimSentence(s));	
+				
+				// move start 
+				st = i+1;
+			}
+		}
+		// mop up in case you don't have a period at the end
+		if(st<tc.length){
+			sentences.add(trimSentence(txt.substring(st)+"."));
+		}
+		
+		return sentences;
+	}
+	
+	/**
+	 * trim sentence
+	 * @param s
+	 * @return
+	 */
+	private static String trimSentence(String s) {
+		//Pattern pt = Pattern.compile("([A-Z/ ]{4,}+:?)\\s+(.*)");
+		Pattern pt = Pattern.compile("([A-Z/\\(\\) &]{4,}+:?)\\s+(.*)");
+		Matcher mt = pt.matcher(s);
+		if(mt.matches()){
+			//if(debug)
+			//	System.out.println("#HEADER#|"+mt.group(1).trim());
+			s = mt.group(2);
+		}
+		return s.trim();
+	}
+
 	public static void main(String [] args){
 		String a1 = "NicholsonKG,AhmedAE,Nguyen-Van-Tam JS";
 		String a2 = "A.E. Ahmed, K.G. Nicholson and J.S. Nguyen-Van-Tam";

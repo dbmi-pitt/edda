@@ -13,8 +13,7 @@ import edu.pitt.terminology.Terminology;
 import edu.pitt.terminology.client.IndexFinderTerminology;
 import edu.pitt.terminology.lexicon.Concept;
 import edu.pitt.text.tools.TextTools;
-import gov.nih.nlm.nls.nlp.textfeatures.Document;
-import gov.nih.nlm.nls.nlp.textfeatures.Phrase;
+
 
 public class EnrichOntology {
 	private final boolean USE_COMMENTS = true;
@@ -91,14 +90,14 @@ public class EnrichOntology {
 				texts.add(cls.getName().replaceAll("_"," "));
 			//Collections.addAll(texts,cls.getComments());
 			if(USE_COMMENTS){
-				for(String comment: cls.getComments()){
+				/*for(String comment: cls.getComments()){
 					Document doc = textTools.parseDocument(comment);
 					for(Object o: doc.getPhrases()){
 						String txt = ((Phrase)o).getNounPhrase().getTrimmedString();
 						if(txt != null && txt.length() > 0)
 							texts.add(txt);
 					}
-				}
+				}*/
 			}
 			
 			// now lets go over every textual representation

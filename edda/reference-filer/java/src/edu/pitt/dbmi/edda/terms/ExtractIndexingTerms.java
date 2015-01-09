@@ -25,7 +25,7 @@ import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.text.JTextComponent;
 
-import edu.pitt.dbmi.edda.reference.filer.model.EndNoteReference;
+import edu.pitt.dbmi.edda.reference.filer.model.MedlineReference;
 import edu.pitt.dbmi.edda.reference.filer.model.Reference;
 import edu.pitt.dbmi.edda.reference.filer.model.Utils;
 import edu.pitt.text.tools.TextTools;
@@ -91,7 +91,7 @@ public class ExtractIndexingTerms {
 		
 		int i=0;
 		for(Reference r: getReferenceList()){
-			if(r instanceof EndNoteReference){
+			if(r instanceof MedlineReference){
 				Map<String,Integer> terms = (r.isIncluded())?includeTerms:excludeTerms;
 				
 				// keep tally of number of documents in each category
