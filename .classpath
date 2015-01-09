@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="edda/classification/rapidminer-operators/java/src"/>
+	<classpathentry kind="src" path="edda/reference-tools/java/src"/>
 	<classpathentry kind="src" path="edda/summarization/general/java/src"/>
 	<classpathentry kind="src" path="edda/lens/java/src"/>
-	<classpathentry kind="src" path="edda/reference-filer/java/src"/>
 	<classpathentry kind="src" path="edda/summarization/tebeka-mitchell/java/src"/>
 	<classpathentry kind="src" path="edda/pico/java/src"/>
 	<classpathentry kind="lib" path="edda/summarization/tebeka-mitchell/lib/antlr-2.7.7.jar"/>
