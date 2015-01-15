@@ -9,17 +9,20 @@ import java.util.Random;
 
 import edu.pitt.dbmi.edda.rulebase.document.Citation;
 import edu.pitt.dbmi.edda.rulebase.document.SystematicReview;
+import edu.pitt.dbmi.edda.rulebase.pico.PicoEvidence;
+import edu.pitt.dbmi.edda.rulebase.pico.PicoManager;
 
 public class ReferenceFilerCacher {
 	
-	private final String CONST_REF_FILER_PATH = "T:\\EDDA\\DATA\\ORGAN_TRANSPLANT\\ReferenceFiler_Output";
+	private final String CONST_REF_FILER_PATH = "T:\\EDDA\\DATA\\ORGAN_TRANSPLANT\\ReferenceFiler_Output\\5050_2xTitles\\TRAIN_data";
+//	private final String CONST_REF_FILER_PATH = "T:\\EDDA\\DATA\\ORGAN_TRANSPLANT\\ReferenceFiler_Output";
 	private SystematicReview systematicReview;
+	private PicoManager picoManager;
 	private final List<Citation> citations = new ArrayList<Citation>();
 	private List<Citation> trainingIncludes = new ArrayList<Citation>();
 	private List<Citation> trainingExcludes =  new ArrayList<Citation>();
 	private List<Citation> testingIncludes = new ArrayList<Citation>();
 	private List<Citation> testingExcludes = new ArrayList<Citation>();
-	
 	
 	public void cache() {
 		tryCache();
@@ -27,39 +30,66 @@ public class ReferenceFilerCacher {
 
 	private void tryCache() {
 		
+		System.out.println("ReferenceFilerCacher begins caching...");
+		
 		Collection<File> files = gatherFiles(new File(CONST_REF_FILER_PATH));
-		Citation citation = null;
+
 	
 		for (File file : files) {
-			citation = new Citation();
+			processFile(file);
+		}
+		System.out.println("#include set size is " + trainingIncludes.size());
+		System.out.println("#exclude set size is " + trainingExcludes.size());
+		
+		Random random = new Random(1024); // keep it the same for a while
+	
+		Double numIncs = Double.valueOf(trainingIncludes.size());
+		int incFoldSize = (int) Math.ceil(numIncs.doubleValue() / 10.0d);
+		Collections.shuffle(trainingIncludes, random);
+		testingIncludes.addAll(trainingIncludes.subList(0, incFoldSize));
+		trainingIncludes = trainingIncludes.subList(incFoldSize, trainingIncludes.size());
+		
+		Double numExcs = Double.valueOf(trainingExcludes.size());
+		int excFoldSize = (int) Math.ceil(numExcs.doubleValue() / 10.0d);
+		Collections.shuffle(trainingExcludes, random);
+		testingExcludes.addAll(trainingExcludes.subList(0, excFoldSize));
+		trainingExcludes = trainingExcludes.subList(excFoldSize, trainingExcludes.size());
+	
+		establishCitationPartitions();
+		
+		System.out.println("ReferenceFilerCacher finishes caching...");
+	}
+	
+	private void processFile(File file) {
+		try {
+			Citation citation = new Citation();
 			citation.setSystematicReviewId(systematicReview.getId());
+			citation.setCitationKey(file.getName());
 			citation.setPath(file.getAbsolutePath());
-			establishCitationAuthenticClassification(file.getAbsolutePath(), citation);
-			if (citation.getAuthenticClassification().equals("include")) {
+			String citationKey = citation.getCitationKey();
+			Collection<PicoEvidence> evidence = picoManager.reportEvidence(citationKey);
+			if (evidence == null || evidence.size() == 0) {
+				System.err.println("No evidence found for citation " + citation.getCitationKey());
+			}
+			else {
+				citation.setPicoEvidence(evidence);
+			}
+			
+			establishCitationActualClassification(file.getAbsolutePath(), citation);
+			if (citation.getActualClassification().equals("include")) {
 				trainingIncludes.add(citation);
 			}
 			else {
 				trainingExcludes.add(citation);
 			}
 		}
+		catch (Exception x) {
+			x.printStackTrace();
+		}
+
 		
-		Random random = new Random(1024); // keep it the same for a while
-	
-		Double numIncs = Double.valueOf(trainingIncludes.size());
-		int incFoldSize = (int) Math.ceil(numIncs.doubleValue());
-		Collections.shuffle(trainingIncludes, random);
-		testingIncludes.addAll(trainingIncludes.subList(0, incFoldSize));
-		trainingIncludes = trainingIncludes.subList(incFoldSize, trainingIncludes.size());
-		
-		Double numExcs = Double.valueOf(trainingExcludes.size());
-		int excFoldSize = (int) Math.ceil(numExcs.doubleValue());
-		Collections.shuffle(trainingExcludes, random);
-		testingExcludes.addAll(trainingExcludes.subList(0, excFoldSize));
-		trainingExcludes = trainingExcludes.subList(excFoldSize, trainingExcludes.size());
-	
-		establishCitationPartitions();
 	}
-	
+
 	private void establishCitationPartitions() {
 		for (Citation citation : this.trainingIncludes) {
 			citation.setPartition("train");
@@ -89,12 +119,12 @@ public class ReferenceFilerCacher {
 		}
 	}
 	
-	private void establishCitationAuthenticClassification(String absolutePath,
+	private void establishCitationActualClassification(String absolutePath,
 			Citation citation) {
 		if (absolutePath.contains("_N_")) {
-			citation.setAuthenticClassification("exclude");
+			citation.setActualClassification("exclude");
 		} else if (absolutePath.contains("_Y_")) {
-			citation.setAuthenticClassification("include");
+			citation.setActualClassification("include");
 		}
 	}
 	
@@ -116,6 +146,10 @@ public class ReferenceFilerCacher {
 	
 	public List<Citation> getCitations() {
 		return citations;
+	}
+
+	public void setPicoManager(PicoManager picoManager) {
+		this.picoManager = picoManager;
 	}
 
 	public void setSystematicReview(SystematicReview systematicReview) {

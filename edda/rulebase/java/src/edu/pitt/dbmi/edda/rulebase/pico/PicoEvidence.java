@@ -1,69 +1,41 @@
 package edu.pitt.dbmi.edda.rulebase.pico;
 
-import java.util.HashSet;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.apache.commons.lang3.StringUtils;
-
 import edu.pitt.dbmi.edda.rulebase.ClassificationEvidence;
 
 public class PicoEvidence extends ClassificationEvidence {
 
 	private static final long serialVersionUID = 1L;
 
-	protected String pico
-	protected HashSet<String> termSet = new HashSet<String>();
-
+	protected String picoCategory;
+	protected String picoTerm;
+	
 	public PicoEvidence() {
 	}
-
-	public void addSemiColonDeliminatedTermList(
-			String semiColonDelimitedTermList) {
-		if (!StringUtils.isEmpty(semiColonDelimitedTermList)
-				&& !semiColonDelimitedTermList.equalsIgnoreCase("NA")) {
-			String[] terms = semiColonDelimitedTermList.split(";");
-			for (String term : terms) {
-				String trimmedTerm = StringUtils.trimToEmpty(term);
-				trimmedTerm = trimmedTerm.toLowerCase();
-				if (!StringUtils.isEmpty(trimmedTerm)) {
-					termSet.add(trimmedTerm);
-				}
-			}
-		}
+	
+	public String getPicoCategory() {
+		return picoCategory;
 	}
 
-	public void scoreCitation(String citationText) {
-		category = 0;
-		weight = 0;
-		for (String term : termSet) {
-			String regex = "\\b" + term + "\\b";
-			Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
-			Matcher matcher = pattern.matcher(citationText);
-			if (matcher.find()) {
-				category = 1;
-				weight = new Integer(weight.intValue() + 1);
-			}
-			while (matcher.find()) {
-				weight = new Integer(weight.intValue() + 1);
-			}
-		}
+	public void setPicoCategory(String picoCategory) {
+		this.picoCategory = picoCategory;
 	}
 
-	public Integer getCitationId() {
-		return citationId;
+	public String getPicoTerm() {
+		return picoTerm;
 	}
 
-	public void setCitationId(Integer citationId) {
-		this.citationId = citationId;
+	public void setPicoTerm(String picoTerm) {
+		this.picoTerm = picoTerm;
 	}
 
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
-		sb.append("\n");
-		for (String term : termSet) {
-			sb.append("\t\t" + term + "\n");
-		}
+		sb.append("citation id = " + getCitationId() + "\n");
+		sb.append("citationKey = " + getCitationKey() + "\n");
+		sb.append("picoCategory = " + getPicoCategory() + "\n");
+		sb.append("picoPicoTerm = " + getPicoTerm() + "\n");
+		sb.append("polarity = " + getPolarity() + "\n");
+		sb.append("weight = " + getWeight() + "\n");
 		return sb.toString();
 	}
 

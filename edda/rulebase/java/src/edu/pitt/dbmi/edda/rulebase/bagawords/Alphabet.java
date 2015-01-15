@@ -104,6 +104,10 @@ public class Alphabet {
 			Word w = bestIncluderIterator.next();
 			alphabet.put(w.getText(), w);
 		}
+		
+		System.out.println("Initiating alphabet iterator for alphabet of size "
+				+ alphabet.size());
+		alphabetIterator = alphabet.values().iterator();
 	}
 
 	public void contributeToWordFrequencies(Citation citation) {
@@ -134,19 +138,19 @@ public class Alphabet {
 
 	private void tallyCategorizedFrequency(Citation citation, Word word) {
 		if (citation.getPartition().equals("train")
-				&& citation.getAuthenticClassification().equals("include")) {
+				&& citation.getActualClassification().equals("include")) {
 			word.setFrequencyApartitionInclude(word
 					.getFrequencyApartitionInclude() + 1);
 		} else if (citation.getPartition().equals("train")
-				&& citation.getAuthenticClassification().equals("exclude")) {
+				&& citation.getActualClassification().equals("exclude")) {
 			word.setFrequencyApartitionExclude(word
 					.getFrequencyApartitionExclude() + 1);
 		} else if (citation.getPartition().equals("test")
-				&& citation.getAuthenticClassification().equals("include")) {
+				&& citation.getActualClassification().equals("include")) {
 			word.setFrequencyBpartitionInclude(word
 					.getFrequencyBpartitionInclude() + 1);
 		} else if (citation.getPartition().equals("test")
-				&& citation.getAuthenticClassification().equals("exclude")) {
+				&& citation.getActualClassification().equals("exclude")) {
 			word.setFrequencyBpartitionExclude(word
 					.getFrequencyBpartitionExclude() + 1);
 		}
@@ -171,6 +175,7 @@ public class Alphabet {
 			s.close();
 			alphabet.clear();
 			alphabet.putAll(cachedAlphabet);
+			alphabetIterator = alphabet.values().iterator();
 		}
 	}
 	
@@ -179,7 +184,7 @@ public class Alphabet {
 	}
 
 	public Word nextAlphabetWord() {
-		return (alphabetIterator.hasNext()) ? alphabetIterator.next() : null;
+		return (alphabetIterator != null && alphabetIterator.hasNext()) ? alphabetIterator.next() : null;
 	}
 
 	public void setAlphabetIterator(Iterator<Word> alphabetIterator) {

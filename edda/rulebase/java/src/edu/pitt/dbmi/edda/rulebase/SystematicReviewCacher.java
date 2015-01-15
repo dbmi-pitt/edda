@@ -5,10 +5,6 @@ import java.io.File;
 import org.apache.commons.lang3.StringUtils;
 
 import edu.pitt.dbmi.edda.rulebase.document.Citation;
-import edu.pitt.dbmi.edda.rulebase.pico.InterventionComparator;
-import edu.pitt.dbmi.edda.rulebase.pico.OutcomePopulation;
-import edu.pitt.dbmi.edda.rulebase.pico.PublicationType;
-import edu.pitt.dbmi.edda.rulebase.pico.StudyDesign;
 
 public class SystematicReviewCacher {
 
@@ -23,11 +19,6 @@ public class SystematicReviewCacher {
 	private transient String outComePopulation = "NA";
 	private transient String interventionComparator = "NA";
 
-	private final StudyDesign cachedStudyDesign = new StudyDesign();
-	private final PublicationType cachedPublicationType = new PublicationType();
-	private final OutcomePopulation cachedOutcomePopulation = new OutcomePopulation();
-	private final InterventionComparator cachedInterventionComparator = new InterventionComparator();
-
 	private Citation citation;
 	
 	public SystematicReviewCacher() {
@@ -35,20 +26,13 @@ public class SystematicReviewCacher {
 	}
 	
 	public void classify() {
-		cachedStudyDesign.scoreCitation(citation.getContent());
-		cachedPublicationType.scoreCitation(citation.getContent());
-		cachedOutcomePopulation.scoreCitation(citation.getContent());
-		cachedInterventionComparator.scoreCitation(citation.getContent());
+		
 		
 	}
 	
 	public void cache() {
 		try {
 			cacheReportAbsolutePath();
-			cachedStudyDesign.addSemiColonDeliminatedTermList(studyDesign);
-			cachedPublicationType.addSemiColonDeliminatedTermList(publicationType);
-			cachedOutcomePopulation.addSemiColonDeliminatedTermList(outComePopulation);
-			cachedInterventionComparator.addSemiColonDeliminatedTermList(interventionComparator);
 		} catch (Exception x) {
 			x.printStackTrace();
 		}
@@ -130,22 +114,6 @@ public class SystematicReviewCacher {
 		}
 	}
 
-	public StudyDesign getCachedStudyDesign() {
-		return cachedStudyDesign;
-	}
-
-	public PublicationType getCachedPublicationType() {
-		return cachedPublicationType;
-	}
-
-	public OutcomePopulation getCachedOutcomePopulation() {
-		return cachedOutcomePopulation;
-	}
-
-	public InterventionComparator getCachedInterventionComparator() {
-		return cachedInterventionComparator;
-	}
-	
 	public Citation getCitation() {
 		return citation;
 	}
@@ -158,11 +126,6 @@ public class SystematicReviewCacher {
 		StringBuffer sb = new StringBuffer();
 		sb.append(getClass().getName() + ":\n");
 		sb.append("\tReportPath: " + getReportPath() + "\n");
-		sb.append("\tpublicationType: " + getCachedPublicationType() + "\n");
-		sb.append("\tstudyDesign: " + getCachedStudyDesign() + "\n");
-		sb.append("\toutcomePopulation: " + getCachedOutcomePopulation() + "\n");
-		sb.append("\tinterventionComparator: " + getCachedInterventionComparator()
-				+ "\n");
 		return sb.toString();
 	}
 

@@ -4,26 +4,29 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import edu.pitt.dbmi.edda.rulebase.bagawords.BagOfWordsClassifier;
 import edu.pitt.dbmi.edda.rulebase.document.Citation;
 import edu.pitt.dbmi.edda.rulebase.document.SystematicReview;
+import edu.pitt.dbmi.edda.rulebase.pico.PicoManager;
 
 public class SystematicReviewReader {
 
-	private final String CONST_RESULTS_PATH = "C:\\Users\\kjm84\\Desktop\\Results.tsv";
-	
 	private final Experiment experiment = new Experiment();
 	private final ReferenceFilerCacher referenceFilerCacher = new ReferenceFilerCacher();
 	
 	private final SystematicReview systematicReview = new SystematicReview();
-	private final SystematicReviewCacher systematicReviewCache = new SystematicReviewCacher();
-
-	private final BagOfWordsClassifier bagOfWordsClassifier = new BagOfWordsClassifier();
+	
+//	private final BagOfWordsEvidence bagOfWordsClassifier = new BagOfWordsEvidence();
 	
 	private final List<Identifiable> workingMemoryDataQueue = new ArrayList<Identifiable>();
 	private Iterator<Identifiable> workingMemoryDataQueueIterator;
 
+	private final MentionEvidence mpaEvidence = new MentionEvidence();
+	
+	private final PicoManager picoManager = new PicoManager();
+	
 	public static void main(String[] args) {
 		SystematicReviewReader srReader = new SystematicReviewReader();
 		srReader.pullSrAndCitations();
@@ -43,9 +46,11 @@ public class SystematicReviewReader {
 		try {
 			systematicReview.setDomain("Transplant");
 			workingMemoryDataQueue.add(systematicReview);
-			cacheReferenceFilerOutput();
 			cachePicoResultsFile();
-			workingMemoryDataQueue.add(bagOfWordsClassifier.getBagOfWordsEvidence());
+			cacheReferenceFilerOutput();
+			
+//			workingMemoryDataQueue.add(bagOfWordsClassifier);
+//			workingMemoryDataQueue.add(mpaEvidence);
 			workingMemoryDataQueueIterator = workingMemoryDataQueue.iterator();			
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -63,48 +68,48 @@ public class SystematicReviewReader {
 
 	private void cacheReferenceFilerOutput() throws IOException {
 		referenceFilerCacher.setSystematicReview(systematicReview);
+		referenceFilerCacher.setPicoManager(picoManager);
 		referenceFilerCacher.cache();
 		workingMemoryDataQueue.addAll(referenceFilerCacher.getCitations());
 	}
 	
 	private void cachePicoResultsFile() throws IOException {
-		String resultsAsString = Utilities.readFileToString(CONST_RESULTS_PATH);
-		String[] lines = resultsAsString.split("\n");
-		boolean isHeader = true;
-		for (String line : lines) {
-			if (isHeader) {
-				isHeader = false;
-				continue;
-			}
-			String[] fields = line.split("\t");
-			int fdx = 0;
-			if (fields.length > 0) systematicReviewCache.setReportPath(fields[fdx++]);
-			if (fields.length > 1) systematicReviewCache.setStudyDesign(fields[fdx++]);
-			if (fields.length > 2) systematicReviewCache.setPublicationType(fields[fdx++]);
-			if (fields.length > 3) systematicReviewCache.setInterventionComparator(fields[fdx++]);
-			if (fields.length > 4) systematicReviewCache.setOutComePopulation(fields[fdx++]);
-			systematicReviewCache.cache();
-			System.out.println(systematicReviewCache);
-			systematicReviewCache.reset();
-		}
-		workingMemoryDataQueue.add(systematicReviewCache.getCachedPublicationType());
-		workingMemoryDataQueue.add(systematicReviewCache.getCachedStudyDesign());
-		workingMemoryDataQueue.add(systematicReviewCache.getCachedOutcomePopulation());
-		workingMemoryDataQueue.add(systematicReviewCache.getCachedInterventionComparator());
+		picoManager.cache();
 	}
 	
-	public void classifyCitation(Citation citation) {
+	public void findMphEvidence(Citation citation) {
 		
-		citation.cacheContent();
+		mpaEvidence.setMention("mpa");
+		mpaEvidence.setCitationId(citation.getId());
 	
-		bagOfWordsClassifier.getBagOfWordsEvidence().setCitationId(citation.getId());
-		bagOfWordsClassifier.setCitation(citation);
-		bagOfWordsClassifier.classify();
+		StringBuilder sb = new StringBuilder();
+		sb.append("Acide mycophenolique|");
+		sb.append("Acido micofenolico|");
+		sb.append("Lilly-68618|");
+		sb.append("Ly 68618|");
+		sb.append("MPA|");
+		sb.append("Acidum mycophenolicum|");
+		sb.append("Mycophenolic Acid|");
+		sb.append("Myfortic|");
+		sb.append("mycophenolate");
 		
-		systematicReviewCache.setCitation(citation);
-		systematicReviewCache.classify();
+		int patternParams = Pattern.CASE_INSENSITIVE;
+		patternParams |= Pattern.DOTALL;
+		patternParams |= Pattern.MULTILINE;
+		Pattern p = Pattern.compile(sb.toString(), patternParams);
 		
-		citation.setContent("NA");
+		Matcher matcher = p.matcher(citation.getContent());
+		int weight = 0;
+		while (matcher.find()) {
+			weight++;
+		}
+		mpaEvidence.setWeight(weight);
+		if (weight > 0) {
+			mpaEvidence.setPolarity("present");
+		}
+		else {
+			mpaEvidence.setPolarity("absent");
+		}
 	}
 
 	public Identifiable nextIdentifiable() {
@@ -114,10 +119,6 @@ public class SystematicReviewReader {
 	
 	public Experiment getExperiment() {
 		return experiment;
-	}
-	
-	public BagOfWordsClassifier getBagOfWordsClassifier() {
-		return bagOfWordsClassifier;
 	}
 
 }

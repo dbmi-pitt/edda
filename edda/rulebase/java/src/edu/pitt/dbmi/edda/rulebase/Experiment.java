@@ -6,8 +6,8 @@ public class Experiment extends Identifiable {
 
 	private static final long serialVersionUID = 1L;
 
-	private String trainingSetPartition = "A";
-	private String testSetPartition = "B";
+	private String trainingSetPartition = "train";
+	private String testSetPartition = "test";
 	private Integer truePositives = 0;
 	private Integer falsePositives = 0;
 	private Integer trueNegatives = 0;
@@ -67,21 +67,21 @@ public class Experiment extends Identifiable {
 	}
 
 	public void tallyCitation(Citation citation) {
-		if (citation.getAuthenticClassification().equals("include")
+		if (citation.getActualClassification().equals("include")
 				&& citation.getPredictedClassification().equals("include")) {
 			setTruePositives(new Integer(getTruePositives().intValue() + 1));
-		} else if (citation.getAuthenticClassification().equals("exclude")
+		} else if (citation.getActualClassification().equals("exclude")
 				&& citation.getPredictedClassification().equals("include")) {
 			setFalsePositives(new Integer(getFalsePositives().intValue() + 1));
-		} else if (citation.getAuthenticClassification().equals("include")
+		} else if (citation.getActualClassification().equals("include")
 				&& citation.getPredictedClassification().equals("exclude")) {
 			setFalseNegatives(new Integer(getFalseNegatives().intValue() + 1));
-		} else if (citation.getAuthenticClassification().equals("exclude")
+		} else if (citation.getActualClassification().equals("exclude")
 				&& citation.getPredictedClassification().equals("exclude")) {
 			setTrueNegatives(new Integer(getTrueNegatives().intValue() + 1));
 		} else {
 			System.out.println("Unexpected condition "
-					+ citation.getAuthenticClassification());
+					+ citation.getActualClassification());
 		}
 	}
 	
