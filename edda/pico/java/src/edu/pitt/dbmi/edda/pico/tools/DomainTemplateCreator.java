@@ -64,7 +64,7 @@ public class DomainTemplateCreator {
 		File templateFile = new File(dataDirectory,"OrganTransplant.template");
 		
 		// create domain
-		createDomainOntology(seedTerminology, outputOntology);
+		//createDomainOntology(seedTerminology, outputOntology);
 		// create template
 		createDomainTemplate(outputOntology, templateFile);
 		

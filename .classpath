@@ -65,6 +65,6 @@
 	<classpathentry kind="lib" path="edda/classification/rapidminer-operators/java/lib/mallet-deps.jar"/>
 	<classpathentry kind="lib" path="edda/classification/rapidminer-operators/java/lib/mallet.jar"/>
 	<classpathentry kind="lib" path="edda/common/lib/commons-lang3-3.1.jar"/>
-	<classpathentry kind="lib" path="edda/pico/java/lib/NobleTools.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/nobletools"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

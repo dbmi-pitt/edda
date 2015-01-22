@@ -9,18 +9,14 @@ Study Design [StudyDesigns]
 Publication Type [StudyDesigns]
 Population Category
 	Species Category
-		Animal [NCI_Thesaurus]
+		Organisms MeSH Category [MeSH]
 	Gender Category
 		Male
 		Female
 	Age Category
 		Age Groups [MeSH]
-			Child [MeSH]
-			Infant [MeSH]
 	Ehnicity Category
 		Population Groups [MeSH]
-			Ethnic Groups [MeSH]
-				Hispanic Americans [MeSH]
 	Population Type Category
 		Organ Transplantation [NCI_Thesaurus]
 		Graft [NCI_Thesaurus]
