@@ -15,18 +15,20 @@ Population Category
 		Female
 	Age Category
 		Age Groups [MeSH]
-	Ehnicity Category
+	Ethnicity Category
 		Population Groups [MeSH]
 	Population Type Category
 		Organ Transplantation [NCI_Thesaurus]
 		Graft [NCI_Thesaurus]
 		Transplant Recipient
 Intervention / Comparator Category
-	Mycophenolic Acid [NCI_Thesaurus]
-	Blood [NCI_Thesaurus]
-	Serum [NCI_Thesaurus]
+	Mycophenolic Acid [MeSH]
+		Mycophenolate Sodium [MeSH]
+	Blood [MeSH]
 	Physiologic Monitoring [MeSH]
-	Pharmacokinetics [MeSH]
+		Pharmacokinetics [MeSH]
+		Drug Kinetics [MeSH]
+		Clinical Laboratory Techniques [MeSH]
 Language Category
 	English
 	Foreign
