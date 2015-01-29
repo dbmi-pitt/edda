@@ -9,28 +9,26 @@ Study Design [StudyDesigns]
 Publication Type [StudyDesigns]
 Population Category
 	Species Category
-		Animal [NCI_Thesaurus]
+		Organisms MeSH Category [MeSH]
 	Gender Category
 		Male
 		Female
 	Age Category
 		Age Groups [MeSH]
-			Child [MeSH]
-			Infant [MeSH]
-	Ehnicity Category
+	Ethnicity Category
 		Population Groups [MeSH]
-			Ethnic Groups [MeSH]
-				Hispanic Americans [MeSH]
 	Population Type Category
 		Organ Transplantation [NCI_Thesaurus]
 		Graft [NCI_Thesaurus]
 		Transplant Recipient
 Intervention / Comparator Category
-	Mycophenolic Acid [NCI_Thesaurus]
-	Blood [NCI_Thesaurus]
-	Serum [NCI_Thesaurus]
+	Mycophenolic Acid [MeSH]
+		Mycophenolate Sodium [MeSH]
+	Blood [MeSH]
 	Physiologic Monitoring [MeSH]
-	Pharmacokinetics [MeSH]
+		Pharmacokinetics [MeSH]
+		Drug Kinetics [MeSH]
+		Clinical Laboratory Techniques [MeSH]
 Language Category
 	English
 	Foreign

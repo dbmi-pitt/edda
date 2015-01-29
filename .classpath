@@ -40,7 +40,6 @@
 	<classpathentry kind="lib" path="edda/summarization/tebeka-mitchell/lib/xml-apis.jar"/>
 	<classpathentry kind="lib" path="edda/summarization/tebeka-mitchell/lib/xmpbox-1.8.4.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/nobletools"/>
 	<classpathentry kind="lib" path="edda/lens/java/lib/json.jar"/>
 	<classpathentry kind="lib" path="edda/summarization/general/java/lib/opennlp-tools-1.5.3.jar"/>
 	<classpathentry kind="lib" path="edda/common/lib/commons-beanutils-1.8.3.jar"/>
@@ -66,5 +65,6 @@
 	<classpathentry kind="lib" path="edda/classification/rapidminer-operators/java/lib/mallet-deps.jar"/>
 	<classpathentry kind="lib" path="edda/classification/rapidminer-operators/java/lib/mallet.jar"/>
 	<classpathentry kind="lib" path="edda/common/lib/commons-lang3-3.1.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/nobletools"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
