@@ -1,5 +1,6 @@
 package edu.pitt.dbmi.edda.rulebase;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -7,9 +8,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import edu.pitt.dbmi.edda.pico.PICOExtractor;
 import edu.pitt.dbmi.edda.rulebase.document.Citation;
 import edu.pitt.dbmi.edda.rulebase.document.SystematicReview;
-import edu.pitt.dbmi.edda.rulebase.pico.PicoManager;
 
 public class SystematicReviewReader {
 
@@ -17,15 +18,13 @@ public class SystematicReviewReader {
 	private final ReferenceFilerCacher referenceFilerCacher = new ReferenceFilerCacher();
 	
 	private final SystematicReview systematicReview = new SystematicReview();
-	
-//	private final BagOfWordsEvidence bagOfWordsClassifier = new BagOfWordsEvidence();
-	
+
 	private final List<Identifiable> workingMemoryDataQueue = new ArrayList<Identifiable>();
 	private Iterator<Identifiable> workingMemoryDataQueueIterator;
 
 	private final MentionEvidence mpaEvidence = new MentionEvidence();
 	
-	private final PicoManager picoManager = new PicoManager();
+	private PICOExtractor picoManager = null;
 	
 	public static void main(String[] args) {
 		SystematicReviewReader srReader = new SystematicReviewReader();
@@ -70,11 +69,18 @@ public class SystematicReviewReader {
 		referenceFilerCacher.setSystematicReview(systematicReview);
 		referenceFilerCacher.setPicoManager(picoManager);
 		referenceFilerCacher.cache();
-		workingMemoryDataQueue.addAll(referenceFilerCacher.getCitations());
+		workingMemoryDataQueue.addAll(referenceFilerCacher.getTestingIncludes());
+		workingMemoryDataQueue.addAll(referenceFilerCacher.getTestingExcludes());
 	}
 	
 	private void cachePicoResultsFile() throws IOException {
-		picoManager.cache();
+		File dataDirectory = new File("C:\\Users\\kjm84\\git\\edda\\edda\\pico\\data");
+		File templateFile = new File(dataDirectory,"OrganTransplant.template");
+		try {
+			picoManager = new PICOExtractor(templateFile);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void findMphEvidence(Citation citation) {

@@ -21,7 +21,7 @@ package edu.pitt.dbmi.edda.operator.regexop.rank;
 import java.io.Serializable;
 import java.util.Comparator;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import edu.pitt.dbmi.edda.operator.regexop.document.LabeledDocument;
 import edu.pitt.dbmi.edda.operator.regexop.regex.RegularExpression;

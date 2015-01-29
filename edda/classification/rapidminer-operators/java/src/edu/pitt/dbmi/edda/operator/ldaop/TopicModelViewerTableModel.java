@@ -10,7 +10,7 @@ import java.util.TreeSet;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import cc.mallet.topics.ParallelTopicModel;
 import cc.mallet.types.IDSorter;

@@ -7,17 +7,16 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+import edu.pitt.dbmi.edda.pico.PICOExtractor;
 import edu.pitt.dbmi.edda.rulebase.document.Citation;
 import edu.pitt.dbmi.edda.rulebase.document.SystematicReview;
-import edu.pitt.dbmi.edda.rulebase.pico.PicoEvidence;
-import edu.pitt.dbmi.edda.rulebase.pico.PicoManager;
 
 public class ReferenceFilerCacher {
 	
 	private final String CONST_REF_FILER_PATH = "T:\\EDDA\\DATA\\ORGAN_TRANSPLANT\\ReferenceFiler_Output\\5050_2xTitles\\TRAIN_data";
 //	private final String CONST_REF_FILER_PATH = "T:\\EDDA\\DATA\\ORGAN_TRANSPLANT\\ReferenceFiler_Output";
 	private SystematicReview systematicReview;
-	private PicoManager picoManager;
+	private PICOExtractor picoExtractor;
 	private final List<Citation> citations = new ArrayList<Citation>();
 	private List<Citation> trainingIncludes = new ArrayList<Citation>();
 	private List<Citation> trainingExcludes =  new ArrayList<Citation>();
@@ -34,9 +33,13 @@ public class ReferenceFilerCacher {
 		
 		Collection<File> files = gatherFiles(new File(CONST_REF_FILER_PATH));
 
-	
+		int numberCitationsProcessed = 0;
 		for (File file : files) {
-			processFile(file);
+			classifyFile(file);
+			if (numberCitationsProcessed % 100 == 0) {
+				System.out.println("Determined actual classification for " + numberCitationsProcessed + " citations.");
+			}
+			numberCitationsProcessed++;
 		}
 		System.out.println("#include set size is " + trainingIncludes.size());
 		System.out.println("#exclude set size is " + trainingExcludes.size());
@@ -60,21 +63,13 @@ public class ReferenceFilerCacher {
 		System.out.println("ReferenceFilerCacher finishes caching...");
 	}
 	
-	private void processFile(File file) {
+	private void classifyFile(File file) {
 		try {
 			Citation citation = new Citation();
 			citation.setSystematicReviewId(systematicReview.getId());
 			citation.setCitationKey(file.getName());
 			citation.setPath(file.getAbsolutePath());
-			String citationKey = citation.getCitationKey();
-			Collection<PicoEvidence> evidence = picoManager.reportEvidence(citationKey);
-			if (evidence == null || evidence.size() == 0) {
-				System.err.println("No evidence found for citation " + citation.getCitationKey());
-			}
-			else {
-				citation.setPicoEvidence(evidence);
-			}
-			
+			citation.setPicoExtractor(picoExtractor);
 			establishCitationActualClassification(file.getAbsolutePath(), citation);
 			if (citation.getActualClassification().equals("include")) {
 				trainingIncludes.add(citation);
@@ -148,12 +143,28 @@ public class ReferenceFilerCacher {
 		return citations;
 	}
 
-	public void setPicoManager(PicoManager picoManager) {
-		this.picoManager = picoManager;
+	public void setPicoManager(PICOExtractor picoExtractor) {
+		this.picoExtractor = picoExtractor;
 	}
 
 	public void setSystematicReview(SystematicReview systematicReview) {
 		this.systematicReview = systematicReview;
+	}
+
+	public List<Citation> getTestingIncludes() {
+		return testingIncludes;
+	}
+
+	public void setTestingIncludes(List<Citation> testingIncludes) {
+		this.testingIncludes = testingIncludes;
+	}
+
+	public List<Citation> getTestingExcludes() {
+		return testingExcludes;
+	}
+
+	public void setTestingExcludes(List<Citation> testingExcludes) {
+		this.testingExcludes = testingExcludes;
 	}
 
 	

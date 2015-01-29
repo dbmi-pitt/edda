@@ -23,22 +23,22 @@
             (name cache-evidence)
             (priority ?priority)
             (isActivated 1)))
-    (printout t "Stacked: cache-evidence " ?citationId crlf)
+    (printout t "Stacked: <cache-evidence> " ?citationId crlf)
     (bind ?priority (+ ?priority 1))
     (assert (classify-goal (id ?citationId)
             (name classify-citation)
             (priority ?priority)(isActivated 0)))
-    (printout t "Stacked: classify-citation " ?citationId crlf)
+    (printout t "Stacked: <classify-citation> " ?citationId crlf)
     (bind ?priority (+ ?priority 1))
     (assert (classify-goal (id ?citationId)
             (name tally-experiment)
             (priority ?priority)(isActivated 0)))
-    (printout t "Stacked: tally-experiment " ?citationId crlf)
+    (printout t "Stacked: <tally-experiment> " ?citationId crlf)
     (bind ?priority (+ ?priority 1))
     (assert (classify-goal (id ?citationId)
             (name retract-evidence)
             (priority ?priority)(isActivated 0)))
-    (printout t "Stacked: retract-evidence " ?citationId crlf)
+    (printout t "Stacked: <retract-evidence> " ?citationId crlf)
     (bind ?priority (+ ?priority 1))
     (assert (classify-goal (id ?citationId)
             (name inactivate-citation)
@@ -59,131 +59,15 @@
     ?citation <- (Citation (id ?citationId)
         (OBJECT ?citationObj))
     =>
-    (bind ?citationFactId (fact-id ?citation))
-    (printout t "pico-cache-evidence #" ?citationId " " ?citationFactId crlf)
+    (bind ?citationFactId (call ?citation getFactId))
+    (printout t "pico-cache-evidence #" ?citationId " #" ?citationFactId crlf)
     (call ?citationObj iterateEvidence)
     (bind ?identifiable (call ?citationObj nextPicoEvidence))
     (while  (neq ?identifiable nil)
+        (printout t "Adding evidence..." crlf)
         (add ?identifiable)
         (bind ?identifiable (call ?citationObj nextPicoEvidence))))
 
-;; ===================================================
-;;
-;; Classification Suite
-;;
-;; ====================================================
-
-;;
-;; Publication Type Necessary and Sufficient
-;;
-(defrule pico-classify-1 "Publication Type Necessary and Sufficient"
-    (declare (salience 100))
-    (goal (name pico-classify))
-    (classify-goal (id ?citationId)
-        (name classify-citation)
-        (isActivated 1))
-    ?citation <- (Citation (id ?citationId)
-        (OBJECT ?citationObj)
-        (predictedClassification "NA")
-        (isActivated 1))
-    (PicoEvidence (picoCategory "Publication Type")
-        (picoTerm ?term&:(or
-                (eq ?term "literature_review")
-                (eq ?term "conference_proceedings")
-                (eq ?term "conference_paper")
-                (eq ?term "comment")
-                (eq ?term "editorial")
-                (eq ?term "letter")
-                (eq ?term "abstract")
-                (eq ?term "opinion_paper"))))
-    =>
-    (printout t "pico-classify-1: exclude" crlf)
-    (modify ?citation (predictedClassification "exclude"))
-    (update ?citationObj))
-
-;;
-;; Study Design Necessary and Sufficient
-;;
-(defrule pico-classify-2 "Study Design Necessary and Sufficient"
-    (declare (salience 95))
-    (goal (name pico-classify))
-    ?cg <- (classify-goal
-        (id ?citationId)
-        (name classify-citation)
-        (isActivated 1))
-    ?citation <- (Citation (id ?citationId)
-        (OBJECT ?citationObj)
-        (predictedClassification "NA")
-        (isActivated 1))
-    (PicoEvidence (picoCategory "Study Design")
-        (picoTerm ?term&:(or (eq ?term "case_report") (eq ?term "case_study"))
-            ))
-    =>
-    (printout t "pico-classify-2: exclude" crlf)
-    (modify ?citation (predictedClassification "exclude"))
-    (update ?citationObj))
-
-;;
-;; Species Category
-;;
-;; if another species is mentioned but there is no mention of human(s)
-;; exclude
-;;
-(defrule pico-classify-3 "Species Category Necessary and Sufficient"
-    (declare (salience 90))
-    (goal (name pico-classify))
-    (classify-goal (id ?citationId)
-        (name classify-citation) (isActivated 1))
-    ?citation <- (Citation (id ?citationId)
-        (OBJECT ?citationObj)
-        (predictedClassification "NA")
-        (isActivated 1))
-    (PicoEvidence (picoCategory "Species Category")
-        (picoTerm ?term&:(and (neq ?term "human") (neq ?term "humans"))))
-    (not (PicoEvidence (picoCategory "Species Category")
-            (picoTerm ?humanTerm&:(and (neq ?humanTerm "human") (neq ?humanTerm "humans")))))
-    =>
-    (printout t "pico-classify-3: exclude" crlf)
-    (modify ?citation (predictedClassification "exclude"))
-    (update ?citationObj))
-
-;;
-;; Exclude if INTERVENTION / COMPARATOR CATEGORY NOT Mycophenolic Acid
-;;
-(defrule pico-classify-4 "Mycophenolic Acid must be an intervention otherwise Exclude"
-    (declare (salience 85))
-    (goal (name pico-classify))
-    (classify-goal (id ?citationId)
-        (name classify-citation) (isActivated 1))
-    ?citation <- (Citation (id ?citationId)
-        (OBJECT ?citationObj)
-        (predictedClassification "NA")
-        (isActivated 1))
-    (not (PicoEvidence (picoCategory "Intervention / Comparator Category")
-            (picoTerm ?term&:(or (eq ?term "mycophenolic_acid")
-                    			 (eq ?term "mycophenolate_mofetil")))))
-    =>
-    (printout t "pico-classify-4: exclude" crlf)
-    (modify ?citation (predictedClassification "exclude"))
-    (update ?citationObj))
-
-;;
-;; Otherwise include it
-;;
-(defrule pico-classify-5 "Include all others"
-    (declare (salience 80))
-    (goal (name pico-classify))
-    (classify-goal (id ?citationId)
-        (name classify-citation)
-        (isActivated 1))
-    ?citation <- (Citation (id ?citationId)
-        (OBJECT ?citationObj)
-        (predictedClassification "NA")
-        (isActivated 1))
-    =>
-    (printout t "pico-classify-5: include" crlf)
-    (modify ?citation (predictedClassification "include"))
-    (update ?citationObj))
 
 ;; =====================================================================
 ;;
@@ -247,7 +131,7 @@
         (priority ?p2&:(eq ?p2 (+ ?p1 1)))
         (isActivated 0))
     =>
-    (printout t "pico-pop-subgoal: (" ?name1 ") ==> (" ?name2 ")" crlf)
+    (printout t "pico-pop-subgoal: <" ?name1 "> ==> <" ?name2 ">" crlf)
     (retract ?cg1)
     (modify ?cg2 (isActivated 1)))
 

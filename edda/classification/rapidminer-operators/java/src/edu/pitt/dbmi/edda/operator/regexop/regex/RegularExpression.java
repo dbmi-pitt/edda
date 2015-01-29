@@ -21,7 +21,7 @@ package edu.pitt.dbmi.edda.operator.regexop.regex;
 import java.io.Serializable;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public class RegularExpression implements Serializable {
 	private static final long serialVersionUID = 6798327455130496093L;
