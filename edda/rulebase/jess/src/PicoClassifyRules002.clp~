@@ -1,0 +1,67 @@
+;; ===================================================
+;;
+;; Classification Suite
+;;
+;; ====================================================
+(require C:/Users/kjm84/git/edda/edda/rulebase/jess/src/EddaTemplates)
+
+;;
+;;  Necessary and Sufficient include criteria as derived from
+;;  reverse engineering the Systematic Review
+;;
+(defrule pico-classify-precise-include-criteria "Necessary and Sufficient include criteria"
+    (declare (salience 100))
+    (goal (name pico-classify))
+    (classify-goal (id ?citationId)
+        (name classify-citation)
+        (isActivated 1))
+    ?citation <- (Citation (id ?citationId)
+        (OBJECT ?citationObj)
+        (predictedClassification "NA")
+        (isActivated 1))
+    (PicoEvidence (picoCategory "Intervention / Comparator Category")
+        (picoTerm ?term&:(or (eq ?term "mycophenolic acid")
+                (eq ?term "tacrolimus")
+                (eq ?term "mycophenolate mofetil"))))
+    (not (PicoEvidence (picoCategory "Publication Type")
+            (picoTerm ?term&:(or
+                    (eq ?term "literature review")
+                    (eq ?term "conference proceedings")
+                    (eq ?term "conference paper")
+                    (eq ?term "comment")
+                    (eq ?term "editorial")
+                    (eq ?term "letter")
+                    (eq ?term "abstract")
+                    (eq ?term "review")
+                    (eq ?term "opinion paper")))))
+    (not (PicoEvidence (picoCategory "Study Design")
+            (picoTerm ?term&:(or (eq ?term "case report")
+                    (eq ?term "case study")
+                    (eq ?term "animal study")))))
+    (not (PicoEvidence (picoCategory "Species Category")
+            (picoTerm ?nonHumanTerm&:(and (neq ?nonHumanTerm "human") (neq ?nonHumanTerm "humans")))))
+    =>
+    (printout t "pico-classify-precise-include-criteria: include" crlf)
+    (modify ?citation (predictedClassification "include"))
+    (update ?citationObj))
+
+;;
+;; Otherwise exclude it
+;;
+(defrule pico-classify-exclude-others "Exclude all others"
+    (declare (salience 80))
+    (goal (name pico-classify))
+    (classify-goal (id ?citationId)
+        (name classify-citation)
+        (isActivated 1))
+    ?citation <- (Citation (id ?citationId)
+        (OBJECT ?citationObj)
+        (predictedClassification "NA")
+        (isActivated 1))
+    =>
+    (printout t "pico-classify-exclude-others: exclude" crlf)
+    (modify ?citation (predictedClassification "exclude"))
+    (update ?citationObj))
+
+
+(provide C:/Users/kjm84/git/edda/edda/rulebase/jess/src/PicoClassifyRules002)

@@ -2,8 +2,11 @@
 (require C:/Users/kjm84/git/edda/edda/rulebase/jess/src/ActivateCitations)
 (require C:/Users/kjm84/git/edda/edda/rulebase/jess/src/AlphabetBuilder)
 (require C:/Users/kjm84/git/edda/edda/rulebase/jess/src/PicoClassifier)
+;(require C:/Users/kjm84/git/edda/edda/rulebase/jess/src/PicoClassifyRules001)
+(require C:/Users/kjm84/git/edda/edda/rulebase/jess/src/PicoClassifyRules002)
 ;(require C:/Users/kjm84/git/edda/edda/rulebase/jess/src/DynamicClassifier)
 (require C:/Users/kjm84/git/edda/edda/rulebase/jess/src/Diagnostics)
+(require C:/Users/kjm84/git/edda/edda/rulebase/jess/src/DiagnosticsForCitations)
 (require C:/Users/kjm84/git/edda/edda/rulebase/jess/src/RecindPredictions)
 (require C:/Users/kjm84/git/edda/edda/rulebase/jess/src/Cleaner)
 
@@ -39,27 +42,9 @@
     (resetExperiment)
     (pico-classify)
     (activate-citations)
-    (display-citation-false-negatives))
+    (display-fns))
 
 (cleanClassify)
 
-;;(modify ?testCitations (isActivated 1))
-
-
-(defquery query-find-false-negatives
-    "Find all 'include' citations designated 'exclude' by the algorithm"
-    (Citation (predictedClassification "exclude")
-        (predictedClassification "true")
-        (isActivated 1)))
-(deffunction iterate-false-negatives ()
-    "Iterate through false negatives"
-    (bind ?result (run-query* query-find-false-negatives))
-    (if (?result next) then
-        (bind ?citationKey (?result getString citationKey))
-        (printout t "Got citation key = " ?citationKey crlf)
-        else
-        (printout t "Query results are empty" crlf)
-        ))
-   
     
     
