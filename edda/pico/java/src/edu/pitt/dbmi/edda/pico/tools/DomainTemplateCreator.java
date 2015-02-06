@@ -17,7 +17,6 @@ import edu.pitt.dbmi.nlp.noble.ontology.IOntologyException;
 import edu.pitt.dbmi.nlp.noble.ontology.IProperty;
 import edu.pitt.dbmi.nlp.noble.ontology.IRestriction;
 import edu.pitt.dbmi.nlp.noble.ontology.LogicExpression;
-import edu.pitt.dbmi.nlp.noble.ontology.owl.OClass;
 import edu.pitt.dbmi.nlp.noble.ontology.owl.OOntology;
 import edu.pitt.dbmi.nlp.noble.terminology.TerminologyException;
 
@@ -70,7 +69,7 @@ public class DomainTemplateCreator {
 	 */
 	private static void augmentDomainOntology(File  ontology) throws IOntologyException {
 		System.out.println("Augmenting ontology "+ontology);
-		List<String> keywordsOnly = Arrays.asList("Age","Gender","Species","Ethnicity","Publication_Type");
+		List<String> keywordsOnly = Arrays.asList("Age","Gender","Species","Ethnicity","Publication_Type","Language");
 		
 		// create MH restriction
 		IOntology ont = OOntology.loadOntology(ontology);
@@ -79,6 +78,9 @@ public class DomainTemplateCreator {
 		IRestriction mh = ont.createRestriction(IRestriction.HAS_VALUE);
 		mh.setProperty(hasDocumentRange);
 		mh.setParameter(ont.createLogicExpression(ILogicExpression.EMPTY,"MH"));
+		IRestriction ln = ont.createRestriction(IRestriction.HAS_VALUE);
+		ln.setProperty(hasDocumentRange);
+		ln.setParameter(ont.createLogicExpression(ILogicExpression.EMPTY,"LA"));
 		
 		
 		// iterate over Slot classes
@@ -92,7 +94,10 @@ public class DomainTemplateCreator {
 				cls.removeNecessaryRestriction(r);
 				ILogicExpression ex = new LogicExpression(ILogicExpression.AND);
 				ex.add(r);
-				ex.add(mh);
+				if(nm.startsWith("Language"))
+					ex.add(ln);
+				else
+					ex.add(mh);
 				cls.addNecessaryRestriction(ex);
 				
 			}

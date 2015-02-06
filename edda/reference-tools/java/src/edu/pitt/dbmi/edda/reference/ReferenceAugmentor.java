@@ -97,7 +97,7 @@ public class ReferenceAugmentor {
 		}
 	}
 	
-	private String key(Reference r){
+	public String key(Reference r){
 		return key(r.getTitle());
 	}
 	private String key(String r){
@@ -109,6 +109,15 @@ public class ReferenceAugmentor {
 		if(er != null && er.getContentMap().containsKey("pdf_file"))
 			return new File(er.getContentMap().get("pdf_file"));
 		return null;	
+	}
+	
+	/**
+	 * get EndNote reference based on MEDLINE reference
+	 * @param r
+	 * @return
+	 */
+	public Reference getEndNoteReference(Reference r){
+		return endNoteReferences.get(key(r));
 	}
 	
 	

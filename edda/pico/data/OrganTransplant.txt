@@ -30,8 +30,7 @@ Intervention / Comparator Category
 		Drug Kinetics [MeSH]
 		Clinical Laboratory Techniques [MeSH]
 Language Category
-	English
-	Foreign
+	publication language [FlyBase]
 Outcome Category
 	biological markers [MeSH]
 	adverse reaction [NCI_Thesaurus]
