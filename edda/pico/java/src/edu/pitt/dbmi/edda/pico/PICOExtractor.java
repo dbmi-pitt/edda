@@ -24,7 +24,7 @@ import edu.pitt.dbmi.nlp.noble.util.PathHelper;
  * This class performs information extraction of PICO+ elements
  * from a target document
  * @author tseytlin
- * @date 2015-02-11
+ * @date 2015-02-11 test
  */
 public class PICOExtractor {
 	private InformationExtractor ie;
