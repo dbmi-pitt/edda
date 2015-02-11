@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Edda CER</title>
+<meta charset="utf-8">
+<link rel="stylesheet" type="text/css" href="lens.css">
+<script type="text/javascript" src="lens.js"></script>
+</head>
+<body>
+<div id="mainBox">
+   <div id="topBannarBox">
+            <div id="topBannarText">Edda Comparative Effectiveness Review</div>
+            <div id="topBannarLogo"><img src="images/EDDA-logo.png"  alt="Edda Logo"/></div>
+   </div>   
+   <div class="lensSeparator"></div>  
+   <div id="searchBox">
+      <div id="picoBox">
+                   <div class="picoSection">
+                      <div class="picoCode">&nbsp;&nbsp;P&nbsp;&nbsp;</div>
+                      <div class="picoDesc">Population/patient</div>
+                      <div class="picoEquals">&nbsp;&nbsp;=&nbsp;&nbsp;&nbsp;&nbsp;</div>
+                      <div class="picoValue"><textarea name="picoPatient" form="picoForm">humans with oral squamous cell carcinoma</textarea></div>
+                      <div class="picoSeparator"></div>
+                   </div>
+                   <div class="picoSection">
+                      <div class="picoCode">&nbsp;&nbsp;I&nbsp;&nbsp;</div>
+                      <div class="picoDesc">Intervention/indicator</div>
+                      <div class="picoEquals">&nbsp;&nbsp;=&nbsp;&nbsp;&nbsp;&nbsp;</div>
+                      <div class="picoValue"><textarea name="picoIndicator" form="picoForm">prognostic</textarea></div>
+                      <div class="picoSeparator"></div>
+                   </div>
+                   <div class="picoSection">
+                      <div class="picoCode">&nbsp;&nbsp;C&nbsp;&nbsp;</div>
+                      <div class="picoDesc">Comparator/control</div>
+                      <div class="picoEquals">&nbsp;&nbsp;=&nbsp;&nbsp;&nbsp;&nbsp;</div>
+                      <div class="picoValue"><textarea name="picoControl" form="picoForm"></textarea></div>
+                      <div class="picoSeparator"></div>
+                   </div>
+                   <div class="picoSection">
+                      <div class="picoCode">&nbsp;&nbsp;O&nbsp;&nbsp;</div>
+                      <div class="picoDesc">Outcome</div>
+                      <div class="picoEquals">&nbsp;&nbsp;=&nbsp;&nbsp;&nbsp;&nbsp;</div>
+                      <div class="picoValue"><textarea name="picoOutcome" form="picoForm"></textarea></div>
+                      <div class="picoSeparator"></div>
+                   </div>
+                  <div class="lensSeparator"></div>    
+                  <div class="picoActionPanel">
+	                  <ul>
+		                 <li><a href="#">Search</a></li>
+		                 <li><a href="#">Preview</a></li>
+		                 <li><a href="#">Clear</a></li>
+	                  </ul>
+                   </div>              
+      </div> 
+      <div id="medlineBox">
+           Medline<br>
+           <textarea id="medlineQuery" 
+                     name="medlineQuery" 
+                     form="picoForm">("humans"[MeSH Terms] OR "humans"[All Fields]) AND ("mouth"[MeSH Terms] OR "mouth"[All Fields] OR "oral"[All Fields]) 
+                     AND ("carcinoma, squamous cell"[MeSH Terms] OR ("carcinoma"[All Fields] 
+                     AND "squamous"[All Fields] AND "cell"[All Fields]) OR "squamous cell carcinoma"[All Fields] 
+                     OR ("squamous"[All Fields] AND "cell"[All Fields] AND "carcinoma"[All Fields])) 
+                     AND prognostic[All Fields]
+                     </textarea>
+           <div class="lensSeparator"></div>   
+           <div class="medlineActionPanel">
+	          <ul>
+		        <li><a href="#">Search</a></li>
+		        <li><a href="#">Clear</a></li>
+	          </ul>
+           </div>          
+      </div>
+   </div>
+   <div id="payLoadBox">
+     <div id="lineItemBox">
+            <div class="lineItemTitles">
+	                  <ul>
+		                 <li><a href="#">Title One</a></li>
+		                 <li><a href="#">Title Two</a></li>
+		                 <li><a href="#">Title Three</a></li>
+		                 <li><a href="#">Title Four</a></li>
+		                 <li><a href="#">Title Five</a></li>
+		                 <li><a href="#">Title Six</a></li>
+		                 <li><a href="#">Title Seven</a></li>
+		                 <li><a href="#">Title Eight</a></li>
+		                 <li><a href="#">Title Nine</a></li>
+		                 <li><a href="#">Title Ten</a></li>    
+	                  </ul>
+                   </div>       
+     </div> 
+     <div id="focusItemBox">
+         <p>This is an abstract corresponding to pid x</p>
+     </div>    
+   </div>
+</div>
+</body>
+</html>

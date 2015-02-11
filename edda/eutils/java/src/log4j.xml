@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+  <appender name="console" class="org.apache.log4j.ConsoleAppender"> 
+    <param name="Target" value="System.out"/> 
+    <layout class="org.apache.log4j.PatternLayout"> 
+      <param name="ConversionPattern" value="%-5p %c{1} - %m%n"/> 
+    </layout> 
+  </appender> 
+  
+   <appender name="rolling-file" class="org.apache.log4j.RollingFileAppender">
+        <param name="file" value="edda.log"/>
+        <param name="MaxFileSize" value="1000KB"/>
+    <!-- Keep one backup file -->
+        <param name="MaxBackupIndex" value="4"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d [%t] %-5p %l - %m%n"/>
+        </layout>
+    </appender>
+  
+ <!-- Log all SQL DML statements as they are executed -->
+<logger name="org.hibernate.SQL">
+   <level value="info"/>
+</logger>           
+
+<!-- Log all JDBC parameters -->
+<logger name="org.hibernate.type">
+   <level value="info"/>
+</logger>          
+
+<!-- Log all SQL DDL statements as they are executed -->
+<logger name="org.hibernate.tool.hbm2ddl">
+   <level value="info"/>
+</logger>  
+
+<!-- Log the state of all entities (max 20 entities) associated with the session at flush time -->
+<logger name="org.hibernate.pretty">
+   <level value="info"/>
+</logger>        
+
+<!-- Log all second-level cache activity -->
+<logger name="org.hibernate.cache">
+   <level value="info"/>
+</logger>         
+
+<!-- Log transaction related activity -->
+<logger name="org.hibernate.transaction">
+   <level value="info"/>
+</logger>   
+
+<!-- Log all JDBC resource acquisition -->
+<logger name="org.hibernate.jdbc">
+   <level value="info"/>
+</logger>          
+
+<!-- Log HQL and SQL ASTs during query parsing -->
+<logger name="ibernate.hql.ast.AST">
+   <level value="info"/>
+</logger>   
+
+<!-- Log all JAAS authorization requests -->
+<logger name="org.hibernate.secure">
+   <level value="info"/>
+</logger> 
+
+<!-- Log annotation information -->
+<logger name="org.hibernate.annotations">
+          <level value="warn"/> 
+</logger>       
+
+<!-- Log everything (a lot of information, but very useful -->
+<logger name="org.hibernate">
+   <level value="warn"/>
+</logger> 
+             
+<root> 
+    <priority value ="info" /> 
+    <appender-ref ref="console" /> 
+    <appender-ref ref="rolling-file" /> 
+</root>
+
+  <!-- 
+  org.hibernate.annotations.common.Version
+  <logger name="org.hibernate.type">
+          <level value="warn"/> 
+  </logger>
+   -->
+  
+  
+</log4j:configuration>
