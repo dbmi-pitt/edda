@@ -1,0 +1,95 @@
+AU  - N. F. Varon and G. J. Alangaden
+TI  - Emerging trends in infections among renal transplant recipients
+SO  - Expert Review of Anti-Infective Therapy 2004;2(1):95-109
+MH  - antiinfective agent
+antiretrovirus agent
+azathioprine
+basiliximab
+caspofungin
+cidofovir
+ciprofloxacin
+corticosteroid
+cotrimoxazole
+cyclosporin A
+daclizumab
+dalfopristin plus quinupristin
+dapsone
+fluconazole
+fomivirsen
+foscarnet sodium
+ganciclovir
+interferon
+linezolid
+lymphocyte antibody
+mycophenolic acid 2 morpholinoethyl ester
+OKT 3
+pentamidine
+rapamycin
+simulec
+tacrolimus
+thymocyte antibody
+unclassified drug
+unindexed drug
+v fend
+valaciclovir
+valganciclovir
+voriconazole
+antibiotic resistance
+bacteremia
+bacterial infection
+BK virus
+cytomegalovirus infection
+drug efficacy
+gastrointestinal infection
+hepatitis A
+hepatitis C
+herpes zoster
+highly active antiretroviral therapy
+human
+Human immunodeficiency virus infection
+immunization
+immunosuppressive treatment
+infection prevention
+infection risk
+kidney disease
+kidney donor
+kidney failure
+kidney graft rejection
+kidney transplantation
+morbidity
+mortality
+mycosis
+nephrotoxicity
+opportunistic infection
+pancreas transplantation
+pathogenesis
+Pneumocystis pneumonia
+postoperative infection
+recipient
+review
+screening test
+surgical technique
+surgical wound
+treatment outcome
+urinary tract infection
+virus infection
+wound infection
+cancidas
+cellcept
+cipro
+cytovene
+foscavir
+neoral
+prograf
+rapamune
+synercid
+valcyte
+vistide
+vitrasert
+vitravene
+zenapax
+zyvox
+AB  - Outcomes following renal and simultaneous kidney-pancreas transplants have improved signicantly due to better surgical techniques and improved modalities of antirejection therapy. However, infection remains a significant cause of morbidity and mortality. The use of new modalities of immunosuppression and routine use of antimicrobial prophylaxis has changed the pattern of infections post-transplantation. Cytomegalovirus remains a significant problem and BK virus has emerged as an important pathogen. New antimicrobial agents are now available to treat infection, however, antimicrobial resistance remains a concern. (copyright) Future Drugs Ltd. All rights reserved.
+
+TI  -  Emerging trends in infections among renal transplant recipients
+LA  - English
