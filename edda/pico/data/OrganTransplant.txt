@@ -18,7 +18,7 @@ Population Category
 	Ethnicity Category
 		Population Groups [MeSH]
 	Population Type Category
-		Organ Transplantation [NCI_Thesaurus]
+		Transplantation [MeSH]
 		Graft [NCI_Thesaurus]
 		Transplant Recipient
 Intervention / Comparator Category
