@@ -60,6 +60,7 @@
     (printout t "pico-classify-precise-include-criteria: include" crlf)
     (modify ?citation (predictedClassification "include"))
     (update ?citationObj))
+(undefrule pico-classify-precise-include-criteria)
 
 ;;
 ;;  Handle citations with Adverse reactions more liberally
@@ -83,6 +84,7 @@
     (printout t "pico-classify-adverse-reaction: include" crlf)
     (modify ?citation (predictedClassification "include"))
     (update ?citationObj))
+(undefrule pico-classify-adverse-reactions)
 
 ;;
 ;; Otherwise exclude it

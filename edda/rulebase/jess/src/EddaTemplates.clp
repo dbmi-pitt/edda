@@ -59,6 +59,9 @@
 (deftemplate goal extends Identifiable "goal system"  
     (slot name))
 
+(deftemplate prioritized-goal extends goal "prioritized goal"  
+    (slot priority (type INTEGER) (default 0)))
+
 (deftemplate classify-goal extends Identifiable "classification subgoal system"  
     (slot name)
     (slot priority (type INTEGER) (default 0)))

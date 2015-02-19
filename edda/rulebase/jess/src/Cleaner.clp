@@ -38,6 +38,15 @@
     (printout t "retracting goal " ?name crlf)
     (retract ?cleanTarget))
     
+(defrule clean-goals-0-0
+    "cleans old prioritized-goals"
+    (declare (salience 100))
+    ?g <- (goal (name clean-goals))
+    ?cleanTarget <- (prioritized-goal (name ?name))
+ =>
+    (printout t "retracting prioritized-goal " ?name crlf)
+    (retract ?cleanTarget))
+
 (defrule clean-goals-1 
     "retracts the goal"
     (declare (salience 50))
