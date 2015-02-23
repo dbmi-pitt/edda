@@ -19,6 +19,8 @@ Population Category
 		Population Groups [MeSH]
 	Population Type Category
 		Transplantation [MeSH]
+			Organ Transplantations [MeSH]
+				 Transplantation of intestine [SNOMED_CT]
 		Graft [NCI_Thesaurus]
 		Transplant Recipient
 Intervention / Comparator Category
