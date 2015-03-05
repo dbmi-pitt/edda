@@ -16,9 +16,10 @@
     (retract ?g))
    
 (deffunction recind-predictions () "activates all the citations"
-    (printout t "recinding predictions" crlf)
+;;    (printout t "recinding predictions" crlf)
     (assert (goal (name recind-predictions)))
     (run)
-    (printout t "finished recinding predictions" crlf))  
+;;    (printout t "finished recinding predictions" crlf)
+)  
 
 (provide C:/Users/kjm84/git/edda/edda/rulebase/jess/src/RecindPredictions)

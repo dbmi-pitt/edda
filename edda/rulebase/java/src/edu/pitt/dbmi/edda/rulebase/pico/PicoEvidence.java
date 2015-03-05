@@ -8,6 +8,7 @@ public class PicoEvidence extends ClassificationEvidence {
 
 	protected String picoCategory;
 	protected String picoTerm;
+	protected int ancestryDepth = 0;
 	
 	public PicoEvidence() {
 	}
@@ -27,6 +28,14 @@ public class PicoEvidence extends ClassificationEvidence {
 	public void setPicoTerm(String picoTerm) {
 		this.picoTerm = picoTerm;
 	}
+	
+	public int getAncestryDepth() {
+		return ancestryDepth;
+	}
+
+	public void setAncestryDepth(int ancestryDepth) {
+		this.ancestryDepth = ancestryDepth;
+	}
 
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
@@ -35,6 +44,7 @@ public class PicoEvidence extends ClassificationEvidence {
 		sb.append("picoCategory = " + getPicoCategory() + "\n");
 		sb.append("picoPicoTerm = " + getPicoTerm() + "\n");
 		sb.append("polarity = " + getPolarity() + "\n");
+		sb.append("ancestryDepth = " + getAncestryDepth() + "\n");
 		sb.append("weight = " + getWeight() + "\n");
 		return sb.toString();
 	}

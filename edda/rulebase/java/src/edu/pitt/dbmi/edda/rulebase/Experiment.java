@@ -108,14 +108,23 @@ public class Experiment extends Identifiable {
 		double fp = falsePositives.doubleValue();
 		return (tn + fp > 0.0d) ? new Double(tn / (tn + fp)) : new Double(0.0d);
 	}
+	
+	public Double getClassificationError() {
+		double tn = trueNegatives.doubleValue();
+		double fp = falsePositives.doubleValue();
+		double tp = truePositives.doubleValue();
+		double fn = falseNegatives.doubleValue();
+		return (tp + fp + tn + fn > 0.0d) ? new Double((fp + fn) / (tp + fp + tn + fn)) : 0.0d ;
+	}
 
 	public String toString() {
 		return String.format(
 				"tp: %5d fp: %5d tn: %5d fn: %5d %n" + 
 				"sens: %4.2f spec: %4.2f %n" +
-				"prec: %4.2f reca: %4.2f",
+				"prec: %4.2f reca: %4.2f %n" +
+				"classificaton error: %4.2f",
 				truePositives, falsePositives, trueNegatives, falseNegatives,
 				getSensitivity(), getSpecificity(),
-				getPrecision(), getRecall());
+				getPrecision(), getRecall(),getClassificationError());
 	}
 }

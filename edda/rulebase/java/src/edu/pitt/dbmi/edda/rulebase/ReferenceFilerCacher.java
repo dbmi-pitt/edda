@@ -13,15 +13,19 @@ import edu.pitt.dbmi.edda.rulebase.document.SystematicReview;
 
 public class ReferenceFilerCacher {
 	
-	private final String CONST_REF_FILER_PATH = "T:\\EDDA\\DATA\\ORGAN_TRANSPLANT\\ReferenceFiler_Output\\5050_2xTitles\\TRAIN_data";
-//	private final String CONST_REF_FILER_PATH = "T:\\EDDA\\DATA\\ORGAN_TRANSPLANT\\ReferenceFiler_Output";
+	private final String CONST_REF_FILER_TRAIN_PATH = "T:\\EDDA\\DATA\\ORGAN_TRANSPLANT\\ReferenceFiler_Output\\5050_2xTitles\\TRAIN_data";
+	private final String CONST_REF_FILER_TEST_PATH = "T:\\EDDA\\DATA\\ORGAN_TRANSPLANT\\ReferenceFiler_Output\\5050_2xTitles\\TEST_data";
 	private SystematicReview systematicReview;
 	private PICOExtractor picoExtractor;
+	private List<Citation> partitionIncludes = new ArrayList<Citation>();
+	private List<Citation> partitionExcludes =  new ArrayList<Citation>();
 	private final List<Citation> citations = new ArrayList<Citation>();
 	private List<Citation> trainingIncludes = new ArrayList<Citation>();
 	private List<Citation> trainingExcludes =  new ArrayList<Citation>();
 	private List<Citation> testingIncludes = new ArrayList<Citation>();
-	private List<Citation> testingExcludes = new ArrayList<Citation>();
+	private List<Citation> testingExcludes = new ArrayList<Citation>();	
+	private String dataPath = CONST_REF_FILER_TEST_PATH;
+	private boolean isMultiFold = false;
 	
 	public void cache() {
 		tryCache();
@@ -31,7 +35,7 @@ public class ReferenceFilerCacher {
 		
 		System.out.println("ReferenceFilerCacher begins caching...");
 		
-		Collection<File> files = gatherFiles(new File(CONST_REF_FILER_PATH));
+		Collection<File> files = gatherFiles(new File(dataPath));
 
 		int numberCitationsProcessed = 0;
 		for (File file : files) {
@@ -41,28 +45,26 @@ public class ReferenceFilerCacher {
 			}
 			numberCitationsProcessed++;
 		}
-		System.out.println("#include set size is " + trainingIncludes.size());
-		System.out.println("#exclude set size is " + trainingExcludes.size());
+		System.out.println("#include set size is " + partitionIncludes.size());
+		System.out.println("#exclude set size is " + partitionExcludes.size());
 		
-		Random random = new Random(1024); // keep it the same for a while
-	
-		Double numIncs = Double.valueOf(trainingIncludes.size());
-		int incFoldSize = (int) Math.ceil(numIncs.doubleValue() / 10.0d);
-		Collections.shuffle(trainingIncludes, random);
-		testingIncludes.addAll(trainingIncludes.subList(0, incFoldSize));
-		trainingIncludes = trainingIncludes.subList(incFoldSize, trainingIncludes.size());
+		if (isMultiFold) {
+			prepareMultiFoldRun();
+		}
+		else {
+			prepareFullPassRun();
+		}
 		
-		Double numExcs = Double.valueOf(trainingExcludes.size());
-		int excFoldSize = (int) Math.ceil(numExcs.doubleValue() / 10.0d);
-		Collections.shuffle(trainingExcludes, random);
-		testingExcludes.addAll(trainingExcludes.subList(0, excFoldSize));
-		trainingExcludes = trainingExcludes.subList(excFoldSize, trainingExcludes.size());
-	
 		establishCitationPartitions();
 		
 		System.out.println("ReferenceFilerCacher finishes caching...");
 	}
 	
+	private void prepareFullPassRun() {
+		testingIncludes.addAll(partitionIncludes);
+		testingExcludes.addAll(partitionExcludes);
+	}
+
 	private void classifyFile(File file) {
 		try {
 			Citation citation = new Citation();
@@ -72,18 +74,35 @@ public class ReferenceFilerCacher {
 			citation.setPicoExtractor(picoExtractor);
 			establishCitationActualClassification(file.getAbsolutePath(), citation);
 			if (citation.getActualClassification().equals("include")) {
-				trainingIncludes.add(citation);
+				partitionIncludes.add(citation);
 			}
 			else {
-				trainingExcludes.add(citation);
+				partitionExcludes.add(citation);
 			}
 		}
 		catch (Exception x) {
 			x.printStackTrace();
-		}
-
-		
+		}	
 	}
+	
+	private void prepareMultiFoldRun() {
+		Random random = new Random(1024); // keep it the same for a while
+		
+		Double numIncs = Double.valueOf(partitionIncludes.size());
+		int incFoldSize = (int) Math.ceil(numIncs.doubleValue() / 10.0d);
+		Collections.shuffle(partitionIncludes, random);
+		testingIncludes.addAll(partitionIncludes.subList(0, incFoldSize));
+		trainingIncludes = partitionIncludes.subList(incFoldSize, partitionIncludes.size());
+		
+		Double numExcs = Double.valueOf(partitionExcludes.size());
+		int excFoldSize = (int) Math.ceil(numExcs.doubleValue() / 10.0d);
+		Collections.shuffle(partitionExcludes, random);
+		testingExcludes.addAll(partitionExcludes.subList(0, excFoldSize));
+		trainingExcludes = partitionExcludes.subList(excFoldSize, partitionExcludes.size());
+	
+	}
+	
+	
 
 	private void establishCitationPartitions() {
 		for (Citation citation : this.trainingIncludes) {
@@ -165,6 +184,22 @@ public class ReferenceFilerCacher {
 
 	public void setTestingExcludes(List<Citation> testingExcludes) {
 		this.testingExcludes = testingExcludes;
+	}
+	
+	public boolean isMultiFold() {
+		return isMultiFold;
+	}
+
+	public void setMultiFold(boolean isMultiFold) {
+		this.isMultiFold = isMultiFold;
+	}
+
+	public void useTrainingData() {
+		dataPath = CONST_REF_FILER_TRAIN_PATH;
+	}
+	
+	public void useTestingData() {
+		dataPath = CONST_REF_FILER_TEST_PATH;
 	}
 
 	
