@@ -114,8 +114,17 @@ public class PICOExtractor {
 		Set<String> ancestors = new LinkedHashSet<String>();
 		try {
 			for(Concept c :template.getTerminology().search(term)){
-				for(Concept a: path.getAncestors(c).keySet()){
-					ancestors.add(a.getName());
+				int  cutoff = -1;
+				Map<Concept,Integer> parents = path.getAncestors(c);
+				for(Concept a: parents.keySet()){
+					if(a.getName().endsWith("Category") || "Terminology".equals(a.getName())){
+						if(cutoff == -1 || cutoff > parents.get(a))
+							cutoff = parents.get(a);
+					}
+				}
+				for(Concept a: parents.keySet()){
+					if(cutoff == -1 || parents.get(a) < cutoff)
+						ancestors.add(a.getName());
 				}
 			}
 		} catch (TerminologyException e) {
