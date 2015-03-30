@@ -124,6 +124,7 @@
     (bind ?experiment (call ?*reader* getExperiment))
     (bind ?resultString (call ?experiment toString))
     (printout t ?resultString crlf)
+    (call ?experiment writeOut "testing.txt")
     (retract ?g))
 
 ;; =====================================================================

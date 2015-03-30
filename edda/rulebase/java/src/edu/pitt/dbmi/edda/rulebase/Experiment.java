@@ -1,5 +1,10 @@
 package edu.pitt.dbmi.edda.rulebase;
 
+import java.io.File;
+import java.io.IOException;
+
+import org.apache.commons.io.FileUtils;
+
 import edu.pitt.dbmi.edda.rulebase.document.Citation;
 
 public class Experiment extends Identifiable {
@@ -12,6 +17,8 @@ public class Experiment extends Identifiable {
 	private Integer falsePositives = 0;
 	private Integer trueNegatives = 0;
 	private Integer falseNegatives = 0;
+	
+	private final StringBuilder sb = new StringBuilder();
 
 	public static void main(String[] args) {
 		Experiment e = new Experiment();
@@ -67,6 +74,9 @@ public class Experiment extends Identifiable {
 	}
 
 	public void tallyCitation(Citation citation) {
+		
+		writeCitation(citation);
+		
 		if (citation.getActualClassification().equals("include")
 				&& citation.getPredictedClassification().equals("include")) {
 			setTruePositives(new Integer(getTruePositives().intValue() + 1));
@@ -82,6 +92,18 @@ public class Experiment extends Identifiable {
 		} else {
 			System.out.println("Unexpected condition "
 					+ citation.getActualClassification());
+		}
+	}
+	
+	private void writeCitation(Citation citation) {
+		sb.append(citation.getPath() + "," + citation.getActualClassification() + "," + citation.getPredictedClassification() + "\n");
+	}
+	
+	public void writeOut(String fileName) {
+		try {
+			FileUtils.write(new File("C:\\Users\\kjm84\\Desktop\\" + fileName), sb.toString());
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 	

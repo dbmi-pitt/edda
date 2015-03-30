@@ -49,9 +49,7 @@ public class SystematicReviewReader {
 						evidence = citation.nextPicoEvidence();
 					}
 				}
-			}
-			
-			
+			}	
 		}
 	}
 
@@ -85,6 +83,7 @@ public class SystematicReviewReader {
 	private void cacheReferenceFilerOutput() throws IOException {
 		referenceFilerCacher.setSystematicReview(systematicReview);
 		referenceFilerCacher.setPicoManager(picoManager);
+		referenceFilerCacher.useTrainingData();
 		referenceFilerCacher.cache();
 		workingMemoryDataQueue.addAll(referenceFilerCacher.getTestingIncludes());
 		workingMemoryDataQueue.addAll(referenceFilerCacher.getTestingExcludes());
@@ -143,6 +142,14 @@ public class SystematicReviewReader {
 	
 	public Experiment getExperiment() {
 		return experiment;
+	}
+
+	public SystematicReview getSystematicReview() {
+		return systematicReview;
+	}
+
+	public PICOExtractor getPicoManager() {
+		return picoManager;
 	}
 
 }

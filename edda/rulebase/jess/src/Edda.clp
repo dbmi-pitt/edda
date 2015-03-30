@@ -9,7 +9,7 @@
 (require C:/Users/kjm84/git/edda/edda/rulebase/jess/src/InformationGainGraph)
 (require C:/Users/kjm84/git/edda/edda/rulebase/jess/src/Cleaner)
 (require C:/Users/kjm84/git/edda/edda/rulebase/jess/src/Explain)
-
+(require C:/Users/kjm84/git/edda/edda/rulebase/jess/src/ExplainMpaFns)
 
 (deffunction pull-sr-and-citations () "pulls sr spec and citations from file system"
     (printout t "pulling sr and citations" crlf)
@@ -35,7 +35,6 @@
     "pico-classify-exclude-bad-study-animals"
     "pico-classify-exclude-bad-species"
     "pico-classify-exclude-not-organ-transplant"
-    "pico-classify-exclude-soley-cell-transplant"
     "pico-classify-exclude-not-mpa"
     "pico-classify-exclude-not-blood"
     "pico-classify-exclude-not-physiological-monitoring"))
@@ -52,7 +51,6 @@
                                                     (isActivated ?activation)))))
            (bind ?priority (+ ?priority 1)))
     (return ?rules))
-
 
 (deffunction retract-rules (?rules) "retracts each rule in the list"
     (foreach ?rule ?rules (retract ?rule)))
@@ -134,6 +132,10 @@
        (modify ?incOthers (isActivated 1)))
     (retract-rules ?deActivatedRules)
     (retract ?incOthers))
+
+
+(deffunction run-mpa-rule-only () "run just the mpa excluder"
+    (run-rule-by-name "pico-classify-exclude-not-mpa"))
 
 ;;(run-rule-by-name "pico-classify-exclude-bad-species")
 

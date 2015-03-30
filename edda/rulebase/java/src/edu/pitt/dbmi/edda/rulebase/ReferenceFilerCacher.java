@@ -13,8 +13,8 @@ import edu.pitt.dbmi.edda.rulebase.document.SystematicReview;
 
 public class ReferenceFilerCacher {
 	
-	private final String CONST_REF_FILER_TRAIN_PATH = "T:\\EDDA\\DATA\\ORGAN_TRANSPLANT\\ReferenceFiler_Output\\5050_2xTitles\\TRAIN_data";
-	private final String CONST_REF_FILER_TEST_PATH = "T:\\EDDA\\DATA\\ORGAN_TRANSPLANT\\ReferenceFiler_Output\\5050_2xTitles\\TEST_data";
+	public final String CONST_REF_FILER_TRAIN_PATH = "T:\\EDDA\\DATA\\ORGAN_TRANSPLANT\\ReferenceFiler_Output\\5050_2xTitles\\TRAIN_data";
+	public final String CONST_REF_FILER_TEST_PATH = "T:\\EDDA\\DATA\\ORGAN_TRANSPLANT\\ReferenceFiler_Output\\5050_2xTitles\\TEST_data";
 	private SystematicReview systematicReview;
 	private PICOExtractor picoExtractor;
 	private List<Citation> partitionIncludes = new ArrayList<Citation>();

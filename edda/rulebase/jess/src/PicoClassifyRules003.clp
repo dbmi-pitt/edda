@@ -209,6 +209,7 @@
     (modify ?citation (lastRuleApplied ?ruleName))
     (modify ?citation (predictedClassification "exclude"))
     (update ?citationObj))
+(undefrule pico-classify-exclude-soley-cell-transplant)
 
 ;; ============================================================================
 ;;  

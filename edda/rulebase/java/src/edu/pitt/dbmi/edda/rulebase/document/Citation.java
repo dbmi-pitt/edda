@@ -71,12 +71,14 @@ public class Citation extends Identifiable {
 			Map<String, List<String>> evidence = picoExtractor
 					.processDocument(f);
 			setPicoEvidence(evidence);
-			generateExtraLiteratureReviewEvidence();
-			generateExtraBloodEvidence();
-			generateExtraMeasurementEvidence();
-			generateNoAbstractEvidence();
-			generateEmbaseMmfEvidence();
-			generateGeneralMmfEvidence();
+			
+//			generateExtraLiteratureReviewEvidence();
+//			generateExtraBloodEvidence();
+//			generateExtraMeasurementEvidence();
+//			generateNoAbstractEvidence();
+//			generateEmbaseMmfEvidence();
+//			generateGeneralMmfEvidence();
+			
 			setContent("NA");
 		} catch (TerminologyException | IOException e) {
 			e.printStackTrace();

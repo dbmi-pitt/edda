@@ -48,7 +48,7 @@
    (bind ?denom (+ ?tns ?fns))
    (if (< ?denom 1) then (bind ?denom 1))
    (printout t ?firedRule ": tns = " ?tns " fns = " ?fns crlf)
-   (printout t ?firedRule ": (specificity " (/ ?tns ?denom) ")" crlf))
+   (printout t ?firedRule ": (negative predictive value " (/ ?tns ?denom) ")" crlf))
                             
 
 (defrule done-explaining "done explaining"
