@@ -141,10 +141,10 @@ public class DomainTemplateCreator {
 		File templateFile = new File(dataDirectory,"OrganTransplant.template");
 		
 		// create domain
-		createDomainOntology(seedTerminology, outputOntology);
+		//createDomainOntology(seedTerminology, outputOntology);
 		
 		// augment ontology to add ranges
-		augmentDomainOntology(outputOntology);
+		//augmentDomainOntology(outputOntology);
 		
 		// create template
 		createDomainTemplate(outputOntology, templateFile);
