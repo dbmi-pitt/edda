@@ -13,7 +13,28 @@
     (while  (neq ?evidence nil)
         (bind ?category (call ?evidence getPicoCategory))
         (bind ?term (call ?evidence getPicoTerm))
-        (printout t "          "  ?category " ==> " ?term crlf)
+        (bind ?polarity (call ?evidence getPolarity))
+        (if (and (or (neq ?category nil)
+                     (eq ?category "Embase Keywords Category")
+	             (eq ?category "Abstract Category")
+                     (eq ?category "Intervention / Comparator Category"))
+                     (eq ?polarity "present")) then
+            (printout t "          "  ?category " ==> " ?term crlf))
+        (bind ?evidence (call ?citationObj nextPicoEvidence))))
+
+(deffunction display-ancestry-evidence (?citationObj)
+    "display the ancestry evidence for this citation"
+    (call ?citationObj iterateEvidence)
+    (bind ?evidence (call ?citationObj nextPicoEvidence))
+    (while  (neq ?evidence nil)
+        (bind ?category (call ?evidence getPicoCategory))
+        (bind ?term (call ?evidence getPicoTerm))
+        (bind ?polarity (call ?evidence getPolarity))
+        (if (and (or (neq ?category nil)
+                     (eq ?category "Abstract Category")
+                     (eq ?category "Intervention / Comparator Category"))
+                     (eq ?polarity "ancestor")) then
+            (printout t "         *"  ?category " ==> " ?term crlf))
         (bind ?evidence (call ?citationObj nextPicoEvidence))))
 
 ;; =====================================================================
@@ -31,12 +52,17 @@
         (partition ?testSetName)
         (predictedClassification ?p&:(eq ?p "include"))
         (actualClassification ?a&:(eq ?a "exclude"))
+        (lastRuleApplied ?lastRuleApplied)
         (OBJECT ?citationObj))  
     =>
+    (printout t crlf crlf)
     (printout t "Citation " ?id " predicted: " ?p " actual: " ?a crlf)
+    (printout t "      deciding rule: " ?lastRuleApplied crlf) 
+    (printout t crlf crlf)
     (bind ?content (call ?citationObj getContent))
     (printout t ?content crlf)
     (display-evidence ?citationObj)
+    (display-ancestry-evidence ?citationObj)
     (modify ?citation (isActivated 0))
     (retract ?g))
 
@@ -67,13 +93,18 @@
         (partition ?testSetName)
         (predictedClassification ?p&:(eq ?p "include"))
         (actualClassification ?a&:(eq ?a "include"))
+        (lastRuleApplied ?lastRuleApplied)
         (OBJECT ?citationObj))
     
     =>
+    (printout t crlf crlf)
     (printout t "Citation " ?id " predicted: " ?p " actual: " ?a crlf)
+    (printout t "      deciding rule: " ?lastRuleApplied crlf) 
+    (printout t crlf crlf)
     (bind ?content (call ?citationObj getContent))
     (printout t ?content crlf)
     (display-evidence ?citationObj)
+    (display-ancestry-evidence ?citationObj)
     (modify ?citation (isActivated 0))
     (retract ?g))
 
@@ -104,13 +135,18 @@
         (partition ?testSetName)
         (predictedClassification ?p&:(eq ?p "exclude"))
         (actualClassification ?a&:(eq ?a "include"))
+        (lastRuleApplied ?lastRuleApplied)
         (OBJECT ?citationObj))
     
     =>
+    (printout t crlf crlf)
     (printout t "Citation " ?id " predicted: " ?p " actual: " ?a crlf)
+    (printout t "      deciding rule: " ?lastRuleApplied crlf) 
+    (printout t crlf crlf)
     (bind ?content (call ?citationObj getContent))
     (printout t ?content crlf)
     (display-evidence ?citationObj)
+    (display-ancestry-evidence ?citationObj)
     (modify ?citation (isActivated 0))
     (retract ?g))
 
@@ -141,12 +177,17 @@
         (partition ?testSetName)
         (predictedClassification ?p&:(eq ?p "exclude"))
         (actualClassification ?a&:(eq ?a "exclude"))
+        (lastRuleApplied ?lastRuleApplied)
         (OBJECT ?citationObj))
     =>
+    (printout t crlf crlf)
     (printout t "Citation " ?id " predicted: " ?p " actual: " ?a crlf)
+    (printout t "      deciding rule: " ?lastRuleApplied crlf) 
+    (printout t crlf crlf)
     (bind ?content (call ?citationObj getContent))
     (printout t ?content crlf)
     (display-evidence ?citationObj)
+    (display-ancestry-evidence ?citationObj)
     (modify ?citation (isActivated 0))
     (retract ?g))
 

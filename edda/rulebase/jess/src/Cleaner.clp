@@ -87,6 +87,31 @@
     (cleanGoals)
     (cleanClassifyGoals))
 
+;; =====================================================================
+;;
+;; Clean rule-goals
+;;
+;; =====================================================================
+
+(defrule clean-rule-goals-0
+    "clean all rule goals in wm"
+    (declare (salience 100))
+    ?g <- (goal (name clean-rule-goals))
+    ?otherGoal <- (rule-goal)
+    =>
+    (retract ?otherGoal))
+
+(defrule clean-rule-goals-1
+    "clean all rule-goals in wm"
+    (declare (salience 50))
+    ?g <- (goal (name clean-rule-goals))
+    =>
+    (retract ?g))
+
+(deffunction cleanRuleGoals () "clean all rule-goals in wm"
+    (assert (goal (name clean-rule-goals)))
+    (run))
+
 ;; ==========================================================================
 ;;
 ;; MentionEvidence
@@ -123,7 +148,8 @@
     (call ?experiment setFalseNegatives 0)
     (call ?experiment setTrueNegatives 0)
     (bind ?experimentDiagnostics (call ?experiment toString))
-    (printout t ?experimentDiagnostics crlf))
+;;    (printout t ?experimentDiagnostics crlf)
+)
 
 (provide C:/Users/kjm84/git/edda/edda/rulebase/jess/src/Cleaner)
 

@@ -1,16 +1,16 @@
-(import edu.pitt.dbmi.edda.rulebase.SystematicReviewReader)
-(import edu.pitt.dbmi.edda.rulebase.Experiment)
 (import edu.pitt.dbmi.edda.rulebase.Identifiable)
 (import edu.pitt.dbmi.edda.rulebase.ClassificationEvidence)
-(import edu.pitt.dbmi.edda.rulebase.pico.PicoEvidence)
 (import edu.pitt.dbmi.edda.rulebase.MentionEvidence)
 (import edu.pitt.dbmi.edda.rulebase.section.TitleEvidence)
 (import edu.pitt.dbmi.edda.rulebase.section.AbstractEvidence)
 (import edu.pitt.dbmi.edda.rulebase.bagawords.BagOfWordsEvidence)
-(import edu.pitt.dbmi.edda.rulebase.bagawords.Alphabet)
+(import edu.pitt.dbmi.edda.rulebase.Experiment)
 (import edu.pitt.dbmi.edda.rulebase.document.SystematicReview)
 (import edu.pitt.dbmi.edda.rulebase.document.Citation)
 (import edu.pitt.dbmi.edda.rulebase.document.Word)
+(import edu.pitt.dbmi.edda.rulebase.pico.PicoEvidence)
+(import edu.pitt.dbmi.edda.rulebase.SystematicReviewReader)
+(import edu.pitt.dbmi.edda.rulebase.bagawords.Alphabet)
 
 (deftemplate Identifiable
     (declare (from-class Identifiable)
@@ -65,6 +65,13 @@
 (deftemplate classify-goal extends Identifiable "classification subgoal system"  
     (slot name)
     (slot priority (type INTEGER) (default 0)))
+
+(deftemplate rule-goal extends Identifiable "Rule goal"  
+    (slot name)
+    (slot priority (type INTEGER) (default 0))
+    (slot tns (type INTEGER) (default 0))
+    (slot fns (type INTEGER) (default 0))
+)
 
 (deftemplate citation-counter "counts citations in various partitions"
     (slot domain (default Transplant))

@@ -16,9 +16,10 @@
     (retract ?g))
    
 (deffunction activate-citations () "activates all the citations"
-    (printout t "activating citations" crlf)
+;;    (printout t "activating citations" crlf)
     (assert (goal (name activate-citations)))
     (run)
-    (printout t "finished activating citations" crlf))  
+;;    (printout t "finished activating citations" crlf)
+)  
 
 (provide C:/Users/kjm84/git/edda/edda/rulebase/jess/src/ActivateCitations)

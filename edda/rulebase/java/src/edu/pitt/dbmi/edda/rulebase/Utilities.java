@@ -13,19 +13,18 @@ public class Utilities {
 		try {
 			reader = new BufferedReader(new FileReader(file));
 			String line = null;
-			String ls = System.getProperty("line.separator");
+			String ls = "\n";
 			while ((line = reader.readLine()) != null) {
 				stringBuilder.append(line);
 				stringBuilder.append(ls);
 			}
+			reader.close();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-		return stringBuilder.toString();
-		
+		return stringBuilder.toString();	
 	}
 
 }

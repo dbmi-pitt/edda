@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
 import edu.pitt.dbmi.edda.pico.PICOExtractor;
 import edu.pitt.dbmi.edda.rulebase.document.Citation;
 import edu.pitt.dbmi.edda.rulebase.document.SystematicReview;
+import edu.pitt.dbmi.edda.rulebase.pico.PicoEvidence;
 
 public class SystematicReviewReader {
 
@@ -34,7 +35,21 @@ public class SystematicReviewReader {
 			if (identifiable == null) {
 				break;
 			}
-			System.out.println(identifiable);
+			else if (identifiable instanceof Citation) {
+				Citation citation = (Citation) identifiable;
+				if (citation.getCitationKey().equals("TRANSPLANT10001_FULL.txt")) {
+					String citationKey = citation.getCitationKey();
+					System.out.println(citationKey);
+					citation.iterateEvidence();
+					PicoEvidence evidence = citation.nextPicoEvidence();
+					while (evidence != null) {
+						
+							System.out.println(evidence);
+										
+						evidence = citation.nextPicoEvidence();
+					}
+				}
+			}	
 		}
 	}
 
@@ -68,12 +83,14 @@ public class SystematicReviewReader {
 	private void cacheReferenceFilerOutput() throws IOException {
 		referenceFilerCacher.setSystematicReview(systematicReview);
 		referenceFilerCacher.setPicoManager(picoManager);
+		referenceFilerCacher.useTrainingData();
 		referenceFilerCacher.cache();
 		workingMemoryDataQueue.addAll(referenceFilerCacher.getTestingIncludes());
 		workingMemoryDataQueue.addAll(referenceFilerCacher.getTestingExcludes());
 	}
 	
 	private void cachePicoResultsFile() throws IOException {
+//		File dataDirectory = new File("C:\\Users\\kjm84\\git\\edda\\edda\\pico\\data");
 		File dataDirectory = new File("C:\\Users\\kjm84\\git\\edda\\edda\\pico\\data");
 		File templateFile = new File(dataDirectory,"OrganTransplant.template");
 		try {
@@ -125,6 +142,14 @@ public class SystematicReviewReader {
 	
 	public Experiment getExperiment() {
 		return experiment;
+	}
+
+	public SystematicReview getSystematicReview() {
+		return systematicReview;
+	}
+
+	public PICOExtractor getPicoManager() {
+		return picoManager;
 	}
 
 }
