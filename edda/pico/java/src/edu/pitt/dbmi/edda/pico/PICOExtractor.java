@@ -139,9 +139,9 @@ public class PICOExtractor {
 	 * @throws Exception 
 	 */
 	public static void main(String[] args) throws Exception {
-		File dataDirectory = new File("C:\\Users\\kjm84\\git\\edda\\edda\\pico\\data");
+		File dataDirectory = new File("/home/tseytlin/Work/EDDA/edda/pico/data");
 		File templateFile = new File(dataDirectory,"OrganTransplant.template");
-		File documentSample = new File(dataDirectory,"TRANSPLANT10001_FULL.txt");
+		File documentSample = new File(dataDirectory,"TRANSPLANT106_FULL.txt");
 		long time = System.currentTimeMillis();
 		System.out.print("loading template "+templateFile.getName()+" .. ");
 		
