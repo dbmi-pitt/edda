@@ -1,0 +1,17 @@
+AU  - D. Fatela-Cantillo, R. Hinojosa-Perez, M. I. Peralvo-Rodriguez, J. Serrano-Diaz Canedo and M. A. Gomez-Bravo
+TI  - Pharmacokinetic evaluation of mycophenolic acid profiles during the period immediately following an orthotopic liver transplant
+2006;38(we9, 0243532):2482-5
+MH  - Area Under Curve
+Humans
+Immunosuppressive Agents/pk [Pharmacokinetics]
+Immunosuppressive Agents/tu [Therapeutic Use]
+Liver Circulation
+Liver Transplantation/im [Immunology]
+*Liver Transplantation/ph [Physiology]
+*Mycophenolic Acid/pk [Pharmacokinetics]
+Mycophenolic Acid/tu [Therapeutic Use]
+*Postoperative Period
+Time Factors
+AB  - BACKGROUND: Area under the curve (AUC) limited sampling strategies have been proposed to improve the efficiency of mycophenolic acid (MPA), treatment of the transplanted patient. Our objective was to develop a model in the initial phase of the transplantation that explains the variability in the pharmacokinetic behavior of MPA in the immediate posttransplant period, following treatment with mycophenolate mofetil (MMF) in adult liver transplantation., METHODS: One hundred ten pharmacokinetic simplified sampling profiles were collected, including four samples over a 6-hour postdose interval, in over 60 patients treated with cyclosporine or tacrolimus, MMF, and steroids, combining Daclizumab in more than a third of the patients. For an enzyme-multiplied immunoassay technique method was established for MPA estimates. The correlation between the AUC and the plasma concentration points was established using a multiple linear regression with various equations for three different pharmacokinetic groups., RESULTS: The maximum mean values of MPA AUC and predose concentration (C0h) (20.8 +/- 11.8 and 2.3 +/- 1.8, respectively) were reached on the third day. The single sample showing the greatest correlation with the MPA AUC was the one collected after 3 hours (r(2) = 0.575); 59.1% of profiles displayed a single peak with more than half showing a tmax >/= 3 hours., CONCLUSIONS: This profile analysis during the first few weeks highlighted the problems in determining therapeutic targets. Profiles showing a double peak revealed the marked influence of the enterohepatic cycle on MPA concentrations during the initial phase.
+
+TI  -  Pharmacokinetic evaluation of mycophenolic acid profiles during the period immediately following an orthotopic liver transplant
