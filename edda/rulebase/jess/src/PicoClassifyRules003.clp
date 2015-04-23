@@ -100,8 +100,8 @@
         (isActivated 1))
     (PicoEvidence (picoCategory ?picoCategory&:(eq ?picoCategory "Study Design"))
                   (picoTerm ?picoTerm&:(eq ?picoTerm "animal study")))
-;;    (not (PicoEvidence (picoCategory "Species Category")
-;;                       (picoTerm ?anotherPicoTerm&:(eq ?anotherPicoTerm "homo sapiens"))))
+    (not (PicoEvidence (picoCategory "Species Category")
+                       (picoTerm ?anotherPicoTerm&:(eq ?anotherPicoTerm "homo sapiens"))))
     =>
 ;;    (printout t ?ruleName " fires..." crlf)
     (modify ?citation (lastRuleApplied ?ruleName))
@@ -280,6 +280,37 @@
     (modify ?citation (predictedClassification "exclude"))
     (update ?citationObj))
 
+;; =============================================================================================================
+;;
+;; pico-classify-exclude-missing-outcome
+;;
+;; Hi, Kevin, could you run an OUTCOME rule by itself before the meeting?
+;; I know you don’t have time to run the entire rule set with this addition, but I’d like to see how it performs.
+;; Please use the TRAINING dset.
+;;
+;; Try this rule: 
+;;
+;; Exclude if the outcome category is null. 
+;;
+;; =============================================================================================================
+(defrule pico-classify-exclude-missing-outcome "Exclude if there is no Outcome Category"
+    (declare (salience 910))
+    (goal (name pico-classify))
+    (classify-goal (id ?citationId)
+        (name classify-citation)
+        (isActivated 1))
+    (rule-goal (name ?ruleName&:(eq ?ruleName "pico-classify-exclude-missing-outcome")) (isActivated 1))
+    ?citation <- (Citation (id ?citationId)
+        (OBJECT ?citationObj)
+        (predictedClassification "NA")
+        (isActivated 1))
+    (not (PicoEvidence (picoCategory "Outcome Category")))
+    =>
+;;    (printout t ?ruleName " fires..." crlf)
+    (modify ?citation (lastRuleApplied ?ruleName))
+    (modify ?citation (predictedClassification "exclude"))
+    (update ?citationObj))
+
 ;; ============================================================================
 ;;  
 ;;  Include all others
@@ -287,7 +318,7 @@
 ;; ============================================================================
 
 (defrule pico-classify-include-others "Include all others"
-    (declare (salience 910))
+    (declare (salience 900))
     (goal (name pico-classify))
     (classify-goal (id ?citationId)
         (name classify-citation)
