@@ -84,6 +84,7 @@ public class SystematicReviewReader {
 		referenceFilerCacher.setSystematicReview(systematicReview);
 		referenceFilerCacher.setPicoManager(picoManager);
 		referenceFilerCacher.useTrainingData();
+//		referenceFilerCacher.useTestingData();
 		referenceFilerCacher.cache();
 		workingMemoryDataQueue.addAll(referenceFilerCacher.getTestingIncludes());
 		workingMemoryDataQueue.addAll(referenceFilerCacher.getTestingExcludes());
