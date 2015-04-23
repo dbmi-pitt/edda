@@ -5,8 +5,8 @@
 # [NCI Thesaurus] -> use a branch from NCI Thesaurus
 ## Eukaryota [MeSH]
 
-Study Design [StudyDesigns]
-Publication Type [StudyDesigns]
+Study Design [StudyDesigns*]
+Publication Type [StudyDesigns*]
 Population Category
 	Species Category
 		Organisms MeSH Category [MeSH]
