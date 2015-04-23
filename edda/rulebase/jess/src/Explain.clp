@@ -31,7 +31,7 @@
    (not (rule-goal (name ?otherFiredRule) (priority ?priorityTwo&:(> ?priorityOne ?priorityTwo)) (isActivated 1)))
   =>
   (modify ?rg (fns ?c))
-;;  (printout t ?firedRule " was wrong " ?c " times" crlf)n
+;;  (printout t ?firedRule " was wrong " ?c " times" crlf)
 )
 
 (defrule calculate-specificity "fns / fns + tns"
@@ -44,15 +44,38 @@
                     (isActivated 1))
   (not (rule-goal (name ?otherFiredRule) (priority ?priorityTwo&:(> ?priorityOne ?priorityTwo)) (isActivated 1)))
   =>
-   (modify ?rg (isActivated 0))
    (bind ?denom (+ ?tns ?fns))
    (if (< ?denom 1) then (bind ?denom 1))
    (printout t ?firedRule ": tns = " ?tns " fns = " ?fns crlf)
    (printout t ?firedRule ": (negative predictive value " (/ ?tns ?denom) ")" crlf))
-                            
+
+(defrule list-rule-fns "report the fns"
+  (declare (salience 90))
+  (goal (name "explain"))
+  ?rg <- (rule-goal (name ?firedRule) 
+                    (priority ?priorityOne) 
+                    (isActivated 1))
+  (not (rule-goal (name ?otherFiredRule) (priority ?priorityTwo&:(> ?priorityOne ?priorityTwo)) (isActivated 1)))
+  ?citation <- (Citation (isActivated 1) 
+                         (actualClassification ?actual&:(eq ?actual "include"))
+                         (predictedClassification ?predicted&:(eq ?predicted "exclude"))
+                         (lastRuleApplied ?firedRule)
+                         (path ?pathToCitation))
+  =>
+  (printout t ?pathToCitation crlf))
+
+(defrule iterate-rule-goal "move to next rule goal."
+  (declare (salience 80))
+  (goal (name "explain"))
+  ?rg <- (rule-goal (name ?firedRule) 
+                    (priority ?priorityOne) 
+                    (isActivated 1)) 
+  (not (rule-goal (name ?otherFiredRule) (priority ?priorityTwo&:(> ?priorityOne ?priorityTwo)) (isActivated 1)))
+=>
+   (modify ?rg (isActivated 0)))
 
 (defrule done-explaining "done explaining"
-  (declare (salience 90))
+  (declare (salience 70))
   ?g <- (goal (name "explain"))
 =>
   (retract ?g))

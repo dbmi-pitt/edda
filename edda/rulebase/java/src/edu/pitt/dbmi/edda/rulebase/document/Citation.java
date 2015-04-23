@@ -120,6 +120,7 @@ public class Citation extends Identifiable {
 		}
 	}
 
+	@SuppressWarnings("unused")
 	private void generateExtraBloodEvidence() {
 		final String[] patterns = { "\\d+\\s*microg/ml",
 				"\\d+\\s*microg/hour/ml", "\\[Blood\\]" };
@@ -127,6 +128,7 @@ public class Citation extends Identifiable {
 				"blood", Pattern.CASE_INSENSITIVE, false);
 	}
 
+	@SuppressWarnings("unused")
 	private void generateExtraMeasurementEvidence() {
 		final String[] patterns = { "matched multivariate analysis",
 				"in vitro assay", "\\d+\\s*microg/ml",
