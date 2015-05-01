@@ -83,8 +83,8 @@ public class SystematicReviewReader {
 	private void cacheReferenceFilerOutput() throws IOException {
 		referenceFilerCacher.setSystematicReview(systematicReview);
 		referenceFilerCacher.setPicoManager(picoManager);
-		referenceFilerCacher.useTrainingData();
-//		referenceFilerCacher.useTestingData();
+//		referenceFilerCacher.useTrainingData();
+		referenceFilerCacher.useTestingData();
 		referenceFilerCacher.cache();
 		workingMemoryDataQueue.addAll(referenceFilerCacher.getTestingIncludes());
 		workingMemoryDataQueue.addAll(referenceFilerCacher.getTestingExcludes());
