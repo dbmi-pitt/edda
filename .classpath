@@ -8,6 +8,7 @@
 	<classpathentry kind="src" path="edda/summarization/tebeka-mitchell/java/src"/>
 	<classpathentry kind="src" path="edda/pico/java/src"/>
 	<classpathentry kind="src" path="edda/term-discover/java/src"/>
+	<classpathentry kind="lib" path="edda/reference-tools/java/lib/specialistTextTools.jar"/>
 	<classpathentry kind="lib" path="edda/summarization/tebeka-mitchell/lib/antlr-2.7.7.jar"/>
 	<classpathentry kind="lib" path="edda/summarization/tebeka-mitchell/lib/axis.jar"/>
 	<classpathentry kind="lib" path="edda/summarization/tebeka-mitchell/lib/commons-cli-1.2.jar"/>
@@ -52,7 +53,6 @@
 	<classpathentry kind="lib" path="edda/common/lib/log4j-1.2.15.jar"/>
 	<classpathentry kind="lib" path="edda/reference-tools/java/lib/biolemmatizer-core-1.1-jar-with-dependencies.jar"/>
 	<classpathentry kind="lib" path="edda/reference-tools/java/lib/dtaggerProject.jar"/>
-	<classpathentry kind="lib" path="edda/reference-tools/java/lib/specialistTextTools.jar"/>
 	<classpathentry kind="lib" path="edda/reference-tools/java/lib/TextTools.jar"/>
 	<classpathentry kind="lib" path="edda/summarization/general/java/lib/dragontool.jar"/>
 	<classpathentry kind="lib" path="edda/summarization/general/java/lib/heptag.jar"/>
@@ -68,5 +68,6 @@
 	<classpathentry kind="lib" path="edda/classification/rapidminer-operators/java/lib/mallet.jar"/>
 	<classpathentry kind="lib" path="edda/common/lib/commons-lang3-3.1.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/nobletools"/>
+	<classpathentry kind="lib" path="/home/tseytlin/Technologies/OpenNLP/apache-opennlp-1.5.3/lib/opennlp-maxent-3.0.3.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
