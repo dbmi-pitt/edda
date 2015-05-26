@@ -24,6 +24,8 @@ public class StudyDesignFinder {
 	 * @return
 	 */
 	private boolean isPossibleDesign(String term) {
+		term = term.toLowerCase();
+		
 		boolean isDesign = false;
 		String seed = "(study|studies|designs?|trials?|assessments?|evaluations?|surveys?|questionnaires?|analys[ie]s|models?|modell?ing)";
 		
@@ -87,7 +89,7 @@ public class StudyDesignFinder {
 	 * @return
 	 */
 	private String filter(String np) {
-		np = np.trim().toLowerCase();
+		np = np.trim();
 			
 		// the varies flavours of dashes will drive me nuts later, so let me normalize it
 		np = np.replaceAll("\\p{Pd}","-");
@@ -109,7 +111,7 @@ public class StudyDesignFinder {
 			d. Simplify terms with part (singular word) in them by deleting string before the hyphen. 
 			E.g., outpatient cardiac rehabilitation part i- evaluation evaluation . However, want to keep as is terms like participation study.
 			*/
-			Matcher m = Pattern.compile(".*\\bpart\\b.*\\-(.+)").matcher(np);
+			Matcher m = Pattern.compile("(?i).*\\bpart\\b.*\\-(.+)").matcher(np);
 			if(m.matches()){
 				np =  m.group(1).trim();
 			}
@@ -129,15 +131,15 @@ public class StudyDesignFinder {
 			np = np.substring(1).trim();
 		if(np.startsWith("-"))
 			np = np.substring(1).trim();
-		if(np.startsWith("a "))
+		if(np.toLowerCase().startsWith("a "))
 			np = np.substring(2);
-		if(np.startsWith("an "))
+		if(np.toLowerCase().startsWith("an "))
 			np = np.substring(3);
-		if(np.startsWith("the "))
+		if(np.toLowerCase().startsWith("the "))
 			np = np.substring(4);
-		if(np.endsWith(" to"))
+		if(np.toLowerCase().endsWith(" to"))
 			np = np.substring(0,np.length()-3);
-		if(np.contains(" - a "))
+		if(np.toLowerCase().contains(" - a "))
 			np = np.substring(np.indexOf(" - a ")+5);
 		
 		return np.trim();
@@ -289,16 +291,13 @@ public class StudyDesignFinder {
 
 
 	public static void main(String[] args) throws IOException {
-		//File file = new File("/home/tseytlin/Data/HTA/HTA_titles.txt");
-		//File file = new File("/home/tseytlin/Data/HTA/NCIT_Possible_Study_Designs.txt");
-		//File file = new File("/home/tseytlin/Data/HTA/MSH_Possible_Study_Designs.txt");
 		//File file = new File("/home/tseytlin/Data/HTA/possible_study_design_candidates_HTA_titles.txt");
 		//File file = new File("/home/tseytlin/Data/HTA/possible_study_design_candidates_HTA_keywords.txt");
-		//File file = new File("/home/tseytlin/Data/HTA/possible_study_design_candidates_MSH.txt");
-		File file = new File("/home/tseytlin/Data/HTA/possible_study_design_candidates_NCIT.txt");
+		File file = new File("/home/tseytlin/Data/HTA/possible_study_design_candidates_MSH.txt");
+		//File file = new File("/home/tseytlin/Data/HTA/possible_study_design_candidates_NCIT.txt");
 		
 		StudyDesignFinder sd = new StudyDesignFinder();
-		sd.setMode(Mode.NCIT);
+		sd.setMode(Mode.MSH);
 		
 		// do sentence parsing 
 		List<String> designs = sd.find(file);
