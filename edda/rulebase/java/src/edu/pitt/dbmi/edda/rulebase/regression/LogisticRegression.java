@@ -48,7 +48,7 @@ public class LogisticRegression {
 
 	public static void main(String[] args) {
 		SystematicReviewReader srReader = new SystematicReviewReader();
-		srReader.pullSrAndCitations();
+		srReader.pullSrAndCitations(true);
 		final ArrayList<Citation> testingCitations = new ArrayList<Citation>();
 		final ArrayList<Citation> trainingCitations = new ArrayList<Citation>();
 		final ArrayList<Citation> includes = new ArrayList<Citation>();
