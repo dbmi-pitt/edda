@@ -11,9 +11,11 @@
 (require C:/Users/kjm84/git/edda/edda/rulebase/jess/src/Explain)
 (require C:/Users/kjm84/git/edda/edda/rulebase/jess/src/ExplainRuleFns)
 
+(defglobal ?*is-training* = FALSE)
+
 (deffunction pull-sr-and-citations () "pulls sr spec and citations from file system"
     (printout t "pulling sr and citations" crlf)
-    (call ?*reader* pullSrAndCitations)
+    (call ?*reader* pullSrAndCitations  ?*is-training*)
     (bind ?identifiableObj (call ?*reader* nextIdentifiable))
     (bind ?numberIdentifiablesLoaded 0)
     (while  (neq ?identifiableObj nil)
