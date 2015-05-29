@@ -11,7 +11,8 @@
 (require C:/Users/kjm84/git/edda/edda/rulebase/jess/src/Explain)
 (require C:/Users/kjm84/git/edda/edda/rulebase/jess/src/ExplainRuleFns)
 
-(defglobal ?*is-training* = FALSE)
+;;(defglobal ?*is-training* = FALSE)
+(defglobal ?*is-training* = TRUE)
 
 (deffunction pull-sr-and-citations () "pulls sr spec and citations from file system"
     (printout t "pulling sr and citations" crlf)
