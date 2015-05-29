@@ -45,7 +45,9 @@ public class HTA_Convert2CSV {
 		for(Map<String,String> rec: records){
 			for(String key: keys){
 				String val = rec.get(key);
-				w.write("\""+(val != null?val:"")+"\",");
+				if(val == null)
+					val = "";
+				w.write("\""+val.replaceAll("\"","")+"\",");
 			}
 			w.write("\n");
 		}
