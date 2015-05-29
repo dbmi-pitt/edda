@@ -17,60 +17,60 @@ public class SystematicReviewReader {
 
 	private final Experiment experiment = new Experiment();
 	private final ReferenceFilerCacher referenceFilerCacher = new ReferenceFilerCacher();
-	
+
 	private final SystematicReview systematicReview = new SystematicReview();
 
 	private final List<Identifiable> workingMemoryDataQueue = new ArrayList<Identifiable>();
 	private Iterator<Identifiable> workingMemoryDataQueueIterator;
 
 	private final MentionEvidence mpaEvidence = new MentionEvidence();
-	
+
 	private PICOExtractor picoManager = null;
-	
+
 	public static void main(String[] args) {
 		SystematicReviewReader srReader = new SystematicReviewReader();
-		srReader.pullSrAndCitations();
+		srReader.pullSrAndCitations(true);
 		while (true) {
 			Identifiable identifiable = srReader.nextIdentifiable();
 			if (identifiable == null) {
 				break;
-			}
-			else if (identifiable instanceof Citation) {
+			} else if (identifiable instanceof Citation) {
 				Citation citation = (Citation) identifiable;
-				if (citation.getCitationKey().equals("TRANSPLANT10001_FULL.txt")) {
+				if (citation.getCitationKey()
+						.equals("TRANSPLANT10001_FULL.txt")) {
 					String citationKey = citation.getCitationKey();
 					System.out.println(citationKey);
 					citation.iterateEvidence();
 					PicoEvidence evidence = citation.nextPicoEvidence();
 					while (evidence != null) {
-						
-							System.out.println(evidence);
-										
+
+						System.out.println(evidence);
+
 						evidence = citation.nextPicoEvidence();
 					}
 				}
-			}	
+			}
 		}
 	}
 
 	public SystematicReviewReader() {
 	}
 
-	public void pullSrAndCitations() {
+	public void pullSrAndCitations(boolean isTraining) {
 		try {
 			systematicReview.setDomain("Transplant");
 			workingMemoryDataQueue.add(systematicReview);
 			cachePicoResultsFile();
-			cacheReferenceFilerOutput();
-			
-//			workingMemoryDataQueue.add(bagOfWordsClassifier);
-//			workingMemoryDataQueue.add(mpaEvidence);
-			workingMemoryDataQueueIterator = workingMemoryDataQueue.iterator();			
+			cacheReferenceFilerOutput(isTraining);
+
+			// workingMemoryDataQueue.add(bagOfWordsClassifier);
+			// workingMemoryDataQueue.add(mpaEvidence);
+			workingMemoryDataQueueIterator = workingMemoryDataQueue.iterator();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void analyzeExperiment() {
 		for (Citation citation : referenceFilerCacher.getCitations()) {
 			if (citation.getPartition().equals("test")) {
@@ -80,32 +80,41 @@ public class SystematicReviewReader {
 		System.out.println(experiment);
 	}
 
-	private void cacheReferenceFilerOutput() throws IOException {
+	private void cacheReferenceFilerOutput(boolean isTraining)
+			throws IOException {
 		referenceFilerCacher.setSystematicReview(systematicReview);
 		referenceFilerCacher.setPicoManager(picoManager);
-//		referenceFilerCacher.useTrainingData();
+		if (isTraining) {
+			referenceFilerCacher.useTrainingData();
+		} else {
+			referenceFilerCacher.useTestingData();
+		}
 		referenceFilerCacher.useTestingData();
 		referenceFilerCacher.cache();
-		workingMemoryDataQueue.addAll(referenceFilerCacher.getTestingIncludes());
-		workingMemoryDataQueue.addAll(referenceFilerCacher.getTestingExcludes());
+		workingMemoryDataQueue
+				.addAll(referenceFilerCacher.getTestingIncludes());
+		workingMemoryDataQueue
+				.addAll(referenceFilerCacher.getTestingExcludes());
 	}
-	
+
 	private void cachePicoResultsFile() throws IOException {
-//		File dataDirectory = new File("C:\\Users\\kjm84\\git\\edda\\edda\\pico\\data");
-		File dataDirectory = new File("C:\\Users\\kjm84\\git\\edda\\edda\\pico\\data");
-		File templateFile = new File(dataDirectory,"OrganTransplant.template");
+		// File dataDirectory = new
+		// File("C:\\Users\\kjm84\\git\\edda\\edda\\pico\\data");
+		File dataDirectory = new File(
+				"C:\\Users\\kjm84\\git\\edda\\edda\\pico\\data");
+		File templateFile = new File(dataDirectory, "OrganTransplant.template");
 		try {
 			picoManager = new PICOExtractor(templateFile);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void findMphEvidence(Citation citation) {
-		
+
 		mpaEvidence.setMention("mpa");
 		mpaEvidence.setCitationId(citation.getId());
-	
+
 		StringBuilder sb = new StringBuilder();
 		sb.append("Acide mycophenolique|");
 		sb.append("Acido micofenolico|");
@@ -116,12 +125,12 @@ public class SystematicReviewReader {
 		sb.append("Mycophenolic Acid|");
 		sb.append("Myfortic|");
 		sb.append("mycophenolate");
-		
+
 		int patternParams = Pattern.CASE_INSENSITIVE;
 		patternParams |= Pattern.DOTALL;
 		patternParams |= Pattern.MULTILINE;
 		Pattern p = Pattern.compile(sb.toString(), patternParams);
-		
+
 		Matcher matcher = p.matcher(citation.getContent());
 		int weight = 0;
 		while (matcher.find()) {
@@ -130,8 +139,7 @@ public class SystematicReviewReader {
 		mpaEvidence.setWeight(weight);
 		if (weight > 0) {
 			mpaEvidence.setPolarity("present");
-		}
-		else {
+		} else {
 			mpaEvidence.setPolarity("absent");
 		}
 	}
@@ -140,7 +148,7 @@ public class SystematicReviewReader {
 		return (workingMemoryDataQueueIterator.hasNext()) ? workingMemoryDataQueueIterator
 				.next() : null;
 	}
-	
+
 	public Experiment getExperiment() {
 		return experiment;
 	}

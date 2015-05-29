@@ -101,7 +101,7 @@ public class Experiment extends Identifiable {
 	
 	public void writeOut(String fileName) {
 		try {
-			FileUtils.write(new File("C:\\Users\\kjm84\\Desktop\\" + fileName), sb.toString());
+			FileUtils.write(new File("C:\\Users\\kjm84\\Desktop\\picoclasses\\" + fileName), sb.toString());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
