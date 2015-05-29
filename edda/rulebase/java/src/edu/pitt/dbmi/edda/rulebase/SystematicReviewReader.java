@@ -89,7 +89,6 @@ public class SystematicReviewReader {
 		} else {
 			referenceFilerCacher.useTestingData();
 		}
-		referenceFilerCacher.useTestingData();
 		referenceFilerCacher.cache();
 		workingMemoryDataQueue
 				.addAll(referenceFilerCacher.getTestingIncludes());

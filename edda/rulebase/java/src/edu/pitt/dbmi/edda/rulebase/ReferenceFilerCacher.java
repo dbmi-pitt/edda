@@ -102,8 +102,6 @@ public class ReferenceFilerCacher {
 	
 	}
 	
-	
-
 	private void establishCitationPartitions() {
 		for (Citation citation : this.trainingIncludes) {
 			citation.setPartition("train");
