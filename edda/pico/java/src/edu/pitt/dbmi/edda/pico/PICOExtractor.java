@@ -89,15 +89,15 @@ public class PICOExtractor {
 		
 		// fill in the map
 		for(TemplateItem temp: template.getTemplateItems()){
-			boolean hasUnits = !temp.getUnits().isEmpty();
+			//boolean hasUnits = !temp.getUnits().isEmpty();
 			List<ItemInstance> instances = doc.getItemInstances(temp);
 			List<String> list = new ArrayList<String>();
 			for(ItemInstance inst :instances){
-				if(hasUnits && inst.getValue() != null){
+				/*if(hasUnits && !inst.getValues().isEmpty()){
 					String num = TextTools.toString((Double)inst.getValue());
 					list.add(num+" "+inst.getUnit().getName());
-				}else
-					list.add(inst.getAnswer());
+				}else*/
+				list.add(inst.getAnswer());
 			}
 			result.put(temp.getName(),list);
 		}		

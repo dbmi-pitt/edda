@@ -119,7 +119,7 @@ public class StudyDesignOverlap {
 	
 	public static void main(String[] args) throws Exception{
 		String terminology = "StudyDesigns";
-		File file = new File("/home/tseytlin/Data/HTA/study_designs_HTA_titles.txt");
+		File file = new File("/home/tseytlin/Data/SD_Mining/data/candidates-7-1-2015/target/filtered_study_designs_HTA_keywords.txt");
 		StudyDesignOverlap overlap = new StudyDesignOverlap(new NobleCoderTerminology(terminology));
 		overlap.process(file);
 		System.out.println("Exact Match ("+overlap.getExactMatch().size()+")");
