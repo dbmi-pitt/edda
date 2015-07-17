@@ -2,13 +2,17 @@ package edu.pitt.dbmi.edda.term.discover;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 
 import edu.pitt.dbmi.nlp.noble.coder.model.Mention;
 import edu.pitt.dbmi.nlp.noble.coder.model.Sentence;
+import edu.pitt.dbmi.nlp.noble.terminology.Concept;
 import edu.pitt.dbmi.nlp.noble.terminology.Terminology;
+import edu.pitt.dbmi.nlp.noble.terminology.TerminologyException;
 import edu.pitt.dbmi.nlp.noble.terminology.impl.NobleCoderTerminology;
 import edu.pitt.dbmi.nlp.noble.tools.TextTools;
 import edu.pitt.dbmi.nlp.noble.util.PathHelper;
@@ -116,11 +120,26 @@ public class StudyDesignOverlap {
 		return m;
 	}
 	
+	public static Terminology getTerminology(File textFile) throws FileNotFoundException, IOException, TerminologyException{
+		NobleCoderTerminology terminology = new NobleCoderTerminology();
+		for(String term: TextTools.getText(new FileInputStream(textFile)).split("\n")){
+			terminology.addConcept(new Concept(term,term));
+		}
+		return terminology;
+	}
+	
+	
 	
 	public static void main(String[] args) throws Exception{
-		String terminology = "StudyDesigns";
-		File file = new File("/home/tseytlin/Data/SD_Mining/data/candidates-7-1-2015/target/filtered_study_designs_HTA_keywords.txt");
-		StudyDesignOverlap overlap = new StudyDesignOverlap(new NobleCoderTerminology(terminology));
+		
+		File file = new File("/home/tseytlin/Data/SD_Mining/data/candidates-7-8-2015/target/filtered_study_designs_MSH.txt");
+		File targetFile = new File("/home/tseytlin/Data/SD_Mining/data/candidates-7-8-2015/target/filtered_study_designs_NCIT.txt");
+		
+		//Terminology terminology = new NobleCoderTerminology("StudyDesigns");
+		Terminology terminology = getTerminology(targetFile);
+		
+		
+		StudyDesignOverlap overlap = new StudyDesignOverlap(terminology);
 		overlap.process(file);
 		System.out.println("Exact Match ("+overlap.getExactMatch().size()+")");
 		for(String term: overlap.getExactMatch().keySet()){
