@@ -38,7 +38,7 @@ public class SynonymFinder {
 	
 	
 	public static void main(String[] args) throws FileNotFoundException, IOException {
-		File f = new File("/home/tseytlin/Data/SD_Mining/data/final/target/candidates.txt");
+		File f = new File("/home/tseytlin/Data/SD_Mining/data/final/target/candidates_for_human_review.txt");
 		SynonymFinder sf = new SynonymFinder();
 		sf.findSynonyms(TextTools.getText(new FileInputStream(f)));
 	}

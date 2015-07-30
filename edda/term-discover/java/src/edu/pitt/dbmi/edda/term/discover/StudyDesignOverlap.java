@@ -132,11 +132,11 @@ public class StudyDesignOverlap {
 	
 	public static void main(String[] args) throws Exception{
 		
-		File file = new File("/home/tseytlin/Data/SD_Mining/data/candidates-7-8-2015/target/filtered_study_designs_MSH.txt");
-		File targetFile = new File("/home/tseytlin/Data/SD_Mining/data/candidates-7-8-2015/target/filtered_study_designs_NCIT.txt");
+		File file = new File("/home/tseytlin/Data/SD_Mining/data/final/target/candidates.txt");
+		File targetFile = new File("/home/tseytlin/Data/SD_Mining/data/final/target/filtered_study_designs_NCIT.txt");
 		
-		//Terminology terminology = new NobleCoderTerminology("StudyDesigns");
-		Terminology terminology = getTerminology(targetFile);
+		Terminology terminology = new NobleCoderTerminology("StudyDesigns");
+		//Terminology terminology = getTerminology(targetFile);
 		
 		
 		StudyDesignOverlap overlap = new StudyDesignOverlap(terminology);

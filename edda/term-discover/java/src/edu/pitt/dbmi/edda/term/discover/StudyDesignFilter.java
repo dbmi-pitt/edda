@@ -27,7 +27,7 @@ public class StudyDesignFilter {
 		File dir = new File("/home/tseytlin/Data/SD_Mining/");
 		
 		
-		File file = new File("/home/tseytlin/Data/HTA/study_designs_HTA_titles.txt");
+		File file = new File("/home/tseytlin/Data/HTA/study_designs_PHST.txt");
 		
 		
 		StudyDesignFilter sd = new StudyDesignFilter();
@@ -281,7 +281,7 @@ public class StudyDesignFilter {
 			
 			// filter out abbreviation
 			for(String word: TextTools.getWords(term)){
-				if(TextTools.isLikelyAbbreviation(word) && !abbreviationBlacklist.contains(word)){
+				if((TextTools.isLikelyAbbreviation(word) || word.matches("[A-Z]+"))&& !abbreviationBlacklist.contains(word)){
 					System.out.println(term);
 					break;
 				}
