@@ -132,8 +132,8 @@ public class StudyDesignOverlap {
 	
 	public static void main(String[] args) throws Exception{
 		
-		File file = new File("/home/tseytlin/Data/SD_Mining/data/final/target/candidates.txt");
-		File targetFile = new File("/home/tseytlin/Data/SD_Mining/data/final/target/filtered_study_designs_NCIT.txt");
+		File file = new File("/home/tseytlin/Data/SD_Mining/data/final/target/target_PHST.txt");
+		//File targetFile = new File("/home/tseytlin/Data/SD_Mining/data/final/target/filtered_study_designs_NCIT.txt");
 		
 		Terminology terminology = new NobleCoderTerminology("StudyDesigns");
 		//Terminology terminology = getTerminology(targetFile);

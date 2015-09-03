@@ -17,7 +17,7 @@ import edu.pitt.dbmi.nlp.noble.tools.TextTools;
 
 public class StudyDesignFilter {
 	private File nameFile,locationFile; 
-	public static List<String> termBlacklist = Arrays.asList("tests","meta","gene","case");
+	public static List<String> termBlacklist = Arrays.asList("tests","meta","gene","case","blind","regression","disease","root");
 	public static List<String> abbreviationBlacklist = Arrays.asList("2x2");
 	private List<String> names, locations;
 	private NobleCoderTerminology thesaurus;
@@ -27,7 +27,7 @@ public class StudyDesignFilter {
 		File dir = new File("/home/tseytlin/Data/SD_Mining/");
 		
 		
-		File file = new File("/home/tseytlin/Data/HTA/study_designs_PHST.txt");
+		File file = new File("/home/tseytlin/Data/HTA/study_designs_MSH.txt");
 		
 		
 		StudyDesignFilter sd = new StudyDesignFilter();
@@ -42,10 +42,11 @@ public class StudyDesignFilter {
 		sd.filterOrgan(text);
 		sd.filterNames(text);
 		sd.filterLocations(text);
-		sd.filterDesign(text);
-		sd.filterAnalysis(text);
 		
-		
+		if(!file.getName().contains("EDDA")){
+			sd.filterDesign(text);
+			sd.filterAnalysis(text);
+		}
 	}
 	
 	
@@ -195,11 +196,12 @@ public class StudyDesignFilter {
 	private void filterDiagnosis(String text) throws IOException {
 		System.out.println("\n## diagnostic filter ##");
 		NobleCoderTerminology terminology = getThesaurus();
-		terminology.setSemanticTypeFilter("Disease or Syndrome");
+		terminology.setSemanticTypeFilter("Disease or Syndrome; Neoplastic Process");
+		terminology.setSelectBestCandidate(true);
 		for(String term: text.split("\n")){
 			// check for gene mentions
 			try {
-				boolean match = terminology.search(term).length > 0;
+				boolean match = terminology.search(term,NobleCoderTerminology.ALL_MATCH).length > 0;
 				if(match && !isBlacklisted(term))
 					System.out.println(term);
 			} catch (TerminologyException e) {
@@ -217,10 +219,11 @@ public class StudyDesignFilter {
 		System.out.println("\n## organ filter ##");
 		NobleCoderTerminology terminology = getThesaurus();
 		terminology.setSemanticTypeFilter("Body Part, Organ, or Organ Component ; Organ or Tissue Function");
+		terminology.setSelectBestCandidate(true);
 		for(String term: text.split("\n")){
 			// check for gene mentions
 			try {
-				boolean match = terminology.search(term).length > 0;
+				boolean match = terminology.search(term,NobleCoderTerminology.ALL_MATCH).length > 0;
 				if(match && !isBlacklisted(term))
 					System.out.println(term);
 			} catch (TerminologyException e) {
@@ -252,7 +255,7 @@ public class StudyDesignFilter {
 	
 	private boolean isBlacklisted(String term) {
 		for(String s: termBlacklist){
-			if(term.toLowerCase().contains(s))
+			if(Pattern.compile("\\b"+s+"\\b").matcher(term.toLowerCase()).find())
 				return true;
 		}
 		return false;
