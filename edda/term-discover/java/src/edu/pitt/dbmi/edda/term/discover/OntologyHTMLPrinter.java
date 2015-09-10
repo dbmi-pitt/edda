@@ -1,6 +1,7 @@
 package edu.pitt.dbmi.edda.term.discover;
 
 import java.util.Arrays;
+import java.util.Comparator;
 
 import edu.pitt.dbmi.nlp.noble.ontology.*;
 import edu.pitt.dbmi.nlp.noble.ontology.owl.OOntology;
@@ -39,7 +40,11 @@ public class OntologyHTMLPrinter {
 	}
 	
 	private static IClass [] getClasses(IClass [] cls){
-		Arrays.sort(cls);
+		Arrays.sort(cls,new Comparator<IClass>() {
+			public int compare(IClass o1, IClass o2) {
+				return o1.getConcept().getName().compareToIgnoreCase(o2.getConcept().getName());
+			}
+		});
 		return cls;
 	}
 	
