@@ -11,17 +11,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import jdk.internal.jfr.events.FileWriteEvent;
 import edu.pitt.dbmi.nlp.noble.coder.model.Mention;
+import edu.pitt.dbmi.nlp.noble.coder.model.Section;
 import edu.pitt.dbmi.nlp.noble.coder.processor.DocumentProcessor;
 import edu.pitt.dbmi.nlp.noble.extract.InformationExtractor;
 import edu.pitt.dbmi.nlp.noble.extract.model.ItemInstance;
@@ -37,21 +34,20 @@ import edu.pitt.dbmi.nlp.noble.ontology.IOntologyException;
 import edu.pitt.dbmi.nlp.noble.ontology.IProperty;
 import edu.pitt.dbmi.nlp.noble.ontology.IRestriction;
 import edu.pitt.dbmi.nlp.noble.ontology.owl.OOntology;
-import edu.pitt.dbmi.nlp.noble.ontology.protege.POntology;
 import edu.pitt.dbmi.nlp.noble.terminology.Concept;
 import edu.pitt.dbmi.nlp.noble.terminology.TerminologyException;
 import edu.pitt.dbmi.nlp.noble.tools.TextTools;
 
 public class PICORuleFilter {
-	public static final int RULE_CUTOFF = 10;
-	public static final boolean RULE_SHORT_CIRCUIT = false; 
+	//public static final int RULE_CUTOFF = 10;
+	public static final boolean RULE_SHORT_CIRCUIT = true; 
 	public static final String LABEL_INCLUDE = "include";
 	public static final String LABEL_EXCLUDE = "exclude";
 	private File ontologyFile, templateFile;
 	private IOntology ontology;
 	private Template template;
 	private InformationExtractor ie;
-	private Map<String,Count> activatedRuleCounts;
+	private Map<Object,Count> activatedRuleCounts;
 	private List<String> debugList;
 	
 	private static class Count {
@@ -190,9 +186,19 @@ public class PICORuleFilter {
 		IOntology ont = getOntology();
 		IClass citation = ont.getClass("Citation");
 		IInstance inst = citation.createInstance(doc.getTitle());
+	
+		
+		// add has abstract property
+		boolean hasAbstract = false;
+		for(Section s: doc.getSections()){
+			if("AB".equals(s.getTitle()) && s.getText().trim().length() > 0){
+				hasAbstract = true;
+				break;
+			}
+		}
+		inst.addPropertyValue(ont.getProperty("hasAbstract"),hasAbstract);
 		
 		// now add values to instance
-		Set<IProperty> hasValues = new HashSet<IProperty>();
 		for(TemplateItem temp: getTemplate().getTemplateItems()){
 			List<ItemInstance> instances = doc.getItemInstances(temp);
 			if(!instances.isEmpty()){
@@ -206,7 +212,6 @@ public class PICORuleFilter {
 								ii = icls.createInstance(icls.getName()+"_instance");
 							}
 							inst.addPropertyValue(prop,ii);
-							hasValues.add(prop);
 						}
 					}
 				}
@@ -217,34 +222,23 @@ public class PICORuleFilter {
 		String answer = LABEL_INCLUDE;
 		for(IClass category: citation.getDirectSubClasses()){
 			// no process all of the restrictions
-			for(IRestriction r: getRules(category)){
-				int order = getRuleOrder(r);
-				// if we have any values for that restrictions, then
-				if(hasValues.contains(r.getProperty()) && order > 0 && order <= RULE_CUTOFF){
-					// now check if the rule holds
-					boolean result = r.evaluate(inst);
-					if(result){
-						incrementRuleCount(r.toString(),doc.getProperties().get("label"));
-						if(debug){
-							System.out.println(doc.getTitle()+"\trule: "+r+" | evidence: "+Arrays.asList(inst.getPropertyValues(r.getProperty()))+" | result: "+result);
-						}
-						answer =  category.getName().toLowerCase();
-						if(RULE_SHORT_CIRCUIT)
-							return answer;
+			for(Object r: getRules(category)){
+				boolean result = evaluate(r,inst);
+				if(result){
+					incrementRuleCount(r,doc.getProperties().get("label"));
+					if(debug){
+						System.out.println(doc.getTitle()+"\trule: "+r+" | evidence: "+Arrays.asList(inst.getPropertyValues(getProperty(r)))+" | result: "+result);
 					}
-				// fire outcome rule, if there are no values provided	
-				}/*else if(r.getProperty().getName().contains("Outcome")){
-					incrementRuleCount(r.toString(),doc.getProperties().get("label"));
 					answer =  category.getName().toLowerCase();
 					if(RULE_SHORT_CIRCUIT)
 						return answer;
-				}*/
+				}
 			}
 		}
 		return answer;
 	}
 	
-	private void incrementRuleCount(String rule,String label) {
+	private void incrementRuleCount(Object rule,String label) {
 		Count count = getRuleCounts().get(rule);
 		if( count == null)
 			count = new Count();
@@ -260,9 +254,9 @@ public class PICORuleFilter {
 	}
 
 
-	private Map<String,Count> getRuleCounts() {
+	private Map<Object,Count> getRuleCounts() {
 		if(activatedRuleCounts == null){
-			activatedRuleCounts = new LinkedHashMap<String,Count>();
+			activatedRuleCounts = new LinkedHashMap<Object,Count>();
 		}
 		return activatedRuleCounts;
 	}
@@ -273,7 +267,10 @@ public class PICORuleFilter {
 	 * @param r
 	 * @return
 	 */
-	private int getRuleOrder(IRestriction r){
+	private int getRuleOrder(Object o){
+		IRestriction r = getRestriction(o);
+		if(r == null)
+			return 0;
 		IProperty order = r.getOntology().getProperty("hasRuleOrder");
 		Object v1 = r.getProperty().getPropertyValue(order);
 		if(v1 != null && v1 instanceof Integer){
@@ -282,26 +279,53 @@ public class PICORuleFilter {
 		return 0;
 	}
 	
+	/**
+	 * get the 1st restriction out of the rule
+	 * @param rule
+	 * @return
+	 */
+	private IRestriction getRestriction(Object o){
+		IRestriction r = null;
+		if(o instanceof IRestriction)
+			r = (IRestriction) o;
+		else if (o instanceof ILogicExpression && ((ILogicExpression)o).getOperand() instanceof IRestriction)
+			r = (IRestriction)((ILogicExpression)o).getOperand();
+		return r;
+	}
 	
+	private IProperty getProperty(Object o){
+		IRestriction r = getRestriction(o);
+		return (r != null)?r.getProperty():null;
+	}
+
+	
+	private boolean evaluate(Object r, IInstance inst){
+		boolean result = false;
+		if(r instanceof IRestriction)
+			result = ((IRestriction)r).evaluate(inst);
+		else if (r instanceof ILogicExpression)
+			result = ((ILogicExpression)r).evaluate(inst);
+		return result;
+	}
+
 	/**
 	 * get sorted set of rules
 	 * @param category
 	 * @return
 	 */
 	
-	private List<IRestriction> getRules(IClass category){
-		List<IRestriction> rules = new ArrayList<IRestriction>();
+	private List getRules(IClass category){
+		List rules = new ArrayList();
 		for(Object obj : category.getNecessaryRestrictions()){
-			if(obj instanceof IRestriction){
-				rules.add((IRestriction) obj);
+			if(obj instanceof IRestriction || obj instanceof ILogicExpression){
+				rules.add(obj);
 			}
 		}
-		Collections.sort(rules,new Comparator<IRestriction>() {
-			public int compare(IRestriction o1, IRestriction o2) {
+		Collections.sort(rules,new Comparator() {
+			public int compare(Object o1, Object o2) {
 				return getRuleOrder(o1) - getRuleOrder(o2);
 			}
 		});
-		
 		return rules;
 	}
 	
@@ -393,14 +417,19 @@ public class PICORuleFilter {
 		System.out.println("include,exclude,\t"+ie);
 		System.out.println("include,include,\t"+ii);
 		System.out.println("-----------------------------------------------");
-		List<String> rules = new ArrayList<String>(getRuleCounts().keySet());
-		Collections.sort(rules,new Comparator<String>(){
+		List rules = new ArrayList(getRuleCounts().keySet());
+		/*Collections.sort(rules,new Comparator<String>(){
 			public int compare(String o1, String o2) {
 				return getRuleCounts().get(o2).getTotal() - getRuleCounts().get(o1).getTotal();
 			}
 			
+		});*/
+		Collections.sort(rules,new Comparator() {
+			public int compare(Object o1, Object o2) {
+				return getRuleOrder(o1) - getRuleOrder(o2);
+			}
 		});
-		for(String rule: rules){
+		for(Object rule: rules){
 			System.out.println(getRuleCounts().get(rule)+"  \t->\t"+rule);
 		}
 			

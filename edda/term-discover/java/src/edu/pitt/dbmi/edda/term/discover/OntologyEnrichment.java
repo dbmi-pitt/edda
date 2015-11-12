@@ -47,7 +47,7 @@ public class OntologyEnrichment {
 	private PathHelper pathHelper;
 	private IOntology ontology;
 	private Terminology terminology,thesaurus;
-
+	private Map<String,Integer> importStats;
 
 	public IOntology getOntology() {
 		return ontology;
@@ -77,6 +77,18 @@ public class OntologyEnrichment {
 	}
 
 
+	public Map<String,Integer> getImportStats(){
+		if(importStats == null)
+			importStats = new LinkedHashMap<String, Integer>();
+		return importStats;
+	}
+	
+	private void incrementStat(String key,int n){
+		if(!getImportStats().containsKey(key))
+			getImportStats().put(key,0);
+		getImportStats().put(key,n+getImportStats().get(key));
+	}
+	
 	/**
 	 * add terms specified in this file
 	 * @param file
@@ -120,21 +132,24 @@ public class OntologyEnrichment {
 			// if there, enrich with additional synonyms and leave it be
 			if(cls != null){
 				// add synonyms if necessary
-				addTerms(cls,terms);
+				addTerms(cls,terms," for exiting concept");
 				System.out.println(cname+" ... exact match found, adding terms");
 			}else{
 				// find general parent class
 				cls = candidates.createSubClass(cname);
 				cls.addLabel(terms.get(0));
-				addTerms(cls, terms);
+				addTerms(cls, terms," for new concept");
 				addMetathesaurusInfo(cls);
+				incrementStat("new candidates added",1);
 				
 				// add parent if there
 				Set<IClass> parents = findMatchingClasses(terms,false);
 				if(!parents.isEmpty()){
 					for(IClass parent: parents){
-						if(!cls.hasSuperClass(parent))
+						if(!cls.hasSuperClass(parent)){
 							cls.addSuperClass(parent);
+							incrementStat("new candidate parent",1);
+						}
 						// if parent is a candidate itself, then remove this clss from candidate
 						if(parent.hasSuperClass(candidates)){
 							cls.removeSuperClass(candidates);
@@ -150,12 +165,18 @@ public class OntologyEnrichment {
 			}
 		}
 	}
-
 	private void addTerms(IClass cls, List<String> terms){
+		addTerms(cls,terms,"");
+	}
+	
+	private void addTerms(IClass cls, List<String> terms, String from){
 		IProperty variant = ontology.getProperty(SYNONYM_PROPETY);
 		for(String t: terms){
 			if(!cls.hasPropetyValue(variant,t)){
 				cls.addPropertyValue(variant,t);
+				incrementStat("new terms added"+from,1);
+			}else{
+				incrementStat("skip existing term"+from,1);
 			}
 		}
 	}
@@ -180,12 +201,25 @@ public class OntologyEnrichment {
 				Concept c = m.getConcept();
 				
 				// add new synonyms
-				addTerms(cls,Arrays.asList(c.getSynonyms()));
+				addTerms(cls,Arrays.asList(c.getSynonyms())," from NCI Metathesaurus");
 				
 				// add new definitions
 				IProperty definition = ontology.getProperty(DEFINITION_PROPETY);
 				for(Definition d: c.getDefinitions()){
-					String dd = d.getDefinition()+((d.getSource() != null)?" ["+d.getSource().getName()+"]":"");
+					Source src = d.getSource();
+					for(Source ss: getThesaurus().getSources(src.getCode())){
+						src = ss;
+						break;
+					}
+					String source = src.getName();
+					// hack MeSH
+					if(source.equals("MSH"))
+						source = "MeSH";
+					
+					if(src.getVersion() != null){
+						source = source +" "+src.getVersion();
+					}
+					String dd = d.getDefinition()+((d.getSource() != null)?" ["+source+"]":"");
 					if(Arrays.asList("NCI","MSH").contains(d.getSource().getName())){
 						if(!cls.hasPropetyValue(definition,dd)){
 							cls.addPropertyValue(definition,dd);
@@ -304,7 +338,9 @@ public class OntologyEnrichment {
 				termMap.put(nterm,terms);
 			}
 			terms.add(term);
+			incrementStat("imported new terms",1);
 		}
+		getImportStats().put("imported new term clusters",termMap.size());
 		return termMap;
 	}
 
@@ -320,10 +356,13 @@ public class OntologyEnrichment {
 	public static void main(String[] args) throws Exception {
 		
 		OntologyEnrichment oe = new OntologyEnrichment();
-		oe.setOntology(OOntology.loadOntology("http://edda.dbmi.pitt.edu/ontologies/StudyDesigns.owl"));
-		oe.addTerms(new File("/home/tseytlin/Data/SD_Mining/data/final/target/candidates-deduped.txt"));
-		oe.save(new File("/home/tseytlin/Data/SD_Mining/data/final/ontology/StudyDesigns.owl"));
-
+		oe.setOntology(OOntology.loadOntology("http://ontologies.dbmi.pitt.edu/edda/StudyDesigns.owl"));
+		oe.addTerms(new File("/home/tseytlin/Data/SD_Mining/data/final/curated/consensus/consensus.txt"));
+		oe.save(new File("/home/tseytlin/Data/SD_Mining/data/final/ontology/consensus-terms-added/StudyDesigns.owl"));
+		System.out.println("\n---| stats |---");
+		for(String s: oe.getImportStats().keySet()){
+			System.out.println(s+":\t\t"+oe.getImportStats().get(s));
+		}
 	}
 
 
