@@ -40,7 +40,7 @@ import edu.pitt.dbmi.nlp.noble.tools.TextTools;
 
 public class PICORuleFilter {
 	//public static final int RULE_CUTOFF = 10;
-	public static final boolean RULE_SHORT_CIRCUIT = true; 
+	public static final boolean RULE_SHORT_CIRCUIT = false; 
 	public static final String LABEL_INCLUDE = "include";
 	public static final String LABEL_EXCLUDE = "exclude";
 	private File ontologyFile, templateFile;
@@ -439,9 +439,9 @@ public class PICORuleFilter {
 		File dataDirectory = new File("/home/tseytlin/Work/EDDA/edda/pico/data");
 		File templateFile = new File(dataDirectory,"OrganTransplant.template");
 		File ontologyFile = new File(dataDirectory,"OrganTransplantRules.owl");
-		File inputReferences = new File("/home/tseytlin/Data/EDDA/ORGAN_TRANSPLANT/5050_2xTitles/TRAIN_data");
-		File outputResult = new File("/home/tseytlin/Data/EDDA/ORGAN_TRANSPLANT/pico_rules_train.txt");
-		File debugList = new File("/home/tseytlin/Data/EDDA/ORGAN_TRANSPLANT/debugList.txt");
+		File inputReferences = new File("/home/tseytlin/Data/EDDA/ORGAN_TRANSPLANT/5050_2xTitles/TEST_data"); // //RULES/FINAL_TRUE_EXCLUDES //FINAL_INCLUDE_SET/FINAL_INCLUDED_AFTER_REVIEW
+		File outputResult = new File("/home/tseytlin/Data/EDDA/ORGAN_TRANSPLANT/RULES/pico_rules_test.txt");
+		File debugList = new File("/home/tseytlin/Data/EDDA/ORGAN_TRANSPLANT/RULES/debugList.txt");
 		
 		PICORuleFilter filter = new PICORuleFilter(ontologyFile, templateFile);
 		//filter.loadDebugList(debugList);

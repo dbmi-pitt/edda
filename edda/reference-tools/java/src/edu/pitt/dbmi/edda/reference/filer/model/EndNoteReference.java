@@ -30,6 +30,12 @@ public class EndNoteReference implements Reference {
 		return info.containsKey("Abstract")?info.get("Abstract"):"";
 	}
 	
+	public String getRecordNumber(){
+		return info.containsKey("Record Number")?info.get("Record Number"):null;
+		
+	}
+	
+	
 	public String getPublication(){
 		return info.containsKey("Journal")?info.get("Journal"):"";
 	}
@@ -102,11 +108,11 @@ public class EndNoteReference implements Reference {
 		String data = content;
 		
 		if("TI".equalsIgnoreCase(format)){
-			data = "TI  -  "+getTitle()+"\n";
+			data = "Title: "+getTitle()+"\n";
 		}else if("TA".equalsIgnoreCase(format)){
-			data = "TI  -  "+getTitle()+"\nAB  -  "+getAbstract()+"\n";
+			data = "Title: "+getTitle()+"\nAbstract: "+getAbstract()+"\n";
 		}else if("FULL".equalsIgnoreCase(format)){
-			data = data+"\nTI  -  "+getTitle()+"\n";
+			data = data+"\nTitle: "+getTitle()+"\n";
 			// disable hard-coded weighting, should be handled by operators
 		}else if(format.startsWith("[") && format.endsWith("]")){
 			Pattern pt = Pattern.compile("([A-Z]+):(\\d)");

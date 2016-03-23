@@ -41,6 +41,8 @@ import javax.swing.border.TitledBorder;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultStyledDocument;
+
+import edu.pitt.dbmi.edda.reference.filer.model.EndNoteReference;
 import edu.pitt.dbmi.edda.reference.filer.model.Reference;
 import edu.pitt.dbmi.edda.reference.filer.model.Utils;
 
@@ -331,12 +333,21 @@ public class ReferenceFiler {
 					}
 						
 					// get inputs
+					boolean isEndNote = true;
 					progress.setIndeterminate(true);
 					progress.setString("Reading Input References ..");
-					List<Reference> includeReferences = Utils.readMedlineReferences(new File(inputRefrencesInclude.getText()));
-					for(Reference r : includeReferences)
-						r.setIncluded(true);
-					List<Reference> excludeReferences = Utils.readMedlineReferences(new File(inputReferencesExclude.getText()));
+					List<Reference> includeReferences , excludeReferences;
+					if(isEndNote){
+						includeReferences = Utils.readEndNoteReferences(new File(inputRefrencesInclude.getText()));
+						for(Reference r : includeReferences)
+							r.setIncluded(true);
+						excludeReferences = Utils.readEndNoteReferences(new File(inputReferencesExclude.getText()));
+					}else{
+						includeReferences = Utils.readMedlineReferences(new File(inputRefrencesInclude.getText()));
+						for(Reference r : includeReferences)
+							r.setIncluded(true);
+						excludeReferences = Utils.readMedlineReferences(new File(inputReferencesExclude.getText()));
+					}
 					
 					List<Reference> inputReferences = new ArrayList<Reference>();
 					inputReferences.addAll(includeReferences);
@@ -386,6 +397,12 @@ public class ReferenceFiler {
 						
 						progress.setValue(offset);
 						String name = prefix+offset++;
+						if(ref instanceof EndNoteReference){
+							String rec = ((EndNoteReference) ref).getRecordNumber();
+							if(rec != null)
+								name = rec;
+						}
+						
 						
 						// get parent directory
 						//File d = null;//(trainDataset)?trainData:testData;
@@ -396,8 +413,8 @@ public class ReferenceFiler {
 						writeRefernce(ref,"FULL",isIncluded,d,name);
 						writeRefernce(ref,"TA",isIncluded,d,name);
 						writeRefernce(ref,"TI",isIncluded,d,name);
-						if(!sec.isEmpty())
-							writeRefernce(ref,sec.toString(), isIncluded, d, name);
+						//if(!sec.isEmpty())
+						//	writeRefernce(ref,sec.toString(), isIncluded, d, name);
 						
 						// save debug entry
 						writer.write(name+",\""+ref.getAuthors()+"\",\""+ref.getTitle()+"\","+isIncluded+","+dirPrefix+"\n");

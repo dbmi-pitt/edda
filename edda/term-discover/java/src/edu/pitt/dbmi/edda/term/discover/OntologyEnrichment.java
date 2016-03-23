@@ -356,9 +356,12 @@ public class OntologyEnrichment {
 	public static void main(String[] args) throws Exception {
 		
 		OntologyEnrichment oe = new OntologyEnrichment();
-		oe.setOntology(OOntology.loadOntology("http://ontologies.dbmi.pitt.edu/edda/StudyDesigns.owl"));
-		oe.addTerms(new File("/home/tseytlin/Data/SD_Mining/data/final/curated/consensus/consensus.txt"));
-		oe.save(new File("/home/tseytlin/Data/SD_Mining/data/final/ontology/consensus-terms-added/StudyDesigns.owl"));
+		//"http://ontologies.dbmi.pitt.edu/edda/StudyDesigns.owl"
+		oe.setOntology(OOntology.loadOntology("/home/tseytlin/Dropbox/Data/EDDA Design Terms/StudyDesigns.owl"));
+		/*oe.addTerms(new File("/home/tseytlin/Data/SD_Mining/data/final/curated/consensus/consensus.txt"));
+		oe.save(new File("/home/tseytlin/Data/SD_Mining/data/final/ontology/consensus-terms-added/StudyDesigns.owl"));*/
+		oe.addTerms(new File("/home/tseytlin/Data/SD_Mining/data/final/curated/curated-synonyms_PHST.txt"));
+		oe.save(new File("/home/tseytlin/StudyDesigns.owl"));
 		System.out.println("\n---| stats |---");
 		for(String s: oe.getImportStats().keySet()){
 			System.out.println(s+":\t\t"+oe.getImportStats().get(s));
