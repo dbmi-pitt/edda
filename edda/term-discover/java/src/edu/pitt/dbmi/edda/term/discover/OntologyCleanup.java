@@ -49,6 +49,11 @@ public class OntologyCleanup {
 	
 	
 	private void mergeClass(IClass cls) {
+		/*IClass trash = ontology.getClass("Trash");
+		if(trash == null){
+			trash = ontology.createClass("Trash");
+		}*/
+		
 		System.out.println("merging "+cls.getLabel()+" ..");
 		for(IClass c: Arrays.asList(cls.getEquivalentClasses())){
 			if(cls.equals(c))
@@ -62,15 +67,24 @@ public class OntologyCleanup {
 				}
 			}
 			// copy children
-			for(IClass child: c.getDirectSubClasses()){
+			for(IClass child: Arrays.asList(c.getDirectSubClasses())){
 				child.addSuperClass(cls);
+				c.removeSubClass(child);
 			}
+			
+			for(IClass parent: Arrays.asList(c.getDirectSuperClasses()))
+				c.removeSuperClass(parent);
+			
 			// remove as equivalent class
 			cls.removeEquivalentClass(c);
+			/*for(IClass e: equivalent){
+				c.removeEquivalentClass(e);
+			}*/
 			
 			// remove class altogether
 			System.out.println("\tremoving "+c.getLabel());
 			c.delete();
+			//c.addSuperClass(trash);
 		}
 		
 	}

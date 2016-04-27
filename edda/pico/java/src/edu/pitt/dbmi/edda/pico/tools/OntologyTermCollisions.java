@@ -4,10 +4,14 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
+import edu.pitt.dbmi.nlp.noble.ontology.ClassPath;
+import edu.pitt.dbmi.nlp.noble.ontology.IClass;
 import edu.pitt.dbmi.nlp.noble.ontology.IOntology;
 import edu.pitt.dbmi.nlp.noble.ontology.IOntologyException;
+import edu.pitt.dbmi.nlp.noble.ontology.OntologyUtils;
 import edu.pitt.dbmi.nlp.noble.ontology.owl.OOntology;
 import edu.pitt.dbmi.nlp.noble.terminology.Concept;
+import edu.pitt.dbmi.nlp.noble.terminology.ConceptPath;
 import edu.pitt.dbmi.nlp.noble.terminology.TerminologyException;
 import edu.pitt.dbmi.nlp.noble.terminology.impl.NobleCoderTerminology;
 import edu.pitt.dbmi.nlp.noble.util.PathHelper;
@@ -31,7 +35,7 @@ public class OntologyTermCollisions {
 		// load into terminology
 		NobleCoderTerminology term = new NobleCoderTerminology();
 		term.setStemWords(false);
-		term.loadOntology(ont,null,true,true);
+		term.loadOntology(ont,null,true,false);
 		PathHelper helper = new PathHelper(term);
 		
 		//check for collisons
@@ -48,13 +52,36 @@ public class OntologyTermCollisions {
 					cls.add(c);
 					problemClasses.add(c);
 				}
-				System.out.println("\t'"+t+"'\t-> in classes:\t "+cls);
+				System.out.println("\t'"+t+"'");
+				for(String c: cls){
+					IClass cc = ont.getClass(c);
+					for(ClassPath cp: OntologyUtils.getRootPaths(cc)){
+						System.out.println("\t\t"+cp);
+					}
+					/*for(ConceptPath path: helper.getPaths(term.lookupConcept(c))){
+						System.out.println("\t\t"+path);
+					}*/
+				}
 			}
 		}
-		System.out.println("\nProblem Class Summary:");
+		System.out.println("\nSingle Term Variant:");
+		/*
 		for(String c: problemClasses){
 			Concept cn = term.lookupConcept(c);
 			System.out.println("\t'"+cn.getName()+"'\t["+cn.getCode()+" -> "+helper.getPaths(cn));
+		}*/
+		for(IClass cls: ont.getRoot().getSubClasses()){
+			Concept c = cls.getConcept();
+			if(c.getName().contains(" ")){
+				for(String s: c.getSynonyms()){
+					if(!s.contains(" ") && !s.contains("-")){
+						System.out.println("\t'"+s+"'");
+						for(ClassPath cp: OntologyUtils.getRootPaths(cls)){
+							System.out.println("\t\t"+cp);
+						}
+					}
+				}
+			}
 		}
 		
 	}
@@ -66,9 +93,19 @@ public class OntologyTermCollisions {
 	 * @throws IOException 
 	 */
 	public static void main(String[] args) throws IOntologyException, IOException, TerminologyException {
-		File file = new File("/home/tseytlin/Dropbox/Data/EDDA Design Terms/StudyDesigns.owl");
+		File file = new File("/home/tseytlin/Data/SD_Mining/data/final/ontology/Post Hoc Processing/SystematicReviewOntology.owl");
 		IOntology ont = OOntology.loadOntology(file);
-		validateOntology(ont);
+		//validateOntology(ont);
+		printDoubleLabels(ont);
+	}
+
+	private static void printDoubleLabels(IOntology ont) {
+		for(IClass cls: ont.getRoot().getSubClasses()){
+			if(cls.getLabels().length > 1){
+				System.out.println(OntologyUtils.getRootPaths(cls)+"\t"+Arrays.asList(cls.getLabels()));
+			}
+		}
+		
 	}
 
 }

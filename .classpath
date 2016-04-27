@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="edda/classification/rapidminer-operators/java/src"/>
+	<classpathentry kind="src" path="edda/workflow/java/src"/>
 	<classpathentry kind="src" path="edda/rulebase/java/src"/>
 	<classpathentry kind="src" path="edda/reference-tools/java/src"/>
 	<classpathentry kind="src" path="edda/summarization/general/java/src"/>
@@ -68,6 +69,5 @@
 	<classpathentry kind="lib" path="edda/classification/rapidminer-operators/java/lib/mallet.jar"/>
 	<classpathentry kind="lib" path="edda/common/lib/commons-lang3-3.1.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/nobletools"/>
-	<classpathentry kind="lib" path="/home/tseytlin/Technologies/OpenNLP/apache-opennlp-1.5.3/lib/opennlp-maxent-3.0.3.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
