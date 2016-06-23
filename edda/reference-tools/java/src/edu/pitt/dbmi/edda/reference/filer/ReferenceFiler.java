@@ -64,16 +64,14 @@ public class ReferenceFiler {
 	private JList sections;
 	private JPanel advanced;
 	private List<String> SECTIONS = Arrays.asList("author (AU)","title (TI)","abstract (AB)","keywords (MH)","publication (SO)","entire reference (FULL)");
+	private static boolean standAlone;
+
 	
-	
-	public ReferenceFiler(){
-		createUI();
-	}
-	
-	private void createUI(){
-		frame = new JFrame("Reference Filer 3");
+	private JFrame createUI(){
+		frame = new JFrame("Reference Filer");
 		frame.getContentPane().setLayout(new BorderLayout());
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		if(standAlone)
+			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		
 		// init parameter text
@@ -146,7 +144,17 @@ public class ReferenceFiler {
 		frame.getContentPane().add(bt,BorderLayout.SOUTH);
 		
 		frame.pack();
-		frame.setVisible(true);
+		return frame;
+	}
+	
+	public void showDialog(){
+		getDialog().setVisible(true);
+	}
+	
+	public JFrame getDialog(){
+		if(frame == null)
+			frame = createUI();
+		return frame;
 	}
 	
 	private boolean isOK(){
@@ -161,6 +169,12 @@ public class ReferenceFiler {
 		return true;
 	}
 	
+	public void setProjectDirectory(File dir){
+		if(dir == null)
+			return;
+		outputDir.setText(new File(dir,"Input"+File.separator+"50x50_Titles").getAbsolutePath());
+		outputPrefix.setText(dir.getName().toUpperCase());
+	}
 	
 	private String doAdd(){
 		JPanel panel = new JPanel();
@@ -470,7 +484,8 @@ public class ReferenceFiler {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		new ReferenceFiler();
+		standAlone = true;
+		new ReferenceFiler().showDialog();
 
 	}
 

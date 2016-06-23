@@ -267,7 +267,7 @@ public class OntologyEnrichment {
 		Set<IClass> clses = new LinkedHashSet<IClass>();
 		for(String term: terms){
 			for(Mention m : findMatch(term)){
-				if(!exact || "EXACT".equals(m.getModality())){
+				if(!exact || "EXACT".equals(m.getModifier("Modality"))){
 					clses.add(ontology.getClass(m.getConcept().getCode()));
 				}
 			}
@@ -307,7 +307,7 @@ public class OntologyEnrichment {
 			}*/
 			for(Mention m: mm){
 				if(words.size()  == m.getAnnotations().size()){
-					m.setModality("EXACT");
+					m.getModifiers().put("Modality","EXACT");
 				}
 			}
 			return mm;

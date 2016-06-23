@@ -8,26 +8,31 @@ import edu.pitt.dbmi.nlp.noble.ontology.owl.OOntology;
 import edu.pitt.dbmi.nlp.noble.terminology.Concept;
 
 public class OntologyHTMLPrinter {
-	private static boolean doSynonyms = true, doDefinitions = true;
+	private static boolean doSynonyms = true, doDefinitions = true, asTips = true;
 	
 	public static void printClass(IClass cls){
 		Concept c = cls.getConcept();
 		String tip = c.getDefinition();
 		System.out.println("<li><b>"+c.getName()+"</b> ");
 		if(doDefinitions && tip != null && tip.length() > 0){
-			System.out.println(" [<a href=\"\" title=\""+tip+"\">definition</a>]");
+			if(asTips)
+				System.out.println(" [<a href=\"\" title=\""+tip+"\">definition</a>]");
+			else
+				System.out.println("<div><i>"+tip+"</i></div>");
 		}
 		if(doSynonyms){
-			System.out.println("<br>");
+			//if(asTips)
+			//System.out.println("<br>");
 			String [] syn = c.getSynonyms();
 			Arrays.sort(syn);
 			String p = "";
+			System.out.println("<div style=\"margin-top:5px; margin-bottom:10px;\">");
 			for(String s: syn){
 				System.out.print(p+s); 
 				if(p.length() == 0)
 					p = "; ";
 			}
-			System.out.println("");
+			System.out.println("</div>");
 		}
 		IClass [] kids = getClasses(cls.getDirectSubClasses());
 		if(kids.length > 0){
@@ -49,7 +54,8 @@ public class OntologyHTMLPrinter {
 	}
 	
 	public static void main(String[] args) throws IOntologyException {
-		IOntology ontology = OOntology.loadOntology("http://edda.dbmi.pitt.edu/ontologies/StudyDesigns.owl");
+		IOntology ontology = OOntology.loadOntology("/home/tseytlin/Data/SD_Mining/data/final/ontology/Post Hoc Processing/StudyDesigns.owl");
+		
 		String title = (String) ontology.getPropertyValue(ontology.getProperty(IProperty.DC_TITLE));
 		String name = (title != null)?title:ontology.getName();
 		String version = ontology.getVersion();
@@ -58,6 +64,9 @@ public class OntologyHTMLPrinter {
 		System.out.println("<body>");
 		System.out.println("<h2>"+name+"  ("+version+")</h2>");
 		System.out.println("<p>"+ontology.getDescription()+"</p>");
+		IProperty p = ontology.getProperty("http://purl.org/dc/elements/1.1/rights");
+		if(p != null && ontology.getPropertyValue(p) != null)
+			System.out.println("<p><i>"+ontology.getPropertyValue(p)+"</i></p>");
 		System.out.println("<hr><ul>");
 		for(IClass c: getClasses(ontology.getRootClasses())){
 			printClass(c);

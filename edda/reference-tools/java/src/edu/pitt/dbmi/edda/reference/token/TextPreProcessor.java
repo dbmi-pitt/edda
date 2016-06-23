@@ -71,6 +71,7 @@ public class TextPreProcessor implements ListSelectionListener, ActionListener, 
 	private Map<String,Filter> filterMap;
 	private int pruneMn;
 	private static File dir;
+	private static boolean standAlone;
 	
 	/**
 	 * get list of input folders
@@ -313,10 +314,11 @@ public class TextPreProcessor implements ListSelectionListener, ActionListener, 
 	/**
 	 * display UI dialog
 	 */
-	private void showDialog(){
+	public void showDialog(){
 		if(frame == null){
 			frame = new JFrame("Text Pre-Processor");
-			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			if(standAlone)
+				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			
 			// init panel
 			JPanel panel = new JPanel();
@@ -849,9 +851,16 @@ public class TextPreProcessor implements ListSelectionListener, ActionListener, 
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		standAlone = true;
 		TextPreProcessor emt = new TextPreProcessor();
 		emt.showDialog();
 
+	}
+
+
+	public void setProjectDirectory(File projectDirectory) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
