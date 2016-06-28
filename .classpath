@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="edda/classification/rapidminer-operators/java/src"/>
 	<classpathentry kind="src" path="edda/workflow/java/src"/>
-	<classpathentry kind="src" path="edda/rulebase/java/src"/>
 	<classpathentry kind="src" path="edda/reference-tools/java/src"/>
-	<classpathentry kind="src" path="edda/summarization/general/java/src"/>
 	<classpathentry kind="src" path="edda/lens/java/src"/>
-	<classpathentry kind="src" path="edda/summarization/tebeka-mitchell/java/src"/>
 	<classpathentry kind="src" path="edda/pico/java/src"/>
 	<classpathentry kind="src" path="edda/term-discover/java/src"/>
 	<classpathentry kind="lib" path="edda/reference-tools/java/lib/specialistTextTools.jar"/>
+	<classpathentry exported="true" kind="lib" path="edda/reference-tools/java/lib/xmlbeans-2.6.0.jar"/>
 	<classpathentry kind="lib" path="edda/summarization/tebeka-mitchell/lib/antlr-2.7.7.jar"/>
 	<classpathentry kind="lib" path="edda/summarization/tebeka-mitchell/lib/axis.jar"/>
 	<classpathentry kind="lib" path="edda/summarization/tebeka-mitchell/lib/commons-cli-1.2.jar"/>
@@ -69,5 +66,8 @@
 	<classpathentry kind="lib" path="edda/classification/rapidminer-operators/java/lib/mallet.jar"/>
 	<classpathentry kind="lib" path="edda/common/lib/commons-lang3-3.1.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/nobletools"/>
+	<classpathentry kind="lib" path="edda/reference-tools/java/lib/poi-3.14-20160307.jar"/>
+	<classpathentry kind="lib" path="edda/reference-tools/java/lib/poi-ooxml-3.14-20160307.jar"/>
+	<classpathentry kind="lib" path="edda/reference-tools/java/lib/poi-ooxml-schemas-3.14-20160307.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

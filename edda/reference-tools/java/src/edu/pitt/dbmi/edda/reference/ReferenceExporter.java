@@ -7,12 +7,21 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileFilter;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -30,6 +39,11 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
+
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 
 import edu.pitt.dbmi.edda.reference.filer.ReferenceFiler;
 import edu.pitt.dbmi.edda.reference.filer.model.EndNoteReference;
@@ -94,6 +108,111 @@ public class ReferenceExporter {
 	}
 	
 	/**
+	 * container for references from decision file
+	 * @author tseytlin
+	 */
+	private class OutputReference implements Comparable<OutputReference> {
+		public Reference reference;
+		public String name, label, predictedLabel;
+		
+		public String toString(){
+			return label+"\t"+predictedLabel+"\t"+name+"\t"+reference.getTitle();
+		}
+		public int getRecordNumber(){
+			Matcher m = Pattern.compile("\\d+").matcher(name);
+			if(m.find())
+				return Integer.parseInt(m.group());
+			return 0;
+		}
+		public int compareTo(OutputReference o) {
+			return getRecordNumber() - o.getRecordNumber();
+		}
+	}
+	
+	/**
+	 * read decision file and 
+	 * @param diceisionFile
+	 * @param referenceDirectory
+	 * @return
+	 * @throws IOException 
+	 */
+	private List<OutputReference> readDecisionFile(File diceisionFile, File referenceDirectory) throws IOException{
+		final String S = "\t";
+		int n = 0;
+		List<OutputReference> list = new ArrayList<ReferenceExporter.OutputReference>();
+		BufferedReader r = new BufferedReader(new FileReader(diceisionFile));
+		for(String l=r.readLine();l != null; l = r.readLine()){
+			String [] p = l.split(S);
+			if(p.length > 2){
+				progress.setValue(n++);
+				String file  = p[0].trim();
+				String label = p[1].trim();
+				String predLabel = p[2].trim();
+				
+				// find reference
+				File refFile = findFile(referenceDirectory,file);
+				if(refFile != null){
+					OutputReference ref = new OutputReference();
+					ref.reference =  readReference(refFile);
+					ref.name = file;
+					ref.label = label;
+					ref.predictedLabel = predLabel;
+					
+					list.add(ref);
+				}
+				
+			}
+		}
+		r.close();
+		
+		return list;
+	}
+	
+	
+	private Reference readReference(File refFile){
+		for(Reference r: Utils.readEndNoteReferences(refFile)){
+			return r;
+		}
+		return null;
+	}
+	
+	
+	private List<File> getDirs(File dir, List<File> dirs){
+		dirs.add(dir);
+		for(File f: dir.listFiles(new FileFilter() {
+			public boolean accept(File pathname) {
+				return pathname.isDirectory();
+			}
+		})){
+			getDirs(f, dirs);
+		}
+		return dirs;
+	}
+	
+	
+	private File findFile(File referenceDirectory, String file) {
+		List<File> dirs = getDirs(referenceDirectory,new ArrayList<File>());
+		for(File d: dirs){
+			File f = new File(d,file);
+			if(f.exists())
+				return f;
+		}
+		
+		return null;
+	}
+
+
+	private int getLineCount(File diceisionFile) throws IOException {
+		int n = 0;
+		BufferedReader r = new BufferedReader(new FileReader(diceisionFile));
+		for(String l=r.readLine();l != null; l = r.readLine()){
+			n++;
+		}
+		r.close();
+		return n;
+	}
+
+	/**
 	 * do the actual split
 	 */
 	private void doRun(){
@@ -112,42 +231,33 @@ public class ReferenceExporter {
 					progress.setIndeterminate(true);
 					progress.setString("Reading Input References ..");
 					
-					List<Reference> includeReferences , excludeReferences;
-					/*if(isEndNote){
-						includeReferences = Utils.readEndNoteReferences(new File(inputRefrencesInclude.getText()));
-						for(Reference r : includeReferences)
-							r.setIncluded(true);
-						excludeReferences = Utils.readEndNoteReferences(new File(inputReferencesExclude.getText()));
-					}else{
-						includeReferences = Utils.readMedlineReferences(new File(inputRefrencesInclude.getText()));
-						for(Reference r : includeReferences)
-							r.setIncluded(true);
-						excludeReferences = Utils.readMedlineReferences(new File(inputReferencesExclude.getText()));
-					}*/
+					File diceisionFile = new File(inputDecisions.getText());
+					File referenceDirectory = new File(inputReferences.getText());
 					
-					List<Reference> inputReferences = new ArrayList<Reference>();
-					/*inputReferences.addAll(includeReferences);
-					inputReferences.addAll(excludeReferences);*/
+					
+					
+					// go over each reference
+					progress.setIndeterminate(false);
+					progress.setString("Reading References ...");
+					progress.setMinimum(0);
+					progress.setMaximum(getLineCount(diceisionFile));
+					
+					
+					List<OutputReference> inputReferences = readDecisionFile(diceisionFile, referenceDirectory);
+					Collections.sort(inputReferences);
 					
 					// now generate a proper output
 					File dir = new File(outputDir.getText());
 					dir.mkdirs();
 					
-			
-					// create debug files
-					
-					// go over each reference
+					File excelFile = new File(dir,"Output References.xlsx");
+				
+					// write to excel
+					progress.setString("Saving to Excel ...");
+					progress.setIndeterminate(true);
+					exportToExcel(inputReferences, excelFile);
 					progress.setIndeterminate(false);
-					progress.setString("Generating Output ...");
-					progress.setMinimum(0);
-					progress.setMaximum(inputReferences.size());
-					
-					for(Reference ref : inputReferences){
-						
-						progress.setValue(0);
-					}
-					
-					
+					progress.setString("done");
 				}catch(Exception ex){
 					JOptionPane.showMessageDialog(frame,ex.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
 					ex.printStackTrace();
@@ -160,10 +270,80 @@ public class ReferenceExporter {
 				frame.getContentPane().validate();
 				frame.getContentPane().repaint();
 			}
+
 		})).start();
 		
 		
 	}
+	
+	
+	private void exportToExcel(List<OutputReference> list, File exportFile) throws IOException {
+		SXSSFWorkbook wb =  new SXSSFWorkbook(100); // keep 100 rows in memory, exceeding rows will be flushed to disk
+              
+		// dynamically create sheets
+		Map<String,Sheet> sheets = new LinkedHashMap<String,Sheet>();
+		Map<String,Integer> sheetOffsets = new LinkedHashMap<String, Integer>();
+		
+		
+		// go over references
+		for(OutputReference reference: list){
+			String sheetName = reference.label+"+"+reference.predictedLabel;
+			
+			// get sheet to write this reference to
+			Sheet sh = sheets.get(sheetName);
+			Integer rowNum = sheetOffsets.get(sheetName);
+			
+			// create new worksheet
+			if(sh == null){
+				sh = wb.createSheet(sheetName);
+				sheets.put(sheetName,sh);
+				sheetOffsets.put(sheetName,0);
+				
+				// create header row
+				Row row = sh.createRow(0);
+				row.createCell(0).setCellValue("Record Number");
+				row.createCell(1).setCellValue("Actual Label");
+				row.createCell(2).setCellValue("Predicted Label");
+				row.createCell(3).setCellValue("Reference Title");
+				
+				// new row number
+				rowNum = new Integer(1);
+			}
+			
+			
+			// create row
+			Row row = sh.createRow(rowNum.intValue());
+			
+			// increment
+			sheetOffsets.put(sheetName,rowNum.intValue()+1);
+
+			// write out cells
+			row.createCell(0).setCellValue(reference.getRecordNumber());
+			row.createCell(1).setCellValue(reference.label);
+			row.createCell(2).setCellValue(reference.predictedLabel);
+			row.createCell(3).setCellValue(reference.reference.getTitle());
+    	}
+			
+		//write out the Excel file
+		FileOutputStream out = null;
+		try {
+			out = new FileOutputStream(exportFile);
+			wb.write(out);
+		    out.close();
+		} catch (IOException e) {
+			throw new IOException("Unable to write worksheet",e);
+		}finally{
+			if(out != null)
+				out.close();
+			
+			// dispose of workbook
+			wb.close();
+			wb.dispose();
+		}
+
+  }
+	
+	
 	
 	/**
 	 * create directory panel
