@@ -1,6 +1,8 @@
 package edu.pitt.dbmi.edda.reference.filer.model;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.Writer;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -89,5 +91,17 @@ public class CochraneReference implements Reference {
 	public Map<String, String> getContentMap() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	public String getContent(){
+		return null;
+	}
+	/**
+	 * write out the reference in given format to a file
+	 * @param file
+	 * @param format
+	 * @throws IOException 
+	 */
+	public void write(Writer writer) throws IOException{
+		
 	}
 }

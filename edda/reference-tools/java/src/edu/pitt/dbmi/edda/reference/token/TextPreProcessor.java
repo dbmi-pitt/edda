@@ -54,6 +54,7 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.text.JTextComponent;
 
+import edu.pitt.dbmi.edda.EDDA;
 import edu.pitt.dbmi.edda.reference.filer.model.Utils;
 import edu.pitt.dbmi.edda.reference.token.filter.*;
 
@@ -478,11 +479,10 @@ public class TextPreProcessor implements ListSelectionListener, ActionListener, 
 			frame.getContentPane().add(panel,BorderLayout.CENTER);
 			frame.getContentPane().add(buttonPanel,BorderLayout.SOUTH);
 			frame.pack();
-			
-			
-		
+			setupDefaults();
 		}
 		frame.setVisible(true);
+		
 	}
 	
 	public void valueChanged(ListSelectionEvent e) {
@@ -561,7 +561,7 @@ public class TextPreProcessor implements ListSelectionListener, ActionListener, 
 			
 			// alphanum+ 
 			Properties prop = new Properties();
-			prop.setProperty("selected.filters","Medline Filter, Change Character Case, Search and Replace, Tokenizer, Stop Word Filter, Token Size Filter");
+			prop.setProperty("selected.filters","Tag Filter, Change Character Case, Search and Replace, Tokenizer, Stop Word Filter, Token Size Filter");
 			
 			prop.setProperty("filter.MedlineFilter.1","Journal / [^a-zA-Z ]+ /  / "); // remove non-alphabetic characters for Journals
 			prop.setProperty("filter.MedlineFilter.2","Journal / ^\\s+ /  / ");  	  // remove leading spaces
@@ -648,8 +648,10 @@ public class TextPreProcessor implements ListSelectionListener, ActionListener, 
 	}
 
 	private void load(Properties props) {
-		inputText.setText(props.getProperty("input.text",""));
-		outputField.setText(props.getProperty("output.text",""));
+		if(props.containsKey("input.text"))
+			inputText.setText(props.getProperty("input.text",""));
+		if(props.containsKey("output.text"))
+			outputField.setText(props.getProperty("output.text",""));
 		//pruneMin.setText(props.getProperty("prune.text",""));
 		tokenSeparator.setText(props.getProperty("separator.text",""));
 		//pruneTokens.setSelected(Boolean.parseBoolean(props.getProperty("prune.tokens","false")));
@@ -869,7 +871,10 @@ public class TextPreProcessor implements ListSelectionListener, ActionListener, 
 		JButton bt = new JButton("Browse");
 		bt.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				JFileChooser chooser = new JFileChooser(dir);
+				File ff = new File(textField.getText());
+				if(!ff.exists())
+					ff = dir;
+				JFileChooser chooser = new JFileChooser(ff);
 				chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 				chooser.setMultiSelectionEnabled(true);
 				int r = chooser.showOpenDialog(JOptionPane.getFrameForComponent(textField));
@@ -952,9 +957,36 @@ public class TextPreProcessor implements ListSelectionListener, ActionListener, 
 	}
 
 
-	public void setProjectDirectory(File projectDirectory) {
-		// TODO Auto-generated method stub
+	public void setProjectDirectory(File dir) {
+		if(dir == null)
+			return;
 		
+		final File projectDir = dir;
+		final File outDir = new File(projectDir+File.separator+"Tokenized","100_2xTitles");
+		outDir.mkdirs();
+		
+		SwingUtilities.invokeLater(new Runnable(){
+			public void run(){
+				inputText.setText(new File(projectDir,"Input"+File.separator+"100_2xTitles").getAbsolutePath());
+				outputField.setText(outDir.getAbsolutePath());
+			}
+		});
 	}
 
+	private void setupDefaults(){
+		// setup defaults
+		if(EDDA.getInstance().getProjectDirectory() != null){
+			setProjectDirectory(EDDA.getInstance().getProjectDirectory());
+		}
+		// add default doubling of titles
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				defaultPreProcess.setSelectedIndex(1);
+				
+			}
+		});
+		
+		
+	}
+	
 }

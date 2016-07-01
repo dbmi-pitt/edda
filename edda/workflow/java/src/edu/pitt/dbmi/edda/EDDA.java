@@ -4,9 +4,11 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.net.URL;
 
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
@@ -25,6 +27,7 @@ import edu.pitt.dbmi.nlp.noble.extract.InformationExtractor;
  *
  */
 public class EDDA implements ActionListener {
+	private final URL LOGO_ICON = getClass().getResource("/icons/EDDA_Logo.png");
 	private static EDDA instance;
 	private JFrame frame;
 	private ReferenceFiler referenceFiler;
@@ -45,6 +48,7 @@ public class EDDA implements ActionListener {
 		if(frame == null){
 			frame = new JFrame("EDDA");
 			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			frame.setIconImage(new ImageIcon(LOGO_ICON).getImage());
 			frame.setJMenuBar(createMenuBar());
 			
 			JPanel panel = new JPanel();
@@ -131,17 +135,14 @@ public class EDDA implements ActionListener {
 			if(referenceFiler == null)
 				referenceFiler = new ReferenceFiler();
 			referenceFiler.showDialog();
-			referenceFiler.setProjectDirectory(getProjectDirectory());
 		}else if("export".equals(cmd)){
 			if(referenceExporter == null)
 				referenceExporter = new ReferenceExporter();
 			referenceExporter.showDialog();
-			referenceExporter.setProjectDirectory(getProjectDirectory());
 		}else if("tokenize".equals(cmd)){
 			if(textPreProcessor == null)
 				textPreProcessor = new TextPreProcessor();
 			textPreProcessor.showDialog();
-			textPreProcessor.setProjectDirectory(getProjectDirectory());
 		}else if("pico".equals(cmd)){
 			InformationExtractor ie = new InformationExtractor();
 			ie.showDialog();
@@ -185,6 +186,13 @@ public class EDDA implements ActionListener {
 	private void setupProjectDirectory(File dir){
 		if(!dir.exists())
 			dir.mkdirs();
+		
+		if(referenceFiler != null)
+			referenceFiler.setProjectDirectory(dir);
+		if(textPreProcessor != null)
+			textPreProcessor.setProjectDirectory(dir);
+		if(referenceExporter != null)
+			referenceExporter.setProjectDirectory(dir);
 	}
 	
 	

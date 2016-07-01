@@ -3,6 +3,8 @@ package edu.pitt.dbmi.edda.reference.filer.model;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -160,5 +162,18 @@ public class EndNoteReference implements Reference {
 
 	public void setIncluded(boolean b) {
 		included = b;
+	}
+	public String getContent(){
+		return content;
+	}
+	/**
+	 * write out the reference in given format to a file
+	 * @param file
+	 * @param format
+	 * @throws IOException 
+	 */
+	public void write(Writer writer) throws IOException{
+		writer.write(content);
+		writer.close();
 	}
 }

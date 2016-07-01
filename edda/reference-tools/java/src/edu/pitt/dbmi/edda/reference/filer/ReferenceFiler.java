@@ -40,8 +40,9 @@ import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
-import javax.swing.text.DefaultStyledDocument;
 
+
+import edu.pitt.dbmi.edda.EDDA;
 import edu.pitt.dbmi.edda.reference.filer.model.EndNoteReference;
 import edu.pitt.dbmi.edda.reference.filer.model.Reference;
 import edu.pitt.dbmi.edda.reference.filer.model.Utils;
@@ -57,7 +58,7 @@ public class ReferenceFiler {
 	private final String ICON_PLUS="/icons/Plus16.gif",ICON_MINUS="/icons/Minus16.gif";
 	private static File lastFile;
 	private JFrame frame;
-	private JTextField inputRefrencesInclude,inputReferencesExclude,outputDir,outputPrefix;
+	private JTextField inputReferencesInclude,inputReferencesExclude,outputDir,outputPrefix;
 	private JTextField [] dataLabel,dataRatio;
 	private JProgressBar progress;
 	private JButton bt;
@@ -75,7 +76,7 @@ public class ReferenceFiler {
 		
 		
 		// init parameter text
-		inputRefrencesInclude = new JTextField(25);
+		inputReferencesInclude = new JTextField(25);
 		inputReferencesExclude = new JTextField(25);
 		outputPrefix = new JTextField(25);
 		outputDir = new JTextField(25);
@@ -91,7 +92,7 @@ public class ReferenceFiler {
 		c.gridy = 0;
 		c.gridx = 0;
 		
-		createDirectoryPanel("Input EndNote Reference File (include)",inputRefrencesInclude,panel,c);
+		createDirectoryPanel("Input EndNote Reference File (include)",inputReferencesInclude,panel,c);
 		createDirectoryPanel("Input EndNote Reference File (exclude)",inputReferencesExclude,panel,c);
 		createDirectoryPanel("Output Directory",outputDir,panel,c);
 		createDirectoryPanel("Output Prefix",outputPrefix,panel,c,false);
@@ -123,8 +124,8 @@ public class ReferenceFiler {
 		JPanel sp = new JPanel();
 		sp.setBorder(new LineBorder(Color.gray));
 		sp.setLayout(new BoxLayout(sp,BoxLayout.Y_AXIS));
-		sp.add(createDataSplitPanel(dataLabel[0],dataRatio[0],"TRAIN","66"));
-		sp.add(createDataSplitPanel(dataLabel[1],dataRatio[1],"TEST","34"));
+		sp.add(createDataSplitPanel(dataLabel[0],dataRatio[0],"TRAIN","100"));
+		sp.add(createDataSplitPanel(dataLabel[1],dataRatio[1],"TEST","0"));
 		sp.add(createDataSplitPanel(dataLabel[2],dataRatio[2],"DEV","0"));
 		
 		panel.add(new JLabel("Output Data Split Ratios"),c);
@@ -144,8 +145,34 @@ public class ReferenceFiler {
 		frame.getContentPane().add(bt,BorderLayout.SOUTH);
 		
 		frame.pack();
+		
+		
+		setupDefaults();
+		
+		
 		return frame;
 	}
+	
+	
+	private void setupDefaults(){
+		// setup defaults
+		if(EDDA.getInstance().getProjectDirectory() != null){
+			setProjectDirectory(EDDA.getInstance().getProjectDirectory());
+		}
+		// add default doubling of titles
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				advanced = createAdvanced();
+				((DefaultListModel)sections.getModel()).addElement("title (TI):2");
+				sections.validate();
+				sections.repaint();
+				
+			}
+		});
+		
+		
+	}
+	
 	
 	public void showDialog(){
 		getDialog().setVisible(true);
@@ -172,8 +199,18 @@ public class ReferenceFiler {
 	public void setProjectDirectory(File dir){
 		if(dir == null)
 			return;
-		outputDir.setText(new File(dir,"Input"+File.separator+"50x50_Titles").getAbsolutePath());
-		outputPrefix.setText(dir.getName().toUpperCase());
+		final File projectDir = dir;
+		SwingUtilities.invokeLater(new Runnable(){
+			public void run(){
+				File endNote = new File(projectDir,"EndNote");
+				endNote.mkdirs();
+				inputReferencesInclude.setText(endNote.getAbsolutePath());
+				inputReferencesExclude.setText(endNote.getAbsolutePath());
+				outputDir.setText(new File(projectDir,"Input"+File.separator+"100_2xTitles").getAbsolutePath());
+				outputPrefix.setText(projectDir.getName().toUpperCase());
+			}
+		});
+
 	}
 	
 	private String doAdd(){
@@ -198,62 +235,66 @@ public class ReferenceFiler {
 		return null;
 	}
 	
+	private JPanel createAdvanced(){
+		JPanel panel = new JPanel();
+		panel.setLayout(new BorderLayout());
+		
+		
+		sections = new JList(new DefaultListModel());
+		ActionListener l = new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if("add".equals(e.getActionCommand())){
+					SwingUtilities.invokeLater(new Runnable(){
+						public void run(){
+							String a = doAdd();
+							if(a != null){
+								((DefaultListModel)sections.getModel()).addElement(a);
+								sections.validate();
+								sections.repaint();
+							}
+						}
+					});
+				}else if("rem".equals(e.getActionCommand())){
+					SwingUtilities.invokeLater(new Runnable(){
+						public void run(){
+							if(sections.getSelectedIndex() > -1){
+								((DefaultListModel)sections.getModel()).remove(sections.getSelectedIndex());
+								sections.validate();
+								sections.repaint();
+							}
+						}
+					});
+				}
+				
+			}
+		};
+		
+		JButton plus = new JButton(new ImageIcon(getClass().getResource(ICON_PLUS)));
+		plus.addActionListener(l);
+		plus.setActionCommand("add");
+		JButton minus = new JButton(new ImageIcon(getClass().getResource(ICON_MINUS)));
+		minus.addActionListener(l);
+		minus.setActionCommand("rem");
+		
+		JToolBar toolbar = new JToolBar();
+		toolbar.setFloatable(false);
+		toolbar.setBackground(Color.white);
+		toolbar.add(plus,this);
+		toolbar.add(minus,this);
+		toolbar.addSeparator();
+		toolbar.add(new JLabel("Sections"));
+		
+		panel.add(toolbar,BorderLayout.NORTH);
+		panel.add(new JScrollPane(sections),BorderLayout.CENTER);
+		return panel;
+	}
+	
 	/**
 	 * do advanced
 	 */
 	private void doAdvanced() {
 		if(advanced == null){
-			JPanel panel = new JPanel();
-			panel.setLayout(new BorderLayout());
-			
-			
-			sections = new JList(new DefaultListModel());
-			ActionListener l = new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					if("add".equals(e.getActionCommand())){
-						SwingUtilities.invokeLater(new Runnable(){
-							public void run(){
-								String a = doAdd();
-								if(a != null){
-									((DefaultListModel)sections.getModel()).addElement(a);
-									sections.validate();
-									sections.repaint();
-								}
-							}
-						});
-					}else if("rem".equals(e.getActionCommand())){
-						SwingUtilities.invokeLater(new Runnable(){
-							public void run(){
-								if(sections.getSelectedIndex() > -1){
-									((DefaultListModel)sections.getModel()).remove(sections.getSelectedIndex());
-									sections.validate();
-									sections.repaint();
-								}
-							}
-						});
-					}
-					
-				}
-			};
-			
-			JButton plus = new JButton(new ImageIcon(getClass().getResource(ICON_PLUS)));
-			plus.addActionListener(l);
-			plus.setActionCommand("add");
-			JButton minus = new JButton(new ImageIcon(getClass().getResource(ICON_MINUS)));
-			minus.addActionListener(l);
-			minus.setActionCommand("rem");
-			
-			JToolBar toolbar = new JToolBar();
-			toolbar.setFloatable(false);
-			toolbar.setBackground(Color.white);
-			toolbar.add(plus,this);
-			toolbar.add(minus,this);
-			toolbar.addSeparator();
-			toolbar.add(new JLabel("Sections"));
-			
-			panel.add(toolbar,BorderLayout.NORTH);
-			panel.add(new JScrollPane(sections),BorderLayout.CENTER);
-			advanced = panel;
+			advanced = createAdvanced();
 		}
 		
 		JOptionPane.showMessageDialog(frame,advanced,"Advanced Output Options",JOptionPane.PLAIN_MESSAGE);
@@ -302,7 +343,10 @@ public class ReferenceFiler {
 			JButton bt = new JButton("Browse");
 			bt.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					JFileChooser chooser = new JFileChooser(lastFile);
+					File f = new File(textField.getText());
+					if(!f.exists())
+						f = lastFile;
+					JFileChooser chooser = new JFileChooser(f);
 					chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 					int r = chooser.showOpenDialog(frame);
 					if(JFileChooser.APPROVE_OPTION == r){
@@ -352,12 +396,12 @@ public class ReferenceFiler {
 					progress.setString("Reading Input References ..");
 					List<Reference> includeReferences , excludeReferences;
 					if(isEndNote){
-						includeReferences = Utils.readEndNoteReferences(new File(inputRefrencesInclude.getText()));
+						includeReferences = Utils.readEndNoteReferences(new File(inputReferencesInclude.getText()));
 						for(Reference r : includeReferences)
 							r.setIncluded(true);
 						excludeReferences = Utils.readEndNoteReferences(new File(inputReferencesExclude.getText()));
 					}else{
-						includeReferences = Utils.readMedlineReferences(new File(inputRefrencesInclude.getText()));
+						includeReferences = Utils.readMedlineReferences(new File(inputReferencesInclude.getText()));
 						for(Reference r : includeReferences)
 							r.setIncluded(true);
 						excludeReferences = Utils.readMedlineReferences(new File(inputReferencesExclude.getText()));

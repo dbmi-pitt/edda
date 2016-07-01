@@ -40,7 +40,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
-import javax.swing.event.ListSelectionListener;
 
 public class MedlineFilter implements Filter, ActionListener, DropTargetListener {
 	private List<String> search = Collections.EMPTY_LIST, replace = Collections.EMPTY_LIST, tag = Collections.EMPTY_LIST;

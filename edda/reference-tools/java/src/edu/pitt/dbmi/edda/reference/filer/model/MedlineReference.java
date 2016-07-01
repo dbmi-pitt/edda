@@ -3,6 +3,8 @@ package edu.pitt.dbmi.edda.reference.filer.model;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -108,6 +110,17 @@ public class MedlineReference implements Reference {
 		*/
 	}
 	
+	/**
+	 * write out the reference in given format to a file
+	 * @param file
+	 * @param format
+	 * @throws IOException 
+	 */
+	public void write(Writer writer) throws IOException{
+		writer.write(content);
+		writer.close();
+	}
+	
 	public void write(File file, String format) {
 		// by default write out entire reference as is
 		String data = content;
@@ -165,5 +178,8 @@ public class MedlineReference implements Reference {
 
 	public void setIncluded(boolean b) {
 		included = b;
+	}
+	public String getContent(){
+		return content;
 	}
 }

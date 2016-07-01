@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Writer;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -368,6 +369,35 @@ public class Utils {
 		
 		return list;
 	}
+	
+	/**
+	 * write each reference based on format
+	 * @param ref
+	 * @param string
+	 * @param isIncluded
+	 * @param d
+	 */
+		
+	private void writeRefernce(Reference ref, String format, boolean isIncluded, File dir, String name) {
+		String fname = format;
+		if(format.startsWith("[") && format.endsWith("]")){
+			fname = format.replaceAll("[^A-Z]","");
+		}
+		// figure out folder and file
+		String suffix = dir.getName().substring(0,dir.getName().indexOf("_")).toLowerCase();
+		File folder = new File(dir,fname+"_"+((isIncluded)?"Y":"N")+"_"+suffix);
+		if(!folder.exists())
+			folder.mkdirs();
+		File file  = new File(folder,name+"_"+fname+".txt");
+		
+		// save file
+		ref.write(file,format);
+	}
+
+	public static void writeReference(Reference ref, Writer writer) {
+		
+	}
+	
 	
 	/**
 	 * read input reference in MEDLINE format
