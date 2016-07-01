@@ -12,9 +12,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import edu.pitt.terminology.RemoteTerminology;
-import edu.pitt.terminology.lexicon.Concept;
-import edu.pitt.terminology.lexicon.Relation;
+import edu.pitt.dbmi.nlp.noble.terminology.*;
+
 
 public class Terms2OBO {
 	private static Map<String,Concept> conceptMap;

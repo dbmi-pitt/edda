@@ -16,18 +16,19 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import edu.pitt.text.tools.TextTools;
-import edu.ucdenver.ccp.nlp.biolemmatizer.BioLemmatizer;
+import edu.pitt.dbmi.nlp.noble.tools.TextTools;
+
+/*import edu.ucdenver.ccp.nlp.biolemmatizer.BioLemmatizer;
 import edu.ucdenver.ccp.nlp.biolemmatizer.LemmataEntry;
 import edu.ucdenver.ccp.nlp.biolemmatizer.LemmataEntry.Lemma;
-
+*/
 public class StemmerFilter implements Filter {
 	private final String LEXICON_FILE = "/resources/lexicon.lex";
-	private final String [] STEMMERS = new String [] {"Porter","BioLemmatizer"};
+	private final String [] STEMMERS = new String [] {"Porter"}; //,"BioLemmatizer"
 	private String s = " ";
 	private JPanel panel;
 	private JComboBox stemmerMenu;
-	private BioLemmatizer bio;
+	//private BioLemmatizer bio;
 	
 	public String getName() {
 		return "Stemmer Filter";
@@ -98,7 +99,7 @@ public class StemmerFilter implements Filter {
 	
 
 	private String stemBioLem(String word) {
-		if(bio == null){
+		/*if(bio == null){
 			File f = null;
 			try {
 				URL u = getClass().getResource(LEXICON_FILE);
@@ -124,7 +125,8 @@ public class StemmerFilter implements Filter {
 			sword = sword.toLowerCase();
 		else if(!hasLower(word))
 			sword = sword.toUpperCase();
-		return sword;
+		return sword;*/
+		return word;
 	}
 	
 	private boolean hasUpper(String s){

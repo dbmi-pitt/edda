@@ -3,9 +3,11 @@ package edu.pitt.dbmi.edda.terms;
 import java.io.*;
 import java.util.*;
 
-import edu.pitt.terminology.*;
-import edu.pitt.terminology.client.IndexFinderTerminology;
-import edu.pitt.terminology.lexicon.Concept;
+import edu.pitt.dbmi.nlp.noble.terminology.Concept;
+import edu.pitt.dbmi.nlp.noble.terminology.Terminology;
+import edu.pitt.dbmi.nlp.noble.terminology.impl.NobleCoderTerminology;
+
+
 
 
 
@@ -18,7 +20,7 @@ public class DesignTermFinder {
 	
 	public Terminology getTerminology() throws Exception {
 		if(term == null){
-			term = new IndexFinderTerminology(DESIGN_TERMS);
+			term = new NobleCoderTerminology(DESIGN_TERMS);
 		}
 		return term;
 	}
@@ -56,7 +58,7 @@ public class DesignTermFinder {
 		r.close();
 		
 		// do a single search
-		for(Concept c : getTerminology().search(text.toString(),IndexFinderTerminology.BEST_MATCH)){
+		for(Concept c : getTerminology().search(text.toString(),NobleCoderTerminology.BEST_MATCH)){
 			Map<String,Integer> counts = designTerms.get(c);
 			if(counts == null){
 				counts = new LinkedHashMap<String, Integer>();
@@ -80,7 +82,7 @@ public class DesignTermFinder {
 			}
 		});
 		//keys.addAll(designTerms.keySet());
-		for(String cui: ((IndexFinderTerminology)getTerminology()).getAllConcepts()){
+		for(String cui: ((NobleCoderTerminology)getTerminology()).getAllConcepts()){
 			keys.add(getTerminology().lookupConcept(cui));
 		}
 		

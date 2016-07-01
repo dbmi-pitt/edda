@@ -5,7 +5,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import edu.pitt.text.tools.TextTools;
+import edu.pitt.dbmi.nlp.noble.tools.TextTools;
 
 public class DocumentClusterExplorer {
 	private static boolean debug = false;

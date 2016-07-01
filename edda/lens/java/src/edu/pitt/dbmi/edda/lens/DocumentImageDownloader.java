@@ -15,7 +15,8 @@ import java.util.regex.Pattern;
 
 import org.json.*;
 
-import edu.pitt.text.tools.TextTools;
+import edu.pitt.dbmi.nlp.noble.tools.TextTools;
+
 
 
 public class DocumentImageDownloader {

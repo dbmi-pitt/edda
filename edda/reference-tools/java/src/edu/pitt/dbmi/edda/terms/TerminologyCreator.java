@@ -4,10 +4,10 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.*;
 
-import edu.pitt.terminology.Terminology;
-import edu.pitt.terminology.client.IndexFinderTerminology;
-import edu.pitt.terminology.lexicon.Concept;
-import edu.pitt.terminology.util.TerminologyException;
+import edu.pitt.dbmi.nlp.noble.terminology.*;
+import edu.pitt.dbmi.nlp.noble.terminology.impl.NobleCoderTerminology;
+
+
 
 
 /**
@@ -46,8 +46,8 @@ public class TerminologyCreator {
 				}
 			}
 		}
-		((IndexFinderTerminology)target).save();
-		((IndexFinderTerminology)target).dispose();
+		((NobleCoderTerminology)target).save();
+		((NobleCoderTerminology)target).dispose();
 		System.out.println("done");
 	}
 	
@@ -56,15 +56,15 @@ public class TerminologyCreator {
 	 */
 	public void addTerminology(Terminology term) throws TerminologyException{
 		
-		for(String cui: ((IndexFinderTerminology)term).getAllConcepts()){
+		for(String cui: ((NobleCoderTerminology)term).getAllConcepts()){
 			Concept c = term.lookupConcept(cui);
 			System.out.println("processing: "+cui+" ..");
 			if(c != null){
 				target.addConcept(c);
 			}
 		}
-		((IndexFinderTerminology)target).save();
-		((IndexFinderTerminology)target).dispose();
+		((NobleCoderTerminology)target).save();
+		((NobleCoderTerminology)target).dispose();
 		System.out.println("done");
 	}
 	
@@ -108,11 +108,11 @@ public class TerminologyCreator {
 		//String targetName = "SR_MALARIA (sn+dt)";
 		
 		TerminologyCreator tc = new TerminologyCreator();
-		tc.setSource(new IndexFinderTerminology("UMLS"));
-		tc.setTarget(new IndexFinderTerminology(targetName));
+		tc.setSource(new NobleCoderTerminology("UMLS"));
+		tc.setTarget(new NobleCoderTerminology(targetName));
 		tc.createTerminology(tc.getList(codeFile));
-		tc.setTarget(new IndexFinderTerminology(targetName));
-		tc.addTerminology(new IndexFinderTerminology("DesignTerms"));
+		tc.setTarget(new NobleCoderTerminology(targetName));
+		tc.addTerminology(new NobleCoderTerminology("DesignTerms"));
 		
 	}
 

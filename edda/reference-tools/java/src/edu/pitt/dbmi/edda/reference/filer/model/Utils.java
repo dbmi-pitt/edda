@@ -32,10 +32,10 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import edu.pitt.text.tools.TextTools;
-import gov.nih.nlm.nls.nlp.textfeatures.LexicalElement;
+import edu.pitt.dbmi.nlp.noble.tools.TextTools;
+/*import gov.nih.nlm.nls.nlp.textfeatures.LexicalElement;
 import gov.nih.nlm.nls.nlp.textfeatures.Phrase;
-import gov.nih.nlm.nls.nlp.textfeatures.Sentence;
+import gov.nih.nlm.nls.nlp.textfeatures.Sentence;*/
 
 public class Utils {
 	private static boolean extractKeywordsFromAbstract,extractKeywordsUseMajorFocus,extractKeywordsUseCategories,extractKeywordsFilterMeSHLine;
@@ -713,10 +713,10 @@ public class Utils {
 	 * @param keys
 	 */
 	public static void addKeyword(String str, Collection<String> keys){
-		String [] words = TextTools.getWords(str);
+		List<String> words = TextTools.getWords(str);
 		
 		// if more then 4 words and has a comma, split by comma
-		if(words.length > 5){
+		if(words.size() > 5){
 			// we have a flat list of words that should be split using noun phrase parser
 			try{
 				// intialize text tools
@@ -739,13 +739,13 @@ public class Utils {
 					for(String s : TextTools.getNGrams(str, 3)){
 						// check if last word is noun, if so, then we are cool
 						if(extractKeywordsUseNgramFilter){
-							Sentence sent = textTools.parseSentence(s);
+						/*	Sentence sent = textTools.parseSentence(s);
 							Vector v = sent.getLexicalElements();
 							LexicalElement el = (LexicalElement) v.get(v.size()-1);
 							if("noun".equals(el.getPOSTagString())){
 								keys.add(s);
 								//System.out.println(s);
-							}
+							}*/
 						}else{
 							keys.add(s);
 						}
@@ -757,7 +757,7 @@ public class Utils {
 			}catch(Exception ex){
 				ex.printStackTrace();
 			}
-		}else if(words.length >=4 && str.contains(",")){
+		}else if(words.size() >=4 && str.contains(",")){
 			for(String w: str.split(",")){
 				keys.add(w.trim());
 			}

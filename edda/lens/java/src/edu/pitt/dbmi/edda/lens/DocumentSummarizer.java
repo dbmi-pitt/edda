@@ -5,7 +5,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import edu.pitt.text.tools.TextTools;
+import edu.pitt.dbmi.nlp.noble.tools.TextTools;
 
 public class DocumentSummarizer {
 	private static final int NGRAM = 4;
@@ -312,8 +312,8 @@ public class DocumentSummarizer {
 	 * @return
 	 */
 	private static boolean contains(String large,String small){
-		List<String> large_list = Arrays.asList(TextTools.getWords(large));
-		List<String> small_list = Arrays.asList(TextTools.getWords(small));
+		List<String> large_list = TextTools.getWords(large);
+		List<String> small_list =TextTools.getWords(small);
 		return large_list.containsAll(small_list);
 	}
 	

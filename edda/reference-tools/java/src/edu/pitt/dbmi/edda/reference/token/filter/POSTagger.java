@@ -11,28 +11,31 @@ import java.util.Properties;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
-import opennlp.tools.postag.POSModel;
+/*import opennlp.tools.postag.POSModel;
 import opennlp.tools.postag.POSTaggerME;
-import opennlp.tools.util.InvalidFormatException;
+import opennlp.tools.util.InvalidFormatException;*/
 
-import edu.pitt.text.tools.TextTools;
-import gov.nih.nlm.nls.dtagger.Tag;
+
+/*
+ * 
+ * import edu.pitt.text.tools.TextTools;
+ * import gov.nih.nlm.nls.dtagger.Tag;
 import gov.nih.nlm.nls.nlp.textfeatures.Document;
 import gov.nih.nlm.nls.nlp.textfeatures.LexicalElement;
 import gov.nih.nlm.nls.nlp.textfeatures.Section;
 import gov.nih.nlm.nls.nlp.textfeatures.Sentence;
 import gov.nih.nlm.nls.nlp.textfeatures.Token;
-import gov.nih.nlm.nls.utils.GlobalBehavior;
+import gov.nih.nlm.nls.utils.GlobalBehavior;*/
 
 public class POSTagger implements Filter {
 	private final String [] TAGGERS = new String [] {"SPECIALIST POS Tagger","NLM dTagger","OpenNLP POS Tagger"};
 	private final String TAG_SEPERATOR = "|";
 	private String s = " ";
 	private JPanel panel;
-	private TextTools textTools;
+	//private TextTools textTools;
 	private JComboBox posMenu;
-	private Tag dTagger;
-	private opennlp.tools.postag.POSTagger posTagger;
+	//private Tag dTagger;
+	//private opennlp.tools.postag.POSTagger posTagger;
 	
 	public String getName() {
 		return "POS Tagger";
@@ -81,17 +84,18 @@ public class POSTagger implements Filter {
 	}
 	
 	public String process(String str) {
-		int index = (posMenu != null)?posMenu.getSelectedIndex():0;
+	/*	int index = (posMenu != null)?posMenu.getSelectedIndex():0;
 		switch(index){
 		case 1: return processDTagger(str);
 		case 2: return processOpenNLP(str);
 		}
-		return processSpecialist(str);
+		return processSpecialist(str);*/
+		return null;
 	}
 	
 	
 	private String processOpenNLP(String str) {
-		if(posTagger == null){
+		/*if(posTagger == null){
 			try {
 				posTagger = new POSTaggerME(new POSModel(getClass().getResource("/resources/en-pos-maxent.bin")));
 			} catch (InvalidFormatException e) {
@@ -105,9 +109,10 @@ public class POSTagger implements Filter {
 		String [] tags  = posTagger.tag(words);
 		for(int i=0;i<words.length;i++)
 			buf.append(words[i]+TAG_SEPERATOR+tags[i]+s);
-		return (buf.length()==0)?str:buf.toString();
+		return (buf.length()==0)?str:buf.toString();*/
+		return str;
 	}
-
+/*
 	private String processDTagger(String str) {
 		StringBuffer buf = new StringBuffer();
 		try{
@@ -125,7 +130,8 @@ public class POSTagger implements Filter {
 		}
 		return (buf.length()==0)?str:buf.toString();
 	}
-
+	*/
+/*
 	private List<Sentence> getDSentences(String str) {
 		if(dTagger == null){
 			try {
@@ -154,7 +160,8 @@ public class POSTagger implements Filter {
 		}
 		return list;
 	}
-
+*/
+	/*
 	private String processSpecialist(String str){
 		StringBuffer buf = new StringBuffer();
 		try{
@@ -173,12 +180,12 @@ public class POSTagger implements Filter {
 		return (buf.length()==0)?str:buf.toString();
 	}
 	
-	
+	*/
 	/**
 	 * get sentences
 	 * @param str
 	 * @return
-	 */
+	 *
 	private List<Sentence> getSentences(String str){
 		List<Sentence> list = new ArrayList<Sentence>();
 		if(textTools == null)
@@ -194,7 +201,7 @@ public class POSTagger implements Filter {
 			list.add(textTools.parseSentence(str));
 		}
 		return list;
-	}
+	}*/
 	
 	public Properties save(){
 		Properties p = new Properties();

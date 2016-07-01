@@ -5,8 +5,10 @@ import java.io.File;
 import java.io.FileReader;
 import java.util.*;
 
-import edu.pitt.ontology.*;
-import edu.pitt.ontology.protege.POntology;
+import edu.pitt.dbmi.nlp.noble.ontology.*;
+import edu.pitt.dbmi.nlp.noble.ontology.owl.OOntology;
+
+
 
 public class EnrichOCRe {
 	private List<String> inputTerms;
@@ -76,7 +78,7 @@ public class EnrichOCRe {
 	public static void main(String[] args) throws Exception {
 		EnrichOCRe ner = new EnrichOCRe();
 		ner.load(new File("/home/tseytlin/Download/design_terms_mod.txt"));
-		ner.setOntology(POntology.loadOntology(new File("/home/tseytlin/Download/Ontology_of_Clinical_Research.owl")));
+		ner.setOntology(OOntology.loadOntology(new File("/home/tseytlin/Download/Ontology_of_Clinical_Research.owl")));
 		ner.process();
 		System.exit(0);
 

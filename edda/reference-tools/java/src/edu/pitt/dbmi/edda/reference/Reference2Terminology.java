@@ -6,12 +6,10 @@ import java.util.Arrays;
 import edu.pitt.dbmi.edda.reference.filer.model.MedlineReference;
 import edu.pitt.dbmi.edda.reference.filer.model.Reference;
 import edu.pitt.dbmi.edda.reference.filer.model.Utils;
-import edu.pitt.terminology.RemoteTerminology;
-import edu.pitt.terminology.Terminology;
-import edu.pitt.terminology.client.IndexFinderTerminology;
-import edu.pitt.terminology.lexicon.Concept;
-import edu.pitt.terminology.lexicon.Source;
-import edu.pitt.terminology.util.TerminologyException;
+import edu.pitt.dbmi.nlp.noble.terminology.*;
+import edu.pitt.dbmi.nlp.noble.terminology.impl.NobleCoderTerminology;
+import edu.pitt.dbmi.nlp.noble.terminology.impl.RemoteTerminology;
+
 
 public class Reference2Terminology {
 
@@ -19,7 +17,7 @@ public class Reference2Terminology {
 		RemoteTerminology umls = new RemoteTerminology();
 		umls.setTerminology("metathesaurus");
 		//umls.setFilterSources(Source.getSources(new String []{"MSH"}));
-		Terminology term = new IndexFinderTerminology();
+		Terminology term = new NobleCoderTerminology();
 		for(String keyword: r.getKeywords()){
 			for(Concept c: umls.search(keyword)){
 				try {

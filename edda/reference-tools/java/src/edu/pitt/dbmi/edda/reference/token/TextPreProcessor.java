@@ -26,9 +26,11 @@ import java.io.FileWriter;
 import java.util.*;
 
 import javax.swing.BoxLayout;
+import javax.swing.ComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -51,14 +53,17 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.text.JTextComponent;
+
 import edu.pitt.dbmi.edda.reference.filer.model.Utils;
 import edu.pitt.dbmi.edda.reference.token.filter.*;
 
 
 public class TextPreProcessor implements ListSelectionListener, ActionListener, DropTargetListener {
+	private static final String [] DEFAULT_PRE_PROCESS_STRATEGIES = new String [] {"","AlphaNumeric Plus","Alphabetic"};
 	private JFrame frame;
 	private JTextField inputText,outputField,tokenSeparator,pruneMin;
 	private JCheckBox createTopicOutput,pruneTokens;
+	private JComboBox<String> defaultPreProcess;
 	private JList availableFilterList,selectedFilterList;
 	private JPanel optionPanel,buttonPanel;
 	private JProgressBar progress;
@@ -70,6 +75,7 @@ public class TextPreProcessor implements ListSelectionListener, ActionListener, 
 	private String tokenSep;
 	private Map<String,Filter> filterMap;
 	private int pruneMn;
+	private Map<String,Properties> defaultStrategies;
 	private static File dir;
 	private static boolean standAlone;
 	
@@ -299,7 +305,7 @@ public class TextPreProcessor implements ListSelectionListener, ActionListener, 
 		model.addElement(new StemmerFilter());
 		model.addElement(new SearchReplace());
 		model.addElement(new MedlineFilter());
-		model.addElement(new POSTagger());
+		//model.addElement(new POSTagger());
 
 		
 		filterMap = new HashMap<String,Filter>();
@@ -336,8 +342,21 @@ public class TextPreProcessor implements ListSelectionListener, ActionListener, 
 			inputText.setBorder(new LineBorder(Color.gray));
 			outputField = new JTextField(25);
 			
+			
+			
 			createDirectoryPanel("Input (Reference Filer Directory)",inputText,panel,c);
 			createDirectoryPanel("Output (Target Directory)",outputField,panel,c);
+			
+			defaultPreProcess = new JComboBox<String>(DEFAULT_PRE_PROCESS_STRATEGIES);
+			defaultPreProcess.setActionCommand("default");
+			defaultPreProcess.addActionListener(this);
+			
+			panel.add(new JLabel("Pre-Processing Strategy" ),c);
+			c.gridx++;
+			panel.add(defaultPreProcess,c);
+			c.gridx++;
+			c.gridy++;
+			c.gridx=0;
 			
 			
 			// add options
@@ -527,6 +546,78 @@ public class TextPreProcessor implements ListSelectionListener, ActionListener, 
 			doSave();
 		}else if("load".equals(cmd)){
 			doLoad();
+		}else if("default".equals(cmd)){
+			doDefaults();
+		}
+	}
+	
+	/**
+	 * setup properties
+	 * @return
+	 */
+	private Map<String,Properties> getDefaultStrategies(){
+		if(defaultStrategies == null){
+			defaultStrategies = new HashMap<String,Properties>();
+			
+			// alphanum+ 
+			Properties prop = new Properties();
+			prop.setProperty("selected.filters","Medline Filter, Change Character Case, Search and Replace, Tokenizer, Stop Word Filter, Token Size Filter");
+			
+			prop.setProperty("filter.MedlineFilter.1","Journal / [^a-zA-Z ]+ /  / "); // remove non-alphabetic characters for Journals
+			prop.setProperty("filter.MedlineFilter.2","Journal / ^\\s+ /  / ");  	  // remove leading spaces
+			prop.setProperty("filter.MedlineFilter.3","Journal / \\s+$ /  /"); 		  // remove trailing spaces
+			prop.setProperty("filter.MedlineFilter.4","Journal / \\s+ / _ / ");		  // connect all spaces between words with _ 
+			prop.setProperty("filter.MedlineFilter.5","Conference Name / [^a-zA-Z ]+ /  / ");  // remove non-alphabetic characters for Journals
+			prop.setProperty("filter.MedlineFilter.6","Conference Name / ^\\s+ /  / ");		   // remove leading spaces
+			prop.setProperty("filter.MedlineFilter.7","Conference Name / \\s+$ /  / ");		   // remove trailing spaces
+			prop.setProperty("filter.MedlineFilter.8","Conference Name / \\s+ / _ / ");		   // connect all spaces between words with _ 
+		
+			prop.setProperty("filter.ChangeCase","lowercase"); // lowecase all characters
+		
+			prop.setProperty("filter.SearchReplace.1"," / [\\u2013\\u2014] / - / ");  // normalize em/en dashes
+			prop.setProperty("filter.SearchReplace.2"," / /(\\d+) / _$1 / "); // replace fractions with _
+			prop.setProperty("filter.SearchReplace.3"," / \\s[^\\w;]+(\\w) /  $1 / ");
+			prop.setProperty("filter.SearchReplace.4"," / (\\w)[^\\w;]+\\s / $1  / ");
+			prop.setProperty("filter.SearchReplace.5"," / (\\w)[^\\w;]+$ / $1 / ");
+			prop.setProperty("filter.SearchReplace.6"," / ^[^\\w;]+(\\w) / $1 / ");
+			prop.setProperty("filter.SearchReplace.7"," / _(\\d+) / /$1 / "); // get fractions bacl
+			
+			prop.setProperty("filter.Tokenizer","[^_a-zA-Z0-9\\-/%\\.',]");		   // tokenize on non alphanumeric
+			
+			prop.setProperty("filter.StopWordFilter",""); 	//default stop word filter
+			prop.setProperty("filter.SizeFilter.min","3");
+			prop.setProperty("filter.SizeFilter.max","100");
+			                                   
+			defaultStrategies.put(DEFAULT_PRE_PROCESS_STRATEGIES[1],prop);
+			
+			
+			// alphabetic strategy
+			prop = new Properties();
+			prop.setProperty("selected.filters","Change Character Case, Tokenizer, Stop Word Filter, Token Size Filter, Stemmer Filter");
+			prop.setProperty("filter.ChangeCase","lowercase");
+			prop.setProperty("filter.Tokenizer","[^a-zA-Z]+");
+			prop.setProperty("filter.StopWordFilter","");
+			prop.setProperty("filter.SizeFilter.min","3");
+			prop.setProperty("filter.SizeFilter.max","25");		
+			prop.setProperty("filter.StemmerFilter","Porter");
+			defaultStrategies.put(DEFAULT_PRE_PROCESS_STRATEGIES[2],prop);
+			
+			
+			
+			
+		}
+		return defaultStrategies;
+	}
+	
+	
+	private void doDefaults(){
+		final String cmd = defaultPreProcess.getSelectedItem().toString();
+		if(getDefaultStrategies().containsKey(cmd)){
+			SwingUtilities.invokeLater(new Runnable(){
+				public void run(){
+					load(getDefaultStrategies().get(cmd));
+				}
+			});
 		}
 	}
 	
@@ -556,6 +647,31 @@ public class TextPreProcessor implements ListSelectionListener, ActionListener, 
 		}
 	}
 
+	private void load(Properties props) {
+		inputText.setText(props.getProperty("input.text",""));
+		outputField.setText(props.getProperty("output.text",""));
+		//pruneMin.setText(props.getProperty("prune.text",""));
+		tokenSeparator.setText(props.getProperty("separator.text",""));
+		//pruneTokens.setSelected(Boolean.parseBoolean(props.getProperty("prune.tokens","false")));
+		createTopicOutput.setSelected(Boolean.parseBoolean(props.getProperty("topic.model.output","false")));
+		
+		for(Filter filter: filterMap.values()){
+			filter.getPanel();
+			filter.load(props);
+		}
+		
+		((DefaultListModel)selectedFilterList.getModel()).removeAllElements();
+		String selectedFilters = props.getProperty("selected.filters","");
+		for(String ft : selectedFilters.split(",")){
+			ft = ft.trim();
+			if(ft.length() > 0){
+				((DefaultListModel)selectedFilterList.getModel()).addElement(filterMap.get(ft));
+				((DefaultListModel)availableFilterList.getModel()).removeElement(filterMap.get(ft));
+			}
+		}
+		selectedFilterList.validate();
+		selectedFilterList.repaint();
+	}
 
 	private void load(File f) throws Exception {
 		final Properties props = new Properties();
@@ -567,29 +683,7 @@ public class TextPreProcessor implements ListSelectionListener, ActionListener, 
 		
 		SwingUtilities.invokeLater(new Runnable(){
 			public void run(){
-				inputText.setText(props.getProperty("input.text",""));
-				outputField.setText(props.getProperty("output.text",""));
-				//pruneMin.setText(props.getProperty("prune.text",""));
-				tokenSeparator.setText(props.getProperty("separator.text",""));
-				//pruneTokens.setSelected(Boolean.parseBoolean(props.getProperty("prune.tokens","false")));
-				createTopicOutput.setSelected(Boolean.parseBoolean(props.getProperty("topic.model.output","false")));
-				
-				for(Filter filter: filterMap.values()){
-					filter.getPanel();
-					filter.load(props);
-				}
-				
-				((DefaultListModel)selectedFilterList.getModel()).removeAllElements();
-				String selectedFilters = props.getProperty("selected.filters","");
-				for(String ft : selectedFilters.split(",")){
-					ft = ft.trim();
-					if(ft.length() > 0){
-						((DefaultListModel)selectedFilterList.getModel()).addElement(filterMap.get(ft));
-						((DefaultListModel)availableFilterList.getModel()).removeElement(filterMap.get(ft));
-					}
-				}
-				selectedFilterList.validate();
-				selectedFilterList.repaint();
+				load(props);
 			}
 		});
 		

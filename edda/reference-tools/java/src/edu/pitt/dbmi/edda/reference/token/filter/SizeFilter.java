@@ -14,7 +14,6 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
 import edu.pitt.dbmi.edda.reference.filer.model.Utils;
-import edu.pitt.text.tools.TextTools;
 
 public class SizeFilter implements Filter {
 	private String s = " ";

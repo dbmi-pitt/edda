@@ -28,7 +28,8 @@ import javax.swing.text.JTextComponent;
 import edu.pitt.dbmi.edda.reference.filer.model.MedlineReference;
 import edu.pitt.dbmi.edda.reference.filer.model.Reference;
 import edu.pitt.dbmi.edda.reference.filer.model.Utils;
-import edu.pitt.text.tools.TextTools;
+import edu.pitt.dbmi.nlp.noble.tools.TextTools;
+
 
 public class ExtractIndexingTerms {
 	private final int INFREQUENT_TERM_NUMBER = 1;

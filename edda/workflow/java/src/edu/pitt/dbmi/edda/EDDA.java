@@ -17,6 +17,7 @@ import javax.swing.text.JTextComponent;
 import edu.pitt.dbmi.edda.reference.ReferenceExporter;
 import edu.pitt.dbmi.edda.reference.filer.ReferenceFiler;
 import edu.pitt.dbmi.edda.reference.token.TextPreProcessor;
+import edu.pitt.dbmi.nlp.noble.extract.InformationExtractor;
 
 /**
  * This is the main application that tries to link multiple components
@@ -58,7 +59,7 @@ public class EDDA implements ActionListener {
 			bt = new JButton("Reference Statistics..");
 			bt.addActionListener(this);
 			bt.setActionCommand("stats");
-			panel.add(bt);
+			//panel.add(bt);
 			
 			bt = new JButton("Tokenize References..");
 			bt.addActionListener(this);
@@ -68,7 +69,7 @@ public class EDDA implements ActionListener {
 			bt = new JButton("PICO+ Viewer ..");
 			bt.addActionListener(this);
 			bt.setActionCommand("pico");
-			//panel.add(bt);
+			panel.add(bt);
 			
 			bt = new JButton("Cluster References..");
 			bt.addActionListener(this);
@@ -142,7 +143,8 @@ public class EDDA implements ActionListener {
 			textPreProcessor.showDialog();
 			textPreProcessor.setProjectDirectory(getProjectDirectory());
 		}else if("pico".equals(cmd)){
-			
+			InformationExtractor ie = new InformationExtractor();
+			ie.showDialog();
 		}else if("cluster".equals(cmd)){
 			
 		}else if("exit".equals(cmd)){

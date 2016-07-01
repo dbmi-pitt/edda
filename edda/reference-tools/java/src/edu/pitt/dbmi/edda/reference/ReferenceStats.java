@@ -6,14 +6,11 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
 import edu.pitt.dbmi.edda.reference.filer.model.EndNoteReference;
 import edu.pitt.dbmi.edda.reference.filer.model.Reference;
 import edu.pitt.dbmi.edda.reference.filer.model.Utils;
-import edu.pitt.terminology.Terminology;
-import edu.pitt.terminology.client.IndexFinderTerminology;
-import edu.pitt.terminology.lexicon.Concept;
-import edu.pitt.terminology.util.TerminologyException;
+import edu.pitt.dbmi.nlp.noble.terminology.*;
+import edu.pitt.dbmi.nlp.noble.terminology.impl.NobleCoderTerminology;
 
 public class ReferenceStats {
 	private Terminology term;
@@ -158,14 +155,14 @@ public class ReferenceStats {
 	private String getJournalType(Reference r) {
 		try {
 			if(term == null){
-				term = new IndexFinderTerminology("DesignTerms");
+				term = new NobleCoderTerminology("DesignTerms");
 				// search strategy
-				((IndexFinderTerminology) term).setDefaultSearchMethod(IndexFinderTerminology.CUSTOM_MATCH);
-				((IndexFinderTerminology) term).setSubsumptionMode(true);
-				((IndexFinderTerminology) term).setOverlapMode(true);
-				((IndexFinderTerminology) term).setContiguousMode(false);
-				((IndexFinderTerminology) term).setOrderedMode(false);
-				((IndexFinderTerminology) term).setPartialMode(false);
+				((NobleCoderTerminology) term).setDefaultSearchMethod(NobleCoderTerminology.CUSTOM_MATCH);
+				((NobleCoderTerminology) term).setSubsumptionMode(true);
+				((NobleCoderTerminology) term).setOverlapMode(true);
+				((NobleCoderTerminology) term).setContiguousMode(false);
+				((NobleCoderTerminology) term).setOrderedMode(false);
+				((NobleCoderTerminology) term).setPartialMode(false);
 			}
 			
 			

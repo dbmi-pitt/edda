@@ -5,17 +5,19 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import edu.pitt.text.tools.TextTools;
+import edu.pitt.dbmi.nlp.noble.tools.TextTools;
+
+/*import edu.pitt.text.tools.TextTools;
 import gov.nih.nlm.nls.nlp.textfeatures.Phrase;
 import gov.nih.nlm.nls.nlp.textfeatures.Sentence;
 import opennlp.tools.cmdline.parser.ParserTool;
 import opennlp.tools.parser.*;
 import opennlp.tools.postag.*;
-
+*/
 public class StudyDesignFinder {
 	public static enum Mode {MSH,NCIT,HTA_TITLES};
 	private Mode mode;
-	private Parser parser;
+	//private Parser parser;
 	private TextTools textTools;
 	
 	/**
@@ -223,6 +225,8 @@ public class StudyDesignFinder {
 		
 		// do sentence parsing
 		List<String> list = new ArrayList<String>();
+		//TODO: need noun-phrase parser
+		/*
 		Sentence s = getTextTool().parseSentence(sentence);
 		for(Object o: s.getPhrases()){
 			Phrase p = (Phrase) o;
@@ -230,7 +234,7 @@ public class StudyDesignFinder {
 				list.add(p.getTrimmedString());
 			}
 		}
-		
+		*/
 		return list;
 	}
 	
@@ -252,7 +256,7 @@ public class StudyDesignFinder {
 
 	/**
 	 * get noun-phrases 
-	 */
+	 *
 	public List<String> getNounPhrases(Parse p,List<String> nounPhrases) {
 		if (p.getType().equals("NP")) { //NP=noun phrase
 	        //remove a phrase that includes the new one
@@ -267,6 +271,7 @@ public class StudyDesignFinder {
 	         getNounPhrases(child,nounPhrases);
 	    return nounPhrases;
 	}
+	*/
 	
 	public TextTools getTextTool(){
 		if(textTools == null){
@@ -275,7 +280,7 @@ public class StudyDesignFinder {
 		return textTools;
 	}
 	
-	
+	/*
 	public Parser getParser(){
 		if(parser == null){
 			try {
@@ -288,7 +293,7 @@ public class StudyDesignFinder {
 		return parser;
 		
 	}
-
+*/
 
 	public static void main(String[] args) throws IOException {
 		//File file = new File("/home/tseytlin/Data/HTA/possible_study_design_candidates_HTA_titles.txt");

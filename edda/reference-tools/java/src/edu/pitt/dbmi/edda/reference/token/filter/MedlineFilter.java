@@ -52,7 +52,7 @@ public class MedlineFilter implements Filter, ActionListener, DropTargetListener
 	
 	
 	public String getName() {
-		return "Medline Filter";
+		return "Tag Filter";
 	}
 	
 	public String toString(){
@@ -60,7 +60,7 @@ public class MedlineFilter implements Filter, ActionListener, DropTargetListener
 	}
 
 	public String getDescription() {
-		return "Strip Medline Tags if present and optionally modify data in specified medline sections, by utilising search and replace mechanism.";
+		return "Strip RIS Tags if present and optionally modify data in specified RIS sections, by utilising search and replace mechanism.";
 	}
 
 	public JComponent getPanel() {

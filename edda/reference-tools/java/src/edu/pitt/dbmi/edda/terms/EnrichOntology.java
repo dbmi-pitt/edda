@@ -6,19 +6,19 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.*;
 
-import edu.pitt.ontology.IClass;
-import edu.pitt.ontology.IOntology;
-import edu.pitt.ontology.protege.POntology;
-import edu.pitt.terminology.Terminology;
-import edu.pitt.terminology.client.IndexFinderTerminology;
-import edu.pitt.terminology.lexicon.Concept;
-import edu.pitt.text.tools.TextTools;
+import edu.pitt.dbmi.nlp.noble.ontology.*;
+import edu.pitt.dbmi.nlp.noble.ontology.owl.OOntology;
+import edu.pitt.dbmi.nlp.noble.terminology.*;
+import edu.pitt.dbmi.nlp.noble.terminology.impl.NobleCoderTerminology;
+import edu.pitt.dbmi.nlp.noble.tools.TextTools;
+
+
 
 
 public class EnrichOntology {
 	private final boolean USE_COMMENTS = true;
 	private IOntology ontology;
-	private Terminology terminology = new IndexFinderTerminology();
+	private Terminology terminology = new NobleCoderTerminology();
 	private List<Concept> designTerms;
 	private Map<Concept,Set<IClass>> foundConcepts;
 	private TextTools textTools = new TextTools();
@@ -207,7 +207,7 @@ public class EnrichOntology {
 	public static void main(String[] args) throws Exception {
 		EnrichOntology ner = new EnrichOntology();
 		ner.loadTerms(new File("/home/tseytlin/Work/systematic-reviews/data/design_terms_SORTED_TCB.txt"));
-		ner.loadOntology(POntology.loadOntology(new File("/home/tseytlin/Work/systematic-reviews/data/Ontology_of_Clinical_Research.owl")));
+		ner.loadOntology(OOntology.loadOntology(new File("/home/tseytlin/Work/systematic-reviews/data/Ontology_of_Clinical_Research.owl")));
 		ner.process();
 		ner.saveTerms(new File("/home/tseytlin/design_terms_OCRe_match.txt"));
 		System.exit(0);

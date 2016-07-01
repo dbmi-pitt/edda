@@ -7,12 +7,12 @@ import java.util.*;
 
 import javax.swing.JDialog;
 
-import edu.pitt.ontology.IOntology;
-import edu.pitt.ontology.bioportal.BioPortalRepository;
-import edu.pitt.ontology.ui.OntologyImporter;
-import edu.pitt.terminology.client.OntologyTerminology;
-import edu.pitt.terminology.client.PersistentOntologyTerminology;
-import edu.pitt.terminology.lexicon.Concept;
+import edu.pitt.dbmi.nlp.noble.ontology.*;
+import edu.pitt.dbmi.nlp.noble.ontology.bioportal.BioPortalRepository;
+import edu.pitt.dbmi.nlp.noble.terminology.Concept;
+import edu.pitt.dbmi.nlp.noble.terminology.impl.NobleCoderTerminology;
+import edu.pitt.dbmi.nlp.noble.ui.OntologyImporter;
+
 
 
 
@@ -68,7 +68,7 @@ public class DesignTermsNER {
 	 * @param output
 	 */
 	public void process() throws Exception {
-		OntologyTerminology term = new PersistentOntologyTerminology(getOntology());
+		NobleCoderTerminology term = new NobleCoderTerminology(getOntology());
 		Map<Concept,Integer> found = new HashMap<Concept,Integer>();
 		int occurances = 0;
 		for(String line: getInputTerms()){
