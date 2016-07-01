@@ -14,7 +14,7 @@ public interface Reference {
 	public boolean isIncluded();
 	public Map<String,String> getContentMap();
 	public String getContent();
-	
+	public String getRecordNumber();
 	public void setIncluded(boolean b);
 	
 	/**

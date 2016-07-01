@@ -92,8 +92,8 @@ public class ReferenceFiler {
 		c.gridy = 0;
 		c.gridx = 0;
 		
-		createDirectoryPanel("Input EndNote Reference File (include)",inputReferencesInclude,panel,c);
-		createDirectoryPanel("Input EndNote Reference File (exclude)",inputReferencesExclude,panel,c);
+		createDirectoryPanel("Input RIS Reference File (include)",inputReferencesInclude,panel,c);
+		createDirectoryPanel("Input RIS Reference File (exclude)",inputReferencesExclude,panel,c);
 		createDirectoryPanel("Output Directory",outputDir,panel,c);
 		createDirectoryPanel("Output Prefix",outputPrefix,panel,c,false);
 		

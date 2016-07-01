@@ -104,4 +104,9 @@ public class CochraneReference implements Reference {
 	public void write(Writer writer) throws IOException{
 		
 	}
+
+	public String getRecordNumber() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

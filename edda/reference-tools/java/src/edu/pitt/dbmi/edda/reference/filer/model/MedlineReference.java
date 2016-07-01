@@ -42,6 +42,10 @@ public class MedlineReference implements Reference {
 		return info.containsKey("SO")?info.get("SO"):"";
 	}
 	
+	public String getRecordNumber(){
+		return info.containsKey("ID")?info.get("ID"):"";
+	}
+	
 	public void setAbstract(String ab){
 		info.put("AB",ab);
 		content+="AB  - "+ab+"\n";
