@@ -180,7 +180,7 @@ public class ReferenceExporter {
 	
 	
 	private Reference readReference(File refFile){
-		for(Reference r: Utils.readEndNoteReferences(refFile)){
+		for(Reference r: Utils.readRISReferences(refFile)){
 			return r;
 		}
 		return null;

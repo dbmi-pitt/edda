@@ -439,7 +439,7 @@ public class TextPreProcessor implements ListSelectionListener, ActionListener, 
 			options.add(optionPanel);
 			options.add(createTopicOutput);
 			//options.add(pp);
-			options.add(pn);
+			//options.add(pn);
 			
 			for(int i=0;i<options.getComponentCount();i++)
 				((JComponent)options.getComponent(i)).setAlignmentX(JComponent.LEFT_ALIGNMENT);
@@ -563,7 +563,7 @@ public class TextPreProcessor implements ListSelectionListener, ActionListener, 
 			Properties prop = new Properties();
 			prop.setProperty("selected.filters","Tag Filter, Change Character Case, Search and Replace, Tokenizer, Stop Word Filter, Token Size Filter");
 			
-			prop.setProperty("filter.MedlineFilter.1","Journal / [^a-zA-Z ]+ /  / "); // remove non-alphabetic characters for Journals
+			/*prop.setProperty("filter.MedlineFilter.1","Journal / [^a-zA-Z ]+ /  / "); // remove non-alphabetic characters for Journals
 			prop.setProperty("filter.MedlineFilter.2","Journal / ^\\s+ /  / ");  	  // remove leading spaces
 			prop.setProperty("filter.MedlineFilter.3","Journal / \\s+$ /  /"); 		  // remove trailing spaces
 			prop.setProperty("filter.MedlineFilter.4","Journal / \\s+ / _ / ");		  // connect all spaces between words with _ 
@@ -571,7 +571,19 @@ public class TextPreProcessor implements ListSelectionListener, ActionListener, 
 			prop.setProperty("filter.MedlineFilter.6","Conference Name / ^\\s+ /  / ");		   // remove leading spaces
 			prop.setProperty("filter.MedlineFilter.7","Conference Name / \\s+$ /  / ");		   // remove trailing spaces
 			prop.setProperty("filter.MedlineFilter.8","Conference Name / \\s+ / _ / ");		   // connect all spaces between words with _ 
-		
+*/		
+			int n = 1;
+			for(String section: Arrays.asList("T2","J2","Journal","Conference Name")){
+				prop.setProperty("filter.MedlineFilter."+n,section+" / [^a-zA-Z ]+ /  / "); // remove non-alphabetic characters for Journals
+				prop.setProperty("filter.MedlineFilter."+(n+1),section+" / ^\\s+ /  / ");  	  // remove leading spaces
+				prop.setProperty("filter.MedlineFilter."+(n+2),section+" / \\s+$ /  /"); 		  // remove trailing spaces
+				prop.setProperty("filter.MedlineFilter."+(n+3),section+" / \\s+ / _ / ");		  // connect all spaces between words with _
+				n += 4;
+			}
+			
+			
+			
+			
 			prop.setProperty("filter.ChangeCase","lowercase"); // lowecase all characters
 		
 			prop.setProperty("filter.SearchReplace.1"," / [\\u2013\\u2014] / - / ");  // normalize em/en dashes
@@ -768,7 +780,7 @@ public class TextPreProcessor implements ListSelectionListener, ActionListener, 
 						return;
 					
 					// reset token character
-					tokenSep = tokenSeparator.getText();
+					tokenSep = " "; //tokenSeparator.getText(); WHY WOULD you want to overwrite it?
 					for(int i=0;i<selectedFilterList.getModel().getSize();i++){
 						((Filter)selectedFilterList.getModel().getElementAt(i)).setTokenSeparator(tokenSep);
 					}

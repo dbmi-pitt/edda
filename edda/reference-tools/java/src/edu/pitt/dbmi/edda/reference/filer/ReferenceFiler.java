@@ -391,11 +391,11 @@ public class ReferenceFiler {
 					}
 						
 					// get inputs
-					boolean isEndNote = true;
+					//boolean isEndNote = true;
 					progress.setIndeterminate(true);
 					progress.setString("Reading Input References ..");
 					List<Reference> includeReferences , excludeReferences;
-					if(isEndNote){
+					/*if(isEndNote){
 						includeReferences = Utils.readEndNoteReferences(new File(inputReferencesInclude.getText()));
 						for(Reference r : includeReferences)
 							r.setIncluded(true);
@@ -405,7 +405,11 @@ public class ReferenceFiler {
 						for(Reference r : includeReferences)
 							r.setIncluded(true);
 						excludeReferences = Utils.readMedlineReferences(new File(inputReferencesExclude.getText()));
-					}
+					}*/
+					includeReferences = Utils.readRISReferences(new File(inputReferencesInclude.getText()));
+					for(Reference r : includeReferences)
+						r.setIncluded(true);
+					excludeReferences = Utils.readRISReferences(new File(inputReferencesExclude.getText()));
 					
 					List<Reference> inputReferences = new ArrayList<Reference>();
 					inputReferences.addAll(includeReferences);

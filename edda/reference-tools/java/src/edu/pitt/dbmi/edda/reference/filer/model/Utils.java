@@ -306,6 +306,56 @@ public class Utils {
 		return line;		
 	}
 	
+	
+	
+	
+	/**
+	 * read input reference in MEDLINE format
+	 * @param file
+	 * @return
+	 */
+	
+	public static List<Reference> readRISReferences(File file) {
+		List<Reference> list = new ArrayList<Reference>();
+		
+		try{
+			BufferedReader reader = new BufferedReader(new FileReader(file));
+			StringBuffer buffer = new StringBuffer();
+			//boolean referenceStart = false;
+			for(String line = reader.readLine();line != null; line = reader.readLine()){
+				line = Utils.stripBOB(line.trim());
+				if(line.length() == 0)
+					continue;
+				
+				buffer.append(line+"\n");
+				
+				// break references apart by finding an ER  tag
+				if(line.startsWith(RISReference.END_OF_RECORD)){
+					// write out the old buffer
+					if(buffer.length() > 0)
+						list.add(new RISReference(buffer.toString()));
+					
+					// start working on new reference
+					buffer = new StringBuffer();
+				}
+			}
+			
+			// write out the last record
+			if(buffer.length() > 0)
+				list.add(new RISReference(buffer.toString()));
+			
+			// close
+			reader.close();
+			
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
+		
+		return list;
+	}
+	
+	
+	
 	/**
 	 * read input reference in MEDLINE format
 	 * @param file
@@ -516,91 +566,30 @@ public class Utils {
 	 * extract a set of keywords for a given reference
 	 */
 	public static Set<String> getKeywords(MedlineReference ref){
-		Set<String> keys = new LinkedHashSet<String>();
-		if(ref.getContentMap().containsKey("MH")){
-			for(String line: ref.getContentMap().get("MH").split("\\n")){
-				if(extractKeywordsEntireMeSHLine){
-					String term = line.trim();
-					if(extractKeywordsFilterMeSHLine){
-						term = term.toLowerCase().replaceAll("\\*","");
-					}
-					addKeyword(term, keys);
-				}else{
-					// remove semantic types and other junk
-					if(!extractKeywordsUseCategories)
-						line = line.replaceAll("[\\(\\[]\\{(.+)[\\}\\)\\]]","");
-					
-					// remove semantic types abbreviation in the begining
-					line = line.replaceAll("^[a-z]{2}\\b","");
-					// remove *
-					line = line.replaceAll("\\*","");
-					// remove sema* /ac stuff
-					line = line.replaceAll("/[a-z]{2}\\b","");
-					for(String t: line.split("[\\.;\\[\\]\\(\\)/]")){
-						String k = t.toLowerCase().trim();
-						if(k.length() > 3 && k.matches("[^0-9\\-]+")){
-							addKeyword(k, keys);
-						}
-					}
-				}
-			}
-		}
-		
-		// add EMTREE terms embeded inside the abstract
-		if(extractKeywordsFromAbstract){
-			String ab = ref.getAbstract();
-			Pattern pt = Pattern.compile("EMTREE [A-Z\\s]+ INDEX TERMS (\\(MAJOR FOCUS\\))?");
-			Matcher mt = pt.matcher(ab);
-			String header = null;
-			int st = -1;
-			List<String> sec = new ArrayList<String>();
-			while(mt.find()){
-				if(header != null){
-					if(!extractKeywordsUseMajorFocus || header.endsWith("(MAJOR FOCUS)"))
-						sec.add(ab.substring(st,mt.start()));
-				}
-				header = mt.group();
-				st = mt.end();
-			}
-			if(header != null){
-				if(!extractKeywordsUseMajorFocus || header.endsWith("(MAJOR FOCUS)"))
-					sec.add(ab.substring(st));
-			}
-			
-			
-			// lets first see if we can split those by something like paranthesis
-			for(String s: sec){
-				if(extractKeywordsUseCategories){
-					for(String t: s.split("[\\.;\\[\\]\\(\\)/]")){
-						String k = t.toLowerCase().trim();
-						if(k.length() > 3 && k.matches("[^0-9\\-]+")){
-							Utils.addKeyword(k, keys);
-						}
-					}
-				}else{
-					// split using category, if available
-					for(String t: s.split("\\([^\\)\\(]+\\)")){
-						String k = t.toLowerCase().trim();
-						if(k.length() > 3 && k.matches("[^0-9\\-]+")){
-							Utils.addKeyword(k, keys);
-						}
-					}
-				}
-			}
-			
-		}
-		return keys;
+		return  getKeywords(ref,"MH");
 	}
 	
-	
+	/**
+	 * extract a set of keywords for a given reference
+	 */
+	public static Set<String> getKeywords(RISReference ref){
+		return  getKeywords(ref,"KW");
+	}
 	
 	/**
 	 * extract a set of keywords for a given reference
 	 */
 	public static Set<String> getKeywords(EndNoteReference ref){
+		return getKeywords(ref,"Keywords");
+	}
+	
+	/**
+	 * extract a set of keywords for a given reference
+	 */
+	public static Set<String> getKeywords(Reference ref, String tag){
 		Set<String> keys = new LinkedHashSet<String>();
-		if(ref.getContentMap().containsKey("Keywords")){
-			for(String line: ref.getContentMap().get("Keywords").split("\\n")){
+		if(ref.getContentMap().containsKey(tag)){
+			for(String line: ref.getContentMap().get(tag).split("\\n")){
 				if(extractKeywordsEntireMeSHLine){
 					String term = line.trim();
 					if(extractKeywordsFilterMeSHLine){
