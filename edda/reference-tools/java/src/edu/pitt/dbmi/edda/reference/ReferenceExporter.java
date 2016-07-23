@@ -367,13 +367,17 @@ public class ReferenceExporter {
 		
 		r =	sh.createRow(1);
 		r.createCell(0).setCellValue("real include");
-		r.createCell(1).setCellValue(counts.get("real include + pred include"));
-		r.createCell(2).setCellValue(counts.get("real include + pred exclude"));
+		if(counts.containsKey("real include + pred include"))
+			r.createCell(1).setCellValue(counts.get("real include + pred include"));
+		if(counts.containsKey("real include + pred exclude"))
+			r.createCell(2).setCellValue(counts.get("real include + pred exclude"));
 
 		r =	sh.createRow(2);
 		r.createCell(0).setCellValue("real exclude");
-		r.createCell(1).setCellValue(counts.get("real exclude + pred include"));
-		r.createCell(2).setCellValue(counts.get("real exclude + pred exclude"));
+		if(counts.containsKey("real exclude + pred include"))
+			r.createCell(1).setCellValue(counts.get("real exclude + pred include"));
+		if(counts.containsKey("real exclude + pred exclude"))
+			r.createCell(2).setCellValue(counts.get("real exclude + pred exclude"));
 		
 		
 		//write out the Excel file

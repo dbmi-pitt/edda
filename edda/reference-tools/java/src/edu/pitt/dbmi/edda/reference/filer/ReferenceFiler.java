@@ -459,10 +459,8 @@ public class ReferenceFiler {
 						
 						progress.setValue(offset);
 						String name = prefix+offset++;
-						if(ref instanceof EndNoteReference){
-							String rec = ((EndNoteReference) ref).getRecordNumber();
-							if(rec != null)
-								name = rec;
+						if(ref.getRecordNumber() != null){
+							name = ref.getRecordNumber();
 						}
 						
 						

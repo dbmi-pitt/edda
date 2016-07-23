@@ -573,7 +573,7 @@ public class TextPreProcessor implements ListSelectionListener, ActionListener, 
 			prop.setProperty("filter.MedlineFilter.8","Conference Name / \\s+ / _ / ");		   // connect all spaces between words with _ 
 */		
 			int n = 1;
-			for(String section: Arrays.asList("T2","J2","Journal","Conference Name")){
+			for(String section: Arrays.asList("T2","J2","JF","Journal","Conference Name")){
 				prop.setProperty("filter.MedlineFilter."+n,section+" / [^a-zA-Z ]+ /  / "); // remove non-alphabetic characters for Journals
 				prop.setProperty("filter.MedlineFilter."+(n+1),section+" / ^\\s+ /  / ");  	  // remove leading spaces
 				prop.setProperty("filter.MedlineFilter."+(n+2),section+" / \\s+$ /  /"); 		  // remove trailing spaces

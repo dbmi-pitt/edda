@@ -1,12 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="rulebase/java/src"/>
+	<classpathentry kind="src" path="workflow/java/src"/>
+	<classpathentry kind="src" path="term-discover/java/src"/>
 	<classpathentry kind="src" path="pico/java/src"/>
+	<classpathentry kind="src" path="reference-tools/java/src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/eutilsLIBS"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/cdxlibs"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/tmLIBS"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JessLIBs"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/nobletools"/>
+	<classpathentry kind="lib" path="reference-tools/java/lib/poi-3.14-20160307.jar"/>
+	<classpathentry kind="lib" path="reference-tools/java/lib/poi-ooxml-3.14-20160307.jar"/>
+	<classpathentry kind="lib" path="reference-tools/java/lib/poi-ooxml-schemas-3.14-20160307.jar"/>
+	<classpathentry kind="lib" path="reference-tools/java/lib/xmlbeans-2.6.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
